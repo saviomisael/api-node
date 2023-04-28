@@ -6,4 +6,8 @@ export abstract class BaseModel {
   constructor() {
     this.id = v4();
   }
+
+  public getId() {
+    return this.id;
+  }
 }
