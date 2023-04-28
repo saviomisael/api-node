@@ -3,6 +3,8 @@ import mysql, { Connection } from 'mysql2/promise';
 export class DBConnection {
   private static instance: Connection;
 
+  private constructor() {}
+
   public static async getConnection() {
     const { MYSQL_DATABASE, MYSQL_USER, MYSQL_PASSWORD } = process.env;
 
