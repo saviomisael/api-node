@@ -1,5 +1,7 @@
-export class Genre {
-  private id!: string;
+import { BaseModel } from './BaseModel';
 
-  constructor(private name: string) {}
+export class Genre extends BaseModel {
+  constructor(private name: string) {
+    super();
+  }
 }
