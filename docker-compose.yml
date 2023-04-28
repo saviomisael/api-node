@@ -1,0 +1,36 @@
+version: '3.5'
+
+services:
+  db:
+    image: mysql:8
+    restart: always
+    env_file:
+      - '.env'
+    ports:
+      - 3306:3306
+    healthcheck:
+      test: 'mysql -u root -p ${MYSQL_ROOT_PASSWORD} -e "SHOW DATABASES;"'
+      interval: 10s
+      timeout: 60s
+      retries: 3
+    volumes:
+      - data:/var/lib/mysql
+    networks:
+      - backend
+  backend:
+    build: ./
+    command: npm run dev:server
+    ports:
+      - 3333:3333
+    volumes:
+      - ./:/api
+    depends_on:
+      - db
+    networks:
+      - backend
+
+volumes:
+  data: {}
+
+networks:
+  backend: {}
