@@ -8,8 +8,9 @@ export class GenreService {
     this.repository = new GenreRepository();
   }
 
-  public createGenre(genreName: string) {
-    const isAlreadyCreated = this.repository.getGenreByName(genreName) == null;
+  public async createGenre(genreName: string) {
+    const isAlreadyCreated =
+      (await this.repository.getGenreByName(genreName)) == null;
 
     if (isAlreadyCreated) {
       return null;
@@ -17,7 +18,7 @@ export class GenreService {
 
     const genre = new Genre(genreName);
 
-    const genreRecorded = this.repository.createGenre(genre);
+    const genreRecorded = await this.repository.createGenre(genre);
 
     return genreRecorded;
   }
