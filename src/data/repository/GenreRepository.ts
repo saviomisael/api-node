@@ -30,8 +30,25 @@ export class GenreRepository implements IGenreRepository {
 
     const [data] = row as Array<Genre>;
 
-    console.log(data);
-
     return data;
+  }
+
+  async getGenreByName(name: string): Promise<Genre | null> {
+    this.connection = await DBConnection.getConnection();
+
+    const result = await this.connection.execute(
+      'SELECT * FROM genres WHERE name = ?',
+      [name],
+    );
+
+    const row = result[0] as Array<Genre>;
+
+    if (row.length == 0) {
+      return null;
+    }
+
+    const [genre] = row;
+
+    return genre;
   }
 }
