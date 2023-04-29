@@ -14,6 +14,16 @@ export class GenreController {
 
       if (req.body.name === undefined) return res.status(400).json(responseDTO)
 
+      if (req.body.name.length < 1) {
+        responseDTO = {
+          data: [],
+          errors: ["Genre's name is empty."],
+          success: false
+        }
+
+        return res.status(400).json(responseDTO)
+      }
+
       const service = new GenreService()
 
       const genre = await service.createGenre(req.body.name)
