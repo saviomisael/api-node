@@ -12,7 +12,7 @@ export class GenreController {
         success: false
       }
 
-      if (req.body.name !== null || req.body.name !== undefined) return res.status(400).json(responseDTO)
+      if (req.body.name === undefined) return res.status(400).json(responseDTO)
 
       const service = new GenreService()
 
