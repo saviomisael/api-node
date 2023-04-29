@@ -4,6 +4,8 @@ import { type Genre } from '../model/Genre'
 import { GenreService } from '../service/GenreService'
 
 export class GenreController {
+  private readonly service: GenreService = new GenreService()
+
   public async createGenre (req: Request, res: Response): Promise<Response> {
     try {
       let responseDTO: ResponseDTO<Genre> = {
@@ -24,9 +26,7 @@ export class GenreController {
         return res.status(400).json(responseDTO)
       }
 
-      const service = new GenreService()
-
-      const genre = await service.createGenre(req.body.name)
+      const genre = await this.service.createGenre(req.body.name)
 
       if (genre == null) {
         responseDTO = {
