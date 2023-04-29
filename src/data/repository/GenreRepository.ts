@@ -8,16 +8,21 @@ export class GenreRepository implements IGenreRepository {
 
   constructor() {}
   async createGenre(genre: Genre): Promise<Genre> {
-    this.connection = await DBConnection.getConnection();
+    try {
+      this.connection = await DBConnection.getConnection();
 
-    await this.connection.execute(
-      'INSERT INTO genres (id, name) VALUES (?, ?)',
-      [genre.getId(), genre.getName()],
-    );
+      await this.connection.execute(
+        'INSERT INTO genres (id, name) VALUES (?, ?)',
+        [genre.getId(), genre.getName()],
+      );
 
-    const newGenre = await this.getGenreById(genre.getId());
+      const newGenre = await this.getGenreById(genre.getId());
 
-    return newGenre;
+      return newGenre;
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
   }
 
   async getGenreById(id: string): Promise<Genre> {
