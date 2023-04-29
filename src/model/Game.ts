@@ -1,15 +1,15 @@
-import { Genre } from './Genre';
-import { Platform } from './Platform';
+import { type Genre } from './Genre'
+import { type Platform } from './Platform'
 
 export class Game {
-  private id!: string;
+  private readonly id!: string
 
-  constructor(
-    private name: string,
-    private price: number,
-    private description: string,
-    private platforms: Platform[],
-    private releaseDate: Date,
-    private genres: Genre[],
+  constructor (
+    private readonly name: string,
+    private readonly price: number,
+    private readonly description: string,
+    private readonly platforms: Platform[],
+    private readonly releaseDate: Date,
+    private readonly genres: Genre[]
   ) {}
 }

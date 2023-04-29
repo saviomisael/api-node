@@ -1,44 +1,50 @@
-import { Request, Response } from 'express';
-import { ResponseDTO } from '../dto/ResponseDTO';
-import { Genre } from '../model/Genre';
-import { GenreService } from '../service/GenreService';
+import { type Request, type Response } from 'express'
+import { type ResponseDTO } from '../dto/ResponseDTO'
+import { type Genre } from '../model/Genre'
+import { GenreService } from '../service/GenreService'
 
 export class GenreController {
-  public async createGenre(req: Request, res: Response) {
+  public async createGenre (req: Request, res: Response): Promise<Response> {
     try {
       let responseDTO: ResponseDTO<Genre> = {
         data: [],
         errors: ["Genre's name is not defined."],
-        success: false,
-      };
+        success: false
+      }
 
-      if (!req.body.name) return res.status(400).json(responseDTO);
+      if (req.body.name !== null || req.body.name !== undefined) return res.status(400).json(responseDTO)
 
-      const service = new GenreService();
+      const service = new GenreService()
 
-      const genre = await service.createGenre(req.body.name);
+      const genre = await service.createGenre(req.body.name)
 
       if (genre == null) {
         responseDTO = {
           data: [],
           errors: ['This genre already exists.'],
-          success: false,
-        };
+          success: false
+        }
 
-        return res.status(400).json(responseDTO);
+        return res.status(400).json(responseDTO)
       }
 
       responseDTO = {
         data: [genre],
         success: true,
-        errors: [],
-      };
+        errors: []
+      }
 
-      return res.status(200).json(responseDTO);
+      return res.status(200).json(responseDTO)
     } catch (error: any) {
-      console.error(error.stack);
+      console.error(error.stack)
 
-      return res.status(500).json({ error: 'Internal server error.' });
+      const responseDTO: ResponseDTO<Genre> = {
+        data: [],
+        success: false,
+        errors: ['Internal server error.']
+      }
+
+      return res.status(500).json(responseDTO)
     }
   }
 }

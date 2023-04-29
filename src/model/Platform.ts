@@ -1,5 +1,5 @@
 export class Platform {
-  id!: string;
+  id!: string
 
-  constructor(private name: string) {}
+  constructor (private readonly name: string) {}
 }

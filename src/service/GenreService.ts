@@ -1,28 +1,28 @@
-import { GenreRepository } from '../data/repository/GenreRepository';
-import { Genre } from '../model/Genre';
+import { GenreRepository } from '../data/repository/GenreRepository'
+import { Genre } from '../model/Genre'
 
 export class GenreService {
-  private repository: GenreRepository = new GenreRepository();
+  private readonly repository: GenreRepository = new GenreRepository()
 
-  public async createGenre(genreName: string) {
-    console.log(genreName);
+  public async createGenre (genreName: string): Promise<Genre | null> {
+    console.log(genreName)
 
     try {
       const isAlreadyCreated =
-        (await this.repository.getGenreByName(genreName)) != null;
+        (await this.repository.getGenreByName(genreName)) != null
 
       if (isAlreadyCreated) {
-        return null;
+        return null
       }
 
-      const genre = new Genre(genreName);
+      const genre = new Genre(genreName)
 
-      const genreRecorded = await this.repository.createGenre(genre);
+      const genreRecorded = await this.repository.createGenre(genre)
 
-      return genreRecorded;
+      return genreRecorded
     } catch (error) {
-      console.log(error);
-      throw error;
+      console.log(error)
+      throw error
     }
   }
 }

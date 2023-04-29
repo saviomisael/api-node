@@ -1,59 +1,58 @@
-import { Connection } from 'mysql2/promise';
-import { Genre } from '../../model/Genre';
-import { DBConnection } from '../DBConnection';
-import { IGenreRepository } from './IGenreRepository';
+import { type Connection } from 'mysql2/promise'
+import { type Genre } from '../../model/Genre'
+import { DBConnection } from '../DBConnection'
+import { type IGenreRepository } from './IGenreRepository'
 
 export class GenreRepository implements IGenreRepository {
-  private connection!: Connection;
+  private connection!: Connection
 
-  constructor() {}
-  async createGenre(genre: Genre): Promise<Genre> {
+  async createGenre (genre: Genre): Promise<Genre> {
     try {
-      this.connection = await DBConnection.getConnection();
+      this.connection = await DBConnection.getConnection()
 
       await this.connection.execute(
         'INSERT INTO genres (id, name) VALUES (?, ?)',
-        [genre.getId(), genre.getName()],
-      );
+        [genre.getId(), genre.getName()]
+      )
 
-      const newGenre = await this.getGenreById(genre.getId());
+      const newGenre = await this.getGenreById(genre.getId())
 
-      return newGenre;
+      return newGenre
     } catch (error) {
-      console.log(error);
-      throw error;
+      console.log(error)
+      throw error
     }
   }
 
-  async getGenreById(id: string): Promise<Genre> {
-    this.connection = await DBConnection.getConnection();
+  async getGenreById (id: string): Promise<Genre> {
+    this.connection = await DBConnection.getConnection()
 
     const [row] = await this.connection.execute(
       'SELECT * FROM genres WHERE id = ?',
-      [id],
-    );
+      [id]
+    )
 
-    const [data] = row as Array<Genre>;
+    const [data] = row as Genre[]
 
-    return data;
+    return data
   }
 
-  async getGenreByName(name: string): Promise<Genre | null> {
-    this.connection = await DBConnection.getConnection();
+  async getGenreByName (name: string): Promise<Genre | null> {
+    this.connection = await DBConnection.getConnection()
 
     const result = await this.connection.execute(
       'SELECT * FROM genres WHERE name = ?',
-      [name],
-    );
+      [name]
+    )
 
-    const row = result[0] as Array<Genre>;
+    const row = result[0] as Genre[]
 
-    if (row.length == 0) {
-      return null;
+    if (row.length === 0) {
+      return null
     }
 
-    const [genre] = row;
+    const [genre] = row
 
-    return genre;
+    return genre
   }
 }

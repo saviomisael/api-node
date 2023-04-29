@@ -1,23 +1,23 @@
-import mysql, { Connection } from 'mysql2/promise';
+import mysql, { type Connection } from 'mysql2/promise'
 
 export class DBConnection {
-  private static instance: Connection;
+  private static instance: Connection
 
-  private constructor() {}
+  private constructor () {}
 
-  public static async getConnection() {
-    const { MYSQL_DATABASE, MYSQL_USER, MYSQL_PASSWORD } = process.env;
+  public static async getConnection (): Promise<Connection> {
+    const { MYSQL_DATABASE, MYSQL_USER, MYSQL_PASSWORD } = process.env
 
-    if (!DBConnection.instance) {
+    if (DBConnection.instance === null || DBConnection.instance === undefined) {
       DBConnection.instance = await mysql.createConnection({
         host: 'db',
         user: MYSQL_USER,
         password: MYSQL_PASSWORD,
         database: MYSQL_DATABASE,
-        port: 3306,
-      });
+        port: 3306
+      })
     }
 
-    return DBConnection.instance;
+    return DBConnection.instance
   }
 }
