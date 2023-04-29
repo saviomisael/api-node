@@ -1,13 +1,17 @@
 import bodyParser from 'body-parser'
 import dotenv from 'dotenv'
 import express from 'express'
+import Swagger from 'swagger-ui-express'
 import genreRouter from './routes/genreRouter'
+import SwaggerDocs from './swagger.json'
 
 dotenv.config()
 
 const app = express()
 
 app.use(bodyParser.json())
+
+app.use('/docs', Swagger.serve, Swagger.setup(SwaggerDocs))
 
 app.use(genreRouter)
 

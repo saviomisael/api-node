@@ -1,0 +1,104 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Games API",
+    "description": "Games API with express and mysql",
+    "version": "1",
+    "contact": "misaelmoreira99.sm@gmail.com"
+  },
+  "servers": [
+    {
+      "url": "http:localhost:3333/api/v1",
+      "description": "Games API"
+    }
+  ],
+  "paths": {
+    "/api/v1/genres": {
+      "post": {
+        "summary": "Returns the genre created.",
+        "description": "Create an genre.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GenreRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GenreResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Empty name/genre already exists.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GenreResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "genres"
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Genre": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "action"
+          },
+          "id": {
+            "type": "string",
+            "example": "131db526-4599-4485-803d-cca8573693d5"
+          }
+        }
+      },
+      "GenreRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "action"
+          }
+        }
+      },
+      "GenreResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "example": "This genre already exists."
+            }
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Genre"
+            }
+          }
+        }
+      }
+    }
+  }
+}
