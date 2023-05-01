@@ -1,4 +1,6 @@
+import { validate } from 'class-validator'
 import { type Request, type Response } from 'express'
+import { CreateGenreDTO } from '../dto/CreateGenreDTO'
 import { type ResponseDTO } from '../dto/ResponseDTO'
 import { type Genre } from '../model/Genre'
 import { GenreService } from '../service/GenreService'
@@ -8,27 +10,25 @@ export class GenreController {
 
   public async createGenre (req: Request, res: Response): Promise<Response> {
     try {
-      let responseDTO: ResponseDTO<Genre> = {
-        data: [],
-        errors: ["Genre's name is not defined."],
-        success: false
-      }
+      let responseDTO: ResponseDTO<Genre>
 
-      if (req.body.name === undefined) return res.status(400).json(responseDTO)
+      const createGenreDTO = new CreateGenreDTO(req.body.name)
 
-      if (req.body.name.length < 1) {
+      const errorsDTO = await validate(createGenreDTO)
+
+      if (errorsDTO.length > 0 && errorsDTO[0].constraints != null) {
         responseDTO = {
+          success: false,
           data: [],
-          errors: ["Genre's name is empty."],
-          success: false
+          errors: [...Object.values(errorsDTO[0].constraints)]
         }
 
         return res.status(400).json(responseDTO)
       }
 
-      const genre = await this.service.createGenre(req.body.name)
+      const newGenre = await this.service.createGenre(createGenreDTO.name)
 
-      if (genre == null) {
+      if (newGenre == null) {
         responseDTO = {
           data: [],
           errors: ['This genre already exists.'],
@@ -39,7 +39,7 @@ export class GenreController {
       }
 
       responseDTO = {
-        data: [genre],
+        data: [newGenre],
         success: true,
         errors: []
       }
