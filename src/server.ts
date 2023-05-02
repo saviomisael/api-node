@@ -1,4 +1,5 @@
 import bodyParser from 'body-parser'
+import cors from 'cors'
 import dotenv from 'dotenv'
 import express from 'express'
 import Swagger from 'swagger-ui-express'
@@ -10,6 +11,8 @@ dotenv.config()
 const app = express()
 
 app.use(bodyParser.json())
+
+app.use(cors())
 
 app.use('/docs', Swagger.serve, Swagger.setup(SwaggerDocs))
 
