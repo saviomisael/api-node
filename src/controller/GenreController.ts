@@ -44,7 +44,7 @@ export class GenreController {
         errors: []
       }
 
-      return res.status(200).json(responseDTO)
+      return res.status(201).json(responseDTO)
     } catch (error: any) {
       console.error(error.stack)
 
