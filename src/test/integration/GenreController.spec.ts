@@ -53,3 +53,20 @@ describe('POST /api/v1/genres', () => {
     chai.expect(response.body.data[0].name).to.be.equal('action')
   })
 })
+
+describe('GET /api/v1/genres', () => {
+  afterEach(async () => {
+    const connection = await DBConnection.getConnection()
+
+    await connection.execute('DELETE FROM genres')
+  })
+
+  it('should return an empty array with status 200', async () => {
+    const response = await chai.request(app).get('/api/v1/genres')
+
+    chai.expect(response).to.have.status(200)
+    chai.expect(response.body.data).to.have.length(0)
+    chai.expect(response.body.success).to.be.true
+    chai.expect(response.body.errors).to.have.length(0)
+  })
+})
