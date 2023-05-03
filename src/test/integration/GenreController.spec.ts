@@ -5,11 +5,15 @@ import app from '../../server'
 
 chai.use(chaiHttp)
 
+const clearData = async (): Promise<void> => {
+  const connection = await DBConnection.getConnection()
+
+  await connection.execute('DELETE FROM genres')
+}
+
 describe('POST /api/v1/genres', () => {
   afterEach(async () => {
-    const connection = await DBConnection.getConnection()
-
-    await connection.execute('DELETE FROM genres')
+    await clearData()
   })
 
   it('should return a bad request response when name is not provided', async () => {
@@ -56,9 +60,7 @@ describe('POST /api/v1/genres', () => {
 
 describe('GET /api/v1/genres', () => {
   afterEach(async () => {
-    const connection = await DBConnection.getConnection()
-
-    await connection.execute('DELETE FROM genres')
+    await clearData()
   })
 
   it('should return an empty array with status 200', async () => {
