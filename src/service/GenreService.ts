@@ -23,4 +23,10 @@ export class GenreService {
       throw error
     }
   }
+
+  public async getAllGenres (): Promise<Genre[]> {
+    const genres = await this.repository.getAll()
+
+    return genres
+  }
 }
