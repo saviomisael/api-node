@@ -6,5 +6,6 @@ const genreRouter = Router()
 const controller = new GenreController()
 
 genreRouter.post(apiRoutes.genres.create, controller.createGenre.bind(controller))
+genreRouter.get(apiRoutes.genres.getAll, controller.getAllGenres.bind(controller))
 
 export default genreRouter
