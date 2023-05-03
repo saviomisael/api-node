@@ -32,7 +32,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/GenreResponse"
+                  "$ref": "#/components/schemas/GenrePostResponse"
                 }
               }
             }
@@ -42,7 +42,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/GenreResponse"
+                  "$ref": "#/components/schemas/GenrePostResponse"
                 }
               }
             }
@@ -51,6 +51,21 @@
         "tags": [
           "genres"
         ]
+      },
+      "get": {
+        "summary": "Returns all genres.",
+        "responses": {
+          "200": {
+            "description": "Returns all genres.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GenreGetResponse"
+                }
+              }
+            }
+          }
+        }
       }
     }
   },
@@ -78,7 +93,7 @@
           }
         }
       },
-      "GenreResponse": {
+      "GenrePostResponse": {
         "type": "object",
         "properties": {
           "success": {
@@ -89,6 +104,26 @@
             "items": {
               "type": "string",
               "example": "This genre already exists."
+            }
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Genre"
+            }
+          }
+        }
+      },
+      "GenreGetResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "type": "string"
             }
           },
           "data": {
