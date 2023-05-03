@@ -6,7 +6,7 @@ import app from '../../server'
 chai.use(chaiHttp)
 
 describe('POST /api/v1/genres', () => {
-  beforeEach(async () => {
+  afterEach(async () => {
     const connection = await DBConnection.getConnection()
 
     await connection.execute('DELETE FROM genres')
