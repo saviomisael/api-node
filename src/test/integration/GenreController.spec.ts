@@ -71,4 +71,18 @@ describe('GET /api/v1/genres', () => {
     chai.expect(response.body.success).to.be.true
     chai.expect(response.body.errors).to.have.length(0)
   })
+
+  it('should return an genre array with status 200', async () => {
+    await chai.request(app).post('/api/v1/genres').send({ name: 'action' })
+    await chai.request(app).post('/api/v1/genres').send({ name: 'drama' })
+
+    const response = await chai.request(app).get('/api/v1/genres')
+
+    chai.expect(response).to.have.status(200)
+    chai.expect(response.body.success).to.be.true
+    chai.expect(response.body.errors).to.have.length(0)
+    chai.expect(response.body.data).to.have.length(2)
+    chai.expect(response.body.data[0].name).to.be.equal('action')
+    chai.expect(response.body.data[1].name).to.be.equal('drama')
+  })
 })
