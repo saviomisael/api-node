@@ -5,7 +5,7 @@ import app from '../../server'
 chai.use(chaiHttp)
 
 describe('POST /api/v1/genres', () => {
-  it('should returns a bad request response because name is not provided', async () => {
+  it('should returns a bad request response when name is not provided', async () => {
     const response = await chai.request(app)
       .post('/api/v1/genres')
       .send({})
