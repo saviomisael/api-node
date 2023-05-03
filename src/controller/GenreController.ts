@@ -57,4 +57,34 @@ export class GenreController {
       return res.status(500).json(responseDTO)
     }
   }
+
+  public async getAllGenres (req: Request, res: Response): Promise<Response> {
+    let responseDTO: ResponseDTO<Genre> = {
+      success: false,
+      data: [],
+      errors: []
+    }
+
+    try {
+      const genres = await this.service.getAllGenres()
+
+      responseDTO = {
+        success: true,
+        data: [...genres],
+        errors: []
+      }
+
+      return res.status(200).json(responseDTO)
+    } catch (error) {
+      console.log(error)
+
+      responseDTO = {
+        success: false,
+        data: [],
+        errors: ['Internal server error.']
+      }
+
+      return res.status(500).json(responseDTO)
+    }
+  }
 }
