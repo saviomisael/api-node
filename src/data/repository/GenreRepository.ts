@@ -55,4 +55,14 @@ export class GenreRepository implements IGenreRepository {
 
     return genre
   }
+
+  async getAll (): Promise<Genre[]> {
+    this.connection = await DBConnection.getConnection()
+
+    const result = await this.connection.execute('SELECT * FROM genres')
+
+    const data = result[0] as Genre[]
+
+    return data
+  }
 }
