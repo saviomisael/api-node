@@ -21,3 +21,5 @@ app.use(genreRouter)
 app.listen('3333', () => {
   console.log('App running on http://localhost:3333')
 })
+
+export default app
