@@ -1,8 +1,8 @@
 import { Length } from 'class-validator'
 
 export class DeleteGenreDTO {
-  @Length(32, 32, {
-    message: 'Id must have 32 characters.'
+  @Length(36, 36, {
+    message: 'Id must have 36 characters.'
   })
     id: string
 

@@ -33,7 +33,7 @@ export class GenreService {
   async deleteGenre (id: string): Promise<boolean> {
     const genreToDelete = await this.repository.getGenreById(id)
 
-    if (genreToDelete.getId() == null) return false
+    if (genreToDelete == null) return false
 
     await this.repository.deleteGenreById(id)
 

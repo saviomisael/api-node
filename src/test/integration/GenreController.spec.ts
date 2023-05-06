@@ -100,4 +100,14 @@ describe('DELETE /api/v1/genres/:id', () => {
     chai.expect(response.body.errors).to.have.length(1)
     chai.expect(response.body.success).to.be.false
   })
+
+  it('should not delete genre when genre not exists.', async () => {
+    const response = await chai.request(app).delete('/api/v1/genres/9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d')
+
+    chai.expect(response).to.have.status(404)
+    chai.expect(response.body.success).to.be.false
+    chai.expect(response.body.data).to.have.length(0)
+    chai.expect(response.body.errors).to.have.length(1)
+    chai.expect(response.body.errors[0]).to.be.equal('The genre not exists.')
+  })
 })
