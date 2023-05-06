@@ -6,7 +6,7 @@ import { type IGenreRepository } from './IGenreRepository'
 export class GenreRepository implements IGenreRepository {
   private connection!: Connection
 
-  async createGenre (genre: Genre): Promise<Genre> {
+  async createGenre (genre: Genre): Promise<Genre | null> {
     try {
       this.connection = await DBConnection.getConnection()
 
@@ -24,13 +24,17 @@ export class GenreRepository implements IGenreRepository {
     }
   }
 
-  async getGenreById (id: string): Promise<Genre> {
+  async getGenreById (id: string): Promise<Genre | null> {
     this.connection = await DBConnection.getConnection()
 
-    const [row] = await this.connection.execute(
+    const result = await this.connection.execute(
       'SELECT * FROM genres WHERE id = ?',
       [id]
     )
+
+    const [row] = result as any[]
+
+    if (row.length === 0) return null
 
     const [data] = row as Genre[]
 
