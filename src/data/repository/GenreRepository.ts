@@ -65,4 +65,14 @@ export class GenreRepository implements IGenreRepository {
 
     return data
   }
+
+  async deleteGenreById (id: string): Promise<boolean> {
+    this.connection = await DBConnection.getConnection()
+
+    const result = await this.connection.execute('DELETE FROM genres WHERE id = ?', [id])
+
+    const data = result[0] as any[]
+
+    return data.length > 0
+  }
 }

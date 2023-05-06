@@ -5,4 +5,5 @@ export interface IGenreRepository {
   getGenreById: (id: string) => Promise<Genre>
   getGenreByName: (name: string) => Promise<Genre | null>
   getAll: () => Promise<Genre[]>
+  deleteGenreById: (id: string) => Promise<boolean>
 }
