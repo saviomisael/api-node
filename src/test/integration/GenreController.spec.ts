@@ -86,3 +86,18 @@ describe('GET /api/v1/genres', () => {
     chai.expect(response.body.data[1].name).to.be.equal('drama')
   })
 })
+
+describe('DELETE /api/v1/genres/:id', () => {
+  afterEach(async () => {
+    await clearData()
+  })
+
+  it('should not delete genre when genre id does not have 32 characters.', async () => {
+    const response = await chai.request(app).delete('/api/v1/genres/123')
+
+    chai.expect(response).to.have.status(400)
+    chai.expect(response.body.data).to.have.length(0)
+    chai.expect(response.body.errors).to.have.length(1)
+    chai.expect(response.body.success).to.be.false
+  })
+})
