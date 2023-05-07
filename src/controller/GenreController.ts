@@ -88,16 +88,14 @@ export class GenreController {
 
     const result = await this.service.deleteGenre(deleteGenreDTO.id)
 
-    if (!result) {
-      responseDTO = {
-        data: [],
-        success: false,
-        errors: ['The genre not exists.']
-      }
+    if (result) return res.status(204).send()
 
-      return res.status(404).json(responseDTO)
+    responseDTO = {
+      data: [],
+      success: false,
+      errors: ['The genre not exists.']
     }
 
-    return res.status(204)
+    return res.status(404).json(responseDTO)
   }
 }

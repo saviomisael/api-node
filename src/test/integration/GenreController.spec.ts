@@ -1,6 +1,7 @@
 import chai from 'chai'
 import chaiHttp from 'chai-http'
 import { DBConnection } from '../../data/DBConnection'
+import { apiRoutes } from '../../routes/apiRoutes'
 import app from '../../server'
 
 chai.use(chaiHttp)
@@ -109,5 +110,19 @@ describe('DELETE /api/v1/genres/:id', () => {
     chai.expect(response.body.data).to.have.length(0)
     chai.expect(response.body.errors).to.have.length(1)
     chai.expect(response.body.errors[0]).to.be.equal('The genre not exists.')
+  })
+
+  it('should delete genre', async () => {
+    const response = await chai.request(app).post('/api/v1/genres').send({ name: 'action' })
+
+    const genreId = response.body.data[0].id as string
+
+    const deleteResponse = await chai.request(app).delete(`/api/v1/genres/${genreId}`)
+
+    chai.expect(deleteResponse).to.have.status(204)
+
+    const allGenresResponse = await chai.request(app).get(apiRoutes.genres.getAll)
+
+    chai.expect(allGenresResponse.body.data).to.have.length(0)
   })
 })

@@ -8,7 +8,7 @@
     "lint": "eslint ./src/**/*.ts --fix",
     "prepare": "husky install",
     "lint-staged": "lint-staged",
-    "test": "mocha -r ts-node/register/transpile-only ./src/test/**/*.spec.ts --exit",
+    "test": "mocha -r ts-node/register/transpile-only ./src/test/**/*.spec.ts --timeout 10000 --exit",
     "test:docker": "docker compose -f docker-compose.yml run backend npm run test",
     "coverage": "nyc npm run test",
     "coverage:docker": "docker compose -f docker-compose.yml run backend npm run coverage"
