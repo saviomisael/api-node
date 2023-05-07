@@ -67,6 +67,40 @@
           }
         }
       }
+    },
+    "/api/v1/genres/:id": {
+      "delete": {
+        "summary": "Deletes a genre by id.",
+        "description": "Delete a genre.",
+        "responses": {
+          "400": {
+            "description": "Id must have 36 characters.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GenreDeleteResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The genre not exists.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GenreDeleteResponse"
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "No content response."
+          }
+        },
+        "tags": [
+          "genres"
+        ]
+      }
     }
   },
   "components": {
@@ -124,6 +158,27 @@
             "type": "array",
             "items": {
               "type": "string"
+            }
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Genre"
+            }
+          }
+        }
+      },
+      "GenreDeleteResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "example": "This genre not exists./Id must have 36 characters."
             }
           },
           "data": {
