@@ -5,8 +5,9 @@ import { DeleteGenreDTO } from '../dto/DeleteGenreDTO'
 import { type ResponseDTO } from '../dto/ResponseDTO'
 import { type Genre } from '../model/Genre'
 import { GenreService } from '../service/GenreService'
+import { BaseController } from './BaseController'
 
-export class GenreController {
+export class GenreController extends BaseController {
   private readonly service: GenreService = new GenreService()
 
   async createGenre (req: Request, res: Response): Promise<Response> {
@@ -23,7 +24,7 @@ export class GenreController {
         errors: [...Object.values(errorsDTO[0].constraints)]
       }
 
-      return res.status(400).json(responseDTO)
+      return this.badRequest(res, responseDTO)
     }
 
     const newGenre = await this.service.createGenre(createGenreDTO.name)
@@ -35,7 +36,7 @@ export class GenreController {
         success: false
       }
 
-      return res.status(400).json(responseDTO)
+      return this.badRequest(res, responseDTO)
     }
 
     responseDTO = {
@@ -44,7 +45,7 @@ export class GenreController {
       errors: []
     }
 
-    return res.status(201).json(responseDTO)
+    return this.created(res, responseDTO)
   }
 
   async getAllGenres (_: Request, res: Response): Promise<Response> {
@@ -62,7 +63,7 @@ export class GenreController {
       errors: []
     }
 
-    return res.status(200).json(responseDTO)
+    return this.ok(res, responseDTO)
   }
 
   async deleteGenre (req: Request, res: Response): Promise<Response> {
@@ -83,12 +84,12 @@ export class GenreController {
         errors: [...Object.values(errors[0].constraints)]
       }
 
-      return res.status(400).json(responseDTO)
+      return this.badRequest(res, responseDTO)
     }
 
     const result = await this.service.deleteGenre(deleteGenreDTO.id)
 
-    if (result) return res.status(204).send()
+    if (result) return this.noContent(res)
 
     responseDTO = {
       data: [],
@@ -96,6 +97,6 @@ export class GenreController {
       errors: ['The genre not exists.']
     }
 
-    return res.status(404).json(responseDTO)
+    return this.notFound(res, responseDTO)
   }
 }
