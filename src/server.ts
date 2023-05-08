@@ -11,6 +11,7 @@ import express, {
 import Swagger from 'swagger-ui-express'
 import genreRouter from './routes/genreRouter'
 import SwaggerDocs from './swagger.json'
+import { internalServerError } from './util/http-helper'
 
 dotenv.config()
 
@@ -24,10 +25,10 @@ app.use('/docs', Swagger.serve, Swagger.setup(SwaggerDocs))
 
 app.use(genreRouter)
 
-app.use((error: Error, req: Request, res: Response, next: NextFunction) => {
+app.use((error: Error, _: Request, res: Response, _2: NextFunction): Response => {
   console.error(error)
 
-  return res.status(500).json({
+  return internalServerError(res, {
     data: [],
     success: false,
     errors: ['Internal server error']
