@@ -1,6 +1,6 @@
 import { type Platform } from '../../model/Platform'
 
 export interface IPlatformRepository {
-  create: (platform: Platform) => Promise<Platform>
-  getByName: (name: string) => Promise<Platform>
+  create: (platform: Platform) => Promise<Platform | null>
+  getByName: (name: string) => Promise<Platform | null>
 }
