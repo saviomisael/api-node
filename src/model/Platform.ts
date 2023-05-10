@@ -1,5 +1,11 @@
-export class Platform {
-  id!: string
+import { BaseModel } from './BaseModel'
 
-  constructor (private readonly name: string) {}
+export class Platform extends BaseModel {
+  constructor (private readonly name: string) {
+    super()
+  }
+
+  getName (): string {
+    return this.name
+  }
 }
