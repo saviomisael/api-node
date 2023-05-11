@@ -3,5 +3,8 @@ export const apiRoutes = {
     create: '/api/v1/genres',
     getAll: '/api/v1/genres',
     deleteById: '/api/v1/genres/:id'
+  },
+  platforms: {
+    create: '/api/v1/platforms'
   }
 }

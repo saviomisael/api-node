@@ -10,6 +10,7 @@ import express, {
 } from 'express'
 import Swagger from 'swagger-ui-express'
 import genreRouter from './routes/genreRouter'
+import platformRouter from './routes/platformRouter'
 import SwaggerDocs from './swagger.json'
 import { internalServerError } from './util/http-helper'
 
@@ -24,6 +25,7 @@ app.use(cors())
 app.use('/docs', Swagger.serve, Swagger.setup(SwaggerDocs))
 
 app.use(genreRouter)
+app.use(platformRouter)
 
 app.use((error: Error, _: Request, res: Response, _2: NextFunction): Response => {
   console.error(error)
