@@ -33,4 +33,5 @@ volumes:
   data: {}
 
 networks:
-  backend: {}
+  backend:
+    name: api_node_network
