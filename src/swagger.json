@@ -8,13 +8,16 @@
   },
   "servers": [
     {
-      "url": "http:localhost:3333/api/v1",
+      "url": "http://localhost:3333",
       "description": "Games API"
     }
   ],
   "paths": {
     "/api/v1/genres": {
       "post": {
+        "tags": [
+          "genres"
+        ],
         "summary": "Returns the genre created.",
         "description": "Create an genre.",
         "requestBody": {
@@ -47,13 +50,14 @@
               }
             }
           }
-        },
-        "tags": [
-          "genres"
-        ]
+        }
       },
       "get": {
+        "tags": [
+          "genres"
+        ],
         "summary": "Returns all genres.",
+        "description": "Get all genres.",
         "responses": {
           "200": {
             "description": "Returns all genres.",
@@ -68,10 +72,22 @@
         }
       }
     },
-    "/api/v1/genres/:id": {
+    "/api/v1/genres/{id}": {
       "delete": {
+        "tags": [
+          "genres"
+        ],
         "summary": "Deletes a genre by id.",
         "description": "Delete a genre.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Genre id to delete.",
+            "type": "string"
+          }
+        ],
         "responses": {
           "400": {
             "description": "Id must have 36 characters.",
@@ -96,10 +112,7 @@
           "204": {
             "description": "No content response."
           }
-        },
-        "tags": [
-          "genres"
-        ]
+        }
       }
     }
   },
