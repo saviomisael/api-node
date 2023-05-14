@@ -17,11 +17,19 @@ describe('POST /api/v1/platforms', () => {
     await clearData()
   })
 
-  it('should return bad request when platform name have less then 3 characters.', async () => {
-    const response = await chai.request(app).post(apiRoutes.platforms.create).send({ name: 'ab' })
+  it(
+    'should return bad request when platform name have less then 3 characters.',
+    async () => {
+      const response = await chai
+        .request(app)
+        .post(apiRoutes.platforms.create)
+        .send({ name: 'ab' })
 
-    chai.expect(response).to.have.status(400)
-    chai.expect(response.body.errors).to.have.length(1)
-    chai.expect(response.body.errors[0]).to.be.equal('The platform name must have at least 3 characters.')
-  })
+      chai.expect(response).to.have.status(400)
+      chai.expect(response.body.errors).to.have.length(1)
+      chai.expect(response.body.errors[0]).to
+        .be
+        .equal('The platform name must have at least 3 characters.')
+    }
+  )
 })

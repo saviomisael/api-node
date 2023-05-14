@@ -6,6 +6,7 @@ const router = Router()
 
 const controller = new PlatformController()
 
-router.post(apiRoutes.platforms.create, controller.createPlatform.bind(controller))
+router
+  .post(apiRoutes.platforms.create, controller.createPlatform.bind(controller))
 
 export default router

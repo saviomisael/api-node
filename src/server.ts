@@ -27,15 +27,20 @@ app.use('/docs', Swagger.serve, Swagger.setup(SwaggerDocs))
 app.use(genreRouter)
 app.use(platformRouter)
 
-app.use((error: Error, _: Request, res: Response, _2: NextFunction): Response => {
-  console.error(error)
+app.use(
+  (error: Error,
+    _: Request,
+    res: Response,
+    _2: NextFunction): Response => {
+    console.error(error)
 
-  return internalServerError(res, {
-    data: [],
-    success: false,
-    errors: ['Internal server error']
-  })
-})
+    return internalServerError(res, {
+      data: [],
+      success: false,
+      errors: ['Internal server error']
+    })
+  }
+)
 
 app.listen('3333', () => {
   console.log('App running on http://localhost:3333')

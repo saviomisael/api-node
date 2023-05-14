@@ -1,5 +1,11 @@
 import { type Response } from 'express'
-import { badRequest, created, noContent, notFound, ok } from '../util/http-helper'
+import {
+  badRequest,
+  created,
+  noContent,
+  notFound,
+  ok
+} from '../util/http-helper'
 
 export abstract class BaseController {
   protected badRequest<T>(res: Response, body: T): Response {

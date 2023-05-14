@@ -9,7 +9,10 @@ export class PlatformRepository implements IPlatformRepository {
   async create (platform: Platform): Promise<Platform | null> {
     this.connection = await DBConnection.getConnection()
 
-    await this.connection.execute('INSERT INTO platforms (id, name) VALUES (?, ?)', [platform.getId(), platform.getName()])
+    await this.connection.execute(
+      'INSERT INTO platforms (id, name) VALUES (?, ?)',
+      [platform.getId(), platform.getName()]
+    )
 
     const newPlatform = await this.getByName(platform.getName())
 
@@ -19,7 +22,10 @@ export class PlatformRepository implements IPlatformRepository {
   async getByName (name: string): Promise<Platform | null> {
     this.connection = await DBConnection.getConnection()
 
-    const result = await this.connection.execute('SELECT * FROM platforms WHERE id = ?', [name])
+    const result = await this.connection.execute(
+      'SELECT * FROM platforms WHERE id = ?',
+      [name]
+    )
 
     const [row] = result as any[]
 
