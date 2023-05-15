@@ -1,15 +1,16 @@
 import { PlatformRepository } from '../data/repository/PlatformRepository'
-import { type Platform } from '../model/Platform'
+import { Platform } from '../model/Platform'
 
 export class PlatformService {
   private readonly repository = new PlatformRepository()
 
   async createPlatform (platformName: string): Promise<Platform | null> {
-    const alreadyExists = await this.repository.getByName(platformName)
+    const isAlreadyCreated = (await this.repository.getByName(platformName)) !=
+    null
 
-    if (alreadyExists != null) return null
+    if (isAlreadyCreated) return null
 
-    const newPlatform = await this.createPlatform(platformName)
+    const newPlatform = await this.repository.create(new Platform(platformName))
 
     return newPlatform
   }

@@ -32,4 +32,16 @@ describe('POST /api/v1/platforms', () => {
         .equal('The platform name must have at least 3 characters.')
     }
   )
+
+  it('should create a platform', async () => {
+    const response = await chai
+      .request(app)
+      .post(apiRoutes.platforms.create)
+      .send({ name: 'Xbox Series S' })
+
+    chai.expect(response).to.have.status(201)
+    chai.expect(response.body.errors).to.have.length(0)
+    chai.expect(response.body.success).to.be.true
+    chai.expect(response.body.data[0]).to.be.not.null
+  })
 })

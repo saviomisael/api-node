@@ -2,9 +2,9 @@ FROM node:18
 
 WORKDIR /api
 
-COPY package.json .
+COPY package*.json .
 
-RUN npm i
+RUN npm ci
 
 COPY . .
 

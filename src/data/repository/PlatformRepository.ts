@@ -23,15 +23,15 @@ export class PlatformRepository implements IPlatformRepository {
     this.connection = await DBConnection.getConnection()
 
     const result = await this.connection.execute(
-      'SELECT * FROM platforms WHERE id = ?',
+      'SELECT * FROM platforms WHERE name = ?',
       [name]
     )
 
-    const [row] = result as any[]
+    const row = result[0] as Platform[]
 
     if (row.length === 0) return null
 
-    const [data] = row[0] as Platform[]
+    const [data] = row
 
     return data
   }
