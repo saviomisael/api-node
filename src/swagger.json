@@ -114,10 +114,93 @@
           }
         }
       }
+    },
+    "/api/v1/platforms": {
+      "post": {
+        "tags": [
+          "platforms"
+        ],
+        "summary": "Returns the platform created.",
+        "description": "Create a platform.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PlatformPostRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful operation.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlatformCreateResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Empty name/genre already exists.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlatformCreateResponse"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
     "schemas": {
+      "Platform": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Xbox Series S"
+          },
+          "id": {
+            "type": "string",
+            "example": "131db526-4599-4485-803d-cca8573693d5"
+          }
+        }
+      },
+      "PlatformPostRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Xbox Series S"
+          }
+        }
+      },
+      "PlatformCreateResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "example": "This platform already exists./Platform name must have at least 3 characters."
+            }
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Platform"
+            }
+          }
+        }
+      },
       "Genre": {
         "type": "object",
         "properties": {
