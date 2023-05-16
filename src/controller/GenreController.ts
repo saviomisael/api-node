@@ -1,7 +1,9 @@
 import { validate } from 'class-validator'
 import { type Request, type Response } from 'express'
+import hal from 'hal'
 import { CreateGenreDTO, DeleteGenreDTO, type ResponseDTO } from '../dto'
 import { type Genre } from '../model/Genre'
+import { apiRoutes } from '../routes/apiRoutes'
 import { GenreService } from '../service/GenreService'
 import { BaseController } from './BaseController'
 
@@ -37,8 +39,11 @@ export class GenreController extends BaseController {
       return this.badRequest(res, responseDTO)
     }
 
+    const resource = hal.Resource(newGenre, apiRoutes.genres.create)
+    resource.link(new hal.Link('GET list', apiRoutes.genres.getAll))
+
     responseDTO = {
-      data: [newGenre],
+      data: [resource.toJSON()],
       success: true,
       errors: []
     }
