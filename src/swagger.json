@@ -214,6 +214,42 @@
           }
         }
       },
+      "GenreResource": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "action"
+          },
+          "id": {
+            "type": "string",
+            "example": "131db526-4599-4485-803d-cca8573693d5"
+          },
+          "_links": {
+            "type": "object",
+            "properties": {
+              "self": {
+                "type": "object",
+                "properties": {
+                  "href": {
+                    "type": "string",
+                    "example": "/api/v1/genres"
+                  }
+                }
+              },
+              "GET list": {
+                "type": "object",
+                "properties": {
+                  "href": {
+                    "type": "string",
+                    "example": "/api/v1/genres"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
       "GenreRequest": {
         "type": "object",
         "properties": {
@@ -239,7 +275,7 @@
           "data": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/Genre"
+              "$ref": "#/components/schemas/GenreResource"
             }
           }
         }
