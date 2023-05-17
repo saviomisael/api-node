@@ -16,9 +16,9 @@ export class PlatformService {
   }
 
   async deletePlatformById (platformId: string): Promise<boolean> {
-    const genreToDelete = await this.repository.getById(platformId)
+    const platformAlreadyExists = await this.repository.getById(platformId)
 
-    if (genreToDelete == null) return false
+    if (platformAlreadyExists == null) return false
 
     await this.repository.deletePlatform(platformId)
 
