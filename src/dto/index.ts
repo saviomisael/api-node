@@ -1,4 +1,5 @@
 export { CreateGenreDTO } from './CreateGenreDTO'
 export { CreatePlatformDTO } from './CreatePlatformDTO'
 export { DeleteGenreDTO } from './DeleteGenreDTO'
+export { DeletePlatformDTO } from './DeletePlatformDTO'
 export type { ResponseDTO } from './ResponseDTO'
