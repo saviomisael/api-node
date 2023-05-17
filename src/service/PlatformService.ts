@@ -14,4 +14,14 @@ export class PlatformService {
 
     return newPlatform
   }
+
+  async deletePlatformById (platformId: string): Promise<boolean> {
+    const genreToDelete = await this.repository.getById(platformId)
+
+    if (genreToDelete == null) return false
+
+    await this.repository.deletePlatform(platformId)
+
+    return true
+  }
 }
