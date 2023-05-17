@@ -35,4 +35,17 @@ export class PlatformRepository implements IPlatformRepository {
 
     return data
   }
+
+  async deletePlatform (platformId: string): Promise<boolean> {
+    this.connection = await DBConnection.getConnection()
+
+    const result = await this.connection.execute(
+      'DELETE FROM platforms WHERE id = ?',
+      [platformId]
+    )
+
+    const data = result[0] as Platform[]
+
+    return data.length > 0
+  }
 }
