@@ -48,4 +48,21 @@ export class PlatformRepository implements IPlatformRepository {
 
     return data.length > 0
   }
+
+  async getById (id: string): Promise<Platform | null> {
+    this.connection = await DBConnection.getConnection()
+
+    const result = await this.connection.execute(
+      'SELECT * FROM genres WHERE id = ?',
+      [id]
+    )
+
+    const [row] = result as any[]
+
+    if (row.length === 0) return null
+
+    const [data] = row as Platform[]
+
+    return data
+  }
 }
