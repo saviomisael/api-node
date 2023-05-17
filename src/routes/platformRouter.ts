@@ -8,5 +8,8 @@ const controller = new PlatformController()
 
 router
   .post(apiRoutes.platforms.create, controller.createPlatform.bind(controller))
+router
+  .delete(apiRoutes.platforms.delete,
+    controller.deletePlatform.bind(controller))
 
 export default router
