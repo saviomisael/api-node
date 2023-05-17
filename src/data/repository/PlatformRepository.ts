@@ -59,7 +59,9 @@ export class PlatformRepository implements IPlatformRepository {
 
     const [row] = result as any[]
 
-    if (row.length === 0) return null
+    const exists = row.length > 0
+
+    if (!exists) return null
 
     const [data] = row as Platform[]
 
