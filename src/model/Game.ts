@@ -1,9 +1,8 @@
+import { BaseModel } from './BaseModel'
 import { type Genre } from './Genre'
 import { type Platform } from './Platform'
 
-export class Game {
-  private readonly id!: string
-
+export class Game extends BaseModel {
   constructor (
     private readonly name: string,
     private readonly price: number,
@@ -11,5 +10,7 @@ export class Game {
     private readonly platforms: Platform[],
     private readonly releaseDate: Date,
     private readonly genres: Genre[]
-  ) {}
+  ) {
+    super()
+  }
 }
