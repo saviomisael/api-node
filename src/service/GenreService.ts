@@ -5,23 +5,18 @@ export class GenreService {
   private readonly repository: GenreRepository = new GenreRepository()
 
   async createGenre (genreName: string): Promise<Genre | null> {
-    try {
-      const isAlreadyCreated =
+    const isAlreadyCreated =
         (await this.repository.getGenreByName(genreName)) != null
 
-      if (isAlreadyCreated) {
-        return null
-      }
-
-      const genre = new Genre(genreName)
-
-      const genreRecorded = await this.repository.createGenre(genre)
-
-      return genreRecorded
-    } catch (error) {
-      console.log(error)
-      throw error
+    if (isAlreadyCreated) {
+      return null
     }
+
+    const genre = new Genre(genreName)
+
+    const genreRecorded = await this.repository.createGenre(genre)
+
+    return genreRecorded
   }
 
   async getAllGenres (): Promise<Genre[]> {
