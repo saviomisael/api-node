@@ -80,4 +80,35 @@ describe('DELETE /api/v1/platforms/:id', () => {
       chai.expect(response.body.data).to.have.length(0)
       chai.expect(response.body.success).to.be.false
     })
+
+  it('should return a bad request when platform not exists', async () => {
+    const response = await chai
+      .request(app)
+      .delete(apiRoutes.platforms.delete.replace(':id',
+        '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d'))
+
+    chai.expect(response).to.have.status(404)
+    chai.expect(response.body.errors).to.have.length(1)
+    chai.expect(response.body.data).to.have.length(0)
+    chai.expect(response.body.success).to.be.false
+  })
+
+  it('should delete a platform', () => {
+    chai
+      .request(app)
+      .post(apiRoutes.platforms.create)
+      .send({ name: 'Xbox Series S' })
+      .then(async response => {
+        const deleteRoute = apiRoutes.platforms.delete
+          .replace(':id', response.body.data[0].id)
+
+        return await chai
+          .request(app)
+          .delete(deleteRoute)
+      })
+      .then(deleteResponse => {
+        chai.expect(deleteResponse).to.have.status(204)
+      })
+      .catch(error => { throw error })
+  })
 })
