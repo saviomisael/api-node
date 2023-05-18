@@ -1,7 +1,7 @@
 import { v4 } from 'uuid'
 
 export abstract class BaseModel {
-  private readonly id: string
+  private id: string
 
   constructor () {
     this.id = v4()
@@ -9,5 +9,9 @@ export abstract class BaseModel {
 
   public getId (): string {
     return this.id
+  }
+
+  public setId (id: string): void {
+    this.id = id
   }
 }
