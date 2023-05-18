@@ -24,4 +24,10 @@ export class PlatformService {
 
     return true
   }
+
+  async getAllPlatforms (): Promise<Platform[]> {
+    const platforms = await this.repository.getAll()
+
+    return platforms
+  }
 }
