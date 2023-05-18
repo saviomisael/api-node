@@ -63,3 +63,21 @@ describe('POST /api/v1/platforms', () => {
       chai.expect(response.body.errors).to.have.length(1)
     })
 })
+
+describe('DELETE /api/v1/platforms/:id', () => {
+  afterEach(async () => {
+    await clearData()
+  })
+
+  it('should not delete platform when id is less then 36 characters',
+    async () => {
+      const response = await chai
+        .request(app)
+        .delete(apiRoutes.platforms.delete.replace(':id', 'abc'))
+
+      chai.expect(response).to.have.status(400)
+      chai.expect(response.body.errors).to.have.length(1)
+      chai.expect(response.body.data).to.have.length(0)
+      chai.expect(response.body.success).to.be.false
+    })
+})
