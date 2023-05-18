@@ -6,6 +6,7 @@ export const apiRoutes = {
   },
   platforms: {
     create: '/api/v1/platforms',
-    delete: '/api/v1/platforms/:id'
+    delete: '/api/v1/platforms/:id',
+    getAll: '/api/v1/platforms'
   }
 }

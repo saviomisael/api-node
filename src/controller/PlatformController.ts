@@ -81,4 +81,16 @@ export class PlatformController extends BaseController {
 
     return this.noContent(res)
   }
+
+  async getAllPlatforms (_: Request, res: Response): Promise<Response> {
+    const platforms = await this.service.getAllPlatforms()
+
+    const response: ResponseDTO<Platform> = {
+      data: [...platforms],
+      success: true,
+      errors: []
+    }
+
+    return this.ok(res, response)
+  }
 }

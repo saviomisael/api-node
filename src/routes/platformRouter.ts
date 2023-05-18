@@ -11,5 +11,7 @@ router
 router
   .delete(apiRoutes.platforms.delete,
     controller.deletePlatform.bind(controller))
+router.get(apiRoutes.platforms.getAll, controller
+  .getAllPlatforms.bind(controller))
 
 export default router
