@@ -93,7 +93,7 @@ describe('DELETE /api/v1/platforms/:id', () => {
     chai.expect(response.body.success).to.be.false
   })
 
-  it('should delete a platform', () => {
+  it('should delete a platform', (done) => {
     chai
       .request(app)
       .post(apiRoutes.platforms.create)
@@ -108,6 +108,7 @@ describe('DELETE /api/v1/platforms/:id', () => {
       })
       .then(deleteResponse => {
         chai.expect(deleteResponse).to.have.status(204)
+        done()
       })
       .catch(error => { throw error })
   })
