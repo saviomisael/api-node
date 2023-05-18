@@ -113,3 +113,27 @@ describe('DELETE /api/v1/platforms/:id', () => {
       .catch(error => { throw error })
   })
 })
+
+describe('GET /api/v1/platforms/', () => {
+  afterEach(async () => {
+    await clearData()
+  })
+
+  it('should return a list of platforms', async () => {
+    for (const platform of ['Xbox', 'PS5', 'Switch']) {
+      await chai
+        .request(app)
+        .post(apiRoutes.platforms.create)
+        .send({ name: platform })
+    }
+
+    const response = await chai
+      .request(app)
+      .get(apiRoutes.platforms.getAll)
+
+    chai.expect(response).to.have.status(200)
+    chai.expect(response.body.errors).to.have.length(0)
+    chai.expect(response.body.data).to.have.length(3)
+    chai.expect(response.body.success).to.be.true
+  })
+})

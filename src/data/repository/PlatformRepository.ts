@@ -73,9 +73,7 @@ export class PlatformRepository implements IPlatformRepository {
 
     const result = await this.connection.execute('SELECT * FROM platforms')
 
-    const [rows] = result as any[]
-
-    const [platforms] = rows
+    const platforms = result[0] as Platform[]
 
     return platforms
   }
