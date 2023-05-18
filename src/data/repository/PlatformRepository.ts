@@ -53,7 +53,7 @@ export class PlatformRepository implements IPlatformRepository {
     this.connection = await DBConnection.getConnection()
 
     const result = await this.connection.execute(
-      'SELECT * FROM genres WHERE id = ?',
+      'SELECT * FROM platforms WHERE id = ?',
       [id]
     )
 
@@ -66,5 +66,17 @@ export class PlatformRepository implements IPlatformRepository {
     const [data] = row as Platform[]
 
     return data
+  }
+
+  async getAll (): Promise<Platform[]> {
+    this.connection = await DBConnection.getConnection()
+
+    const result = await this.connection.execute('SELECT * FROM platforms')
+
+    const [rows] = result as any[]
+
+    const [platforms] = rows
+
+    return platforms
   }
 }

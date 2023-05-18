@@ -5,4 +5,5 @@ export interface IPlatformRepository {
   getByName: (name: string) => Promise<Platform | null>
   deletePlatform: (platformId: string) => Promise<boolean>
   getById: (platformId: string) => Promise<Platform | null>
+  getAll: () => Promise<Platform[]>
 }
