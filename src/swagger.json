@@ -319,7 +319,7 @@
                   }
                 }
               },
-              "GET list": {
+              "GET_list": {
                 "type": "object",
                 "properties": {
                   "href": {

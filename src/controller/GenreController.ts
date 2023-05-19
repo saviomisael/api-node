@@ -40,7 +40,7 @@ export class GenreController extends BaseController {
     }
 
     const resource = new HalWrapper(newGenre, apiRoutes.genres.create)
-      .addLink('GET list', apiRoutes.genres.getAll)
+      .addLink('GET_list', apiRoutes.genres.getAll)
       .getResource()
 
     responseDTO = {
