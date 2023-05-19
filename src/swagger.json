@@ -233,6 +233,42 @@
           }
         }
       },
+      "PlatformResource": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Xbox Series S"
+          },
+          "id": {
+            "type": "string",
+            "example": "131db526-4599-4485-803d-cca8573693d5"
+          },
+          "_links": {
+            "type": "object",
+            "properties": {
+              "self": {
+                "type": "object",
+                "properties": {
+                  "href": {
+                    "type": "string",
+                    "example": "/api/v1/platforms"
+                  }
+                }
+              },
+              "GET_list": {
+                "type": "object",
+                "properties": {
+                  "href": {
+                    "type": "string",
+                    "example": "/api/v1/platforms"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
       "PlatformPostRequest": {
         "type": "object",
         "properties": {
@@ -258,7 +294,7 @@
           "data": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/Platform"
+              "$ref": "#/components/schemas/PlatformResource"
             }
           }
         }

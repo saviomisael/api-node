@@ -2,7 +2,9 @@ import { validate } from 'class-validator'
 import { type Request, type Response } from 'express'
 import { CreatePlatformDTO, DeletePlatformDTO, type ResponseDTO } from '../dto'
 import { type Platform } from '../model/Platform'
+import { apiRoutes } from '../routes/apiRoutes'
 import { PlatformService } from '../service/PlatformService'
+import { HalWrapper } from '../util/HalWrapper'
 import { BaseController } from './BaseController'
 
 export class PlatformController extends BaseController {
@@ -37,8 +39,12 @@ export class PlatformController extends BaseController {
       return this.badRequest(res, response)
     }
 
+    const resource = new HalWrapper(newPlatform, apiRoutes.platforms.create)
+      .addLink('GET_list', apiRoutes.platforms.getAll)
+      .getResource()
+
     response = {
-      data: [newPlatform],
+      data: [resource],
       errors: [],
       success: true
     }
