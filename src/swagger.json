@@ -166,10 +166,53 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PlatformGetResponse"
+                  "$ref": "#/components/schemas/PlatformResponse"
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "/api/v1/platforms/{id}": {
+      "delete": {
+        "tags": [
+          "platforms"
+        ],
+        "summary": "Deletes a platform.",
+        "description": "Delete a platform.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "platform id.",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Id must have 36 characters.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlatformResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Platform not exists.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlatformResponse"
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "Successful operation."
           }
         }
       }
@@ -220,7 +263,7 @@
           }
         }
       },
-      "PlatformGetResponse": {
+      "PlatformResponse": {
         "type": "object",
         "properties": {
           "success": {
