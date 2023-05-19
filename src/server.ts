@@ -1,4 +1,5 @@
 import 'express-async-errors'
+import 'reflect-metadata'
 
 import bodyParser from 'body-parser'
 import cors from 'cors'
