@@ -153,6 +153,25 @@
             }
           }
         }
+      },
+      "get": {
+        "tags": [
+          "platforms"
+        ],
+        "summary": "Returns all platforms.",
+        "description": "Returns all platforms.",
+        "responses": {
+          "200": {
+            "description": "Returns all platforms.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlatformGetResponse"
+                }
+              }
+            }
+          }
+        }
       }
     }
   },
@@ -191,6 +210,26 @@
             "items": {
               "type": "string",
               "example": "This platform already exists./Platform name must have at least 3 characters."
+            }
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Platform"
+            }
+          }
+        }
+      },
+      "PlatformGetResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "type": "string"
             }
           },
           "data": {
