@@ -6,17 +6,13 @@ import { type IGenreRepository } from './IGenreRepository'
 export class GenreRepository implements IGenreRepository {
   private connection!: Connection
 
-  async createGenre (genre: Genre): Promise<Genre | null> {
+  async createGenre (genre: Genre): Promise<void> {
     this.connection = await DBConnection.getConnection()
 
     await this.connection.execute(
       'INSERT INTO genres (id, name) VALUES (?, ?)',
       [genre.getId(), genre.getName()]
     )
-
-    const newGenre = await this.getGenreById(genre.getId())
-
-    return newGenre
   }
 
   async getGenreById (id: string): Promise<Genre | null> {
@@ -27,11 +23,11 @@ export class GenreRepository implements IGenreRepository {
       [id]
     )
 
-    const [row] = result as any[]
+    const rows = result[0] as Genre[]
 
-    if (row.length === 0) return null
+    if (rows.length === 0) return null
 
-    const [data] = row as Genre[]
+    const [data] = rows
 
     return data
   }
@@ -44,13 +40,13 @@ export class GenreRepository implements IGenreRepository {
       [name]
     )
 
-    const row = result[0] as Genre[]
+    const rows = result[0] as Genre[]
 
-    if (row.length === 0) {
+    if (rows.length === 0) {
       return null
     }
 
-    const [genre] = row
+    const [genre] = rows
 
     return genre
   }
@@ -65,16 +61,12 @@ export class GenreRepository implements IGenreRepository {
     return data
   }
 
-  async deleteGenreById (id: string): Promise<boolean> {
+  async deleteGenreById (id: string): Promise<void> {
     this.connection = await DBConnection.getConnection()
 
-    const result = await this.connection.execute(
+    await this.connection.execute(
       'DELETE FROM genres WHERE id = ?',
       [id]
     )
-
-    const data = result[0] as any[]
-
-    return data.length > 0
   }
 }
