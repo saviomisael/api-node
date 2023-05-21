@@ -19,6 +19,10 @@
       {
         "code": 80
       }
-    ]
+    ],
+    "no-unused-vars": ["error", {
+      "args": "all",
+      "argsIgnorePattern": "^_"
+    }]
   }
 }
