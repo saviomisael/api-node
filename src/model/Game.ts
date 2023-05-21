@@ -7,9 +7,9 @@ export class Game extends BaseModel {
     private readonly name: string,
     private readonly price: number,
     private readonly description: string,
-    private readonly platforms: Platform[],
+    private readonly platforms: Set<Platform>,
     private readonly releaseDate: Date,
-    private readonly genres: Genre[]
+    private readonly genres: Set<Genre>
   ) {
     super()
   }
