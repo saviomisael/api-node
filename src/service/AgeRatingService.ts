@@ -13,4 +13,10 @@ export class AgeRatingService {
 
     if (!alreadyExists) await this.repository.create(ageRating)
   }
+
+  async getAllAgeRatings (): Promise<AgeRating[]> {
+    const ageRatings = await this.repository.getAll()
+
+    return ageRatings
+  }
 }
