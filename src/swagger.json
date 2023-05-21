@@ -216,10 +216,68 @@
           }
         }
       }
+    },
+    "/api/v1/age-ratings": {
+      "get": {
+        "tags": [
+          "age ratings"
+        ],
+        "summary": "Returns a list of age ratings.",
+        "description": "Returns a list of age ratings",
+        "responses": {
+          "200": {
+            "description": "Return a list of age ratings.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AgeRatingResponse"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
     "schemas": {
+      "AgeRating": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "131db526-4599-4485-803d-cca8573693d5"
+          },
+          "age": {
+            "type": "string",
+            "example": "L"
+          },
+          "description": {
+            "type": "string",
+            "example": "Livre para todos os públicos."
+          }
+        }
+      },
+      "AgeRatingResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AgeRating"
+            }
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "success": {
+            "type": "boolean"
+          }
+        }
+      },
       "Platform": {
         "type": "object",
         "properties": {
