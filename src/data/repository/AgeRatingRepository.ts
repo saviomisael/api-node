@@ -13,4 +13,16 @@ export class AgeRatingRepository implements IAgeRatingRepository {
       .execute('INSERT INTO ageRatings (id, age, description) VALUE (?, ?, ?)',
         [ageRating.getId(), ageRating.getAge(), ageRating.getDescription()])
   }
+
+  async ageAlreadyExists (age: string): Promise<boolean> {
+    this.connection = await DBConnection.getConnection()
+
+    const result = await this.connection
+      .execute('SELECT age FROM ageRatings WHERE age = ?',
+        [age])
+
+    const rows = result[0] as any[]
+
+    return rows.length > 0
+  }
 }
