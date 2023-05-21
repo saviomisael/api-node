@@ -1,8 +1,8 @@
-import { GenreRepository } from '../data/repository/GenreRepository'
+import { GenreRepository, type IGenreRepository } from '../data/repository'
 import { Genre } from '../model/Genre'
 
 export class GenreService {
-  private readonly repository: GenreRepository = new GenreRepository()
+  private readonly repository: IGenreRepository = new GenreRepository()
 
   async createGenre (genreName: string): Promise<Genre | null> {
     const isAlreadyCreated =
