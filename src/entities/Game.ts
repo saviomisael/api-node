@@ -1,9 +1,9 @@
 import { type AgeRating } from './AgeRating'
-import { BaseModel } from './BaseModel'
+import { BaseEntity } from './BaseEntity'
 import { type Genre } from './Genre'
 import { type Platform } from './Platform'
 
-export class Game extends BaseModel {
+export class Game extends BaseEntity {
   constructor (
     private readonly name: string,
     private readonly price: number,

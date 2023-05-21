@@ -1,6 +1,6 @@
-import { BaseModel } from './BaseModel'
+import { BaseEntity } from './BaseEntity'
 
-export class Genre extends BaseModel {
+export class Genre extends BaseEntity {
   constructor (private readonly name: string) {
     super()
   }

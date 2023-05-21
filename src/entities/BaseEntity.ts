@@ -1,6 +1,6 @@
 import { v4 } from 'uuid'
 
-export abstract class BaseModel {
+export abstract class BaseEntity {
   private id: string
 
   constructor () {
