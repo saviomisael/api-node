@@ -8,5 +8,8 @@ export const apiRoutes = {
     create: '/api/v1/platforms',
     delete: '/api/v1/platforms/:id',
     getAll: '/api/v1/platforms'
+  },
+  ageRatings: {
+    getAll: '/api/v1/age-ratings'
   }
 }
