@@ -9,6 +9,7 @@ import express, {
   type Response
 } from 'express'
 import Swagger from 'swagger-ui-express'
+import { seedDB } from './data/seedDB'
 import genreRouter from './routes/genreRouter'
 import platformRouter from './routes/platformRouter'
 import SwaggerDocs from './swagger.json'
@@ -42,8 +43,9 @@ app.use(
   }
 )
 
-app.listen('3333', () => {
+app.listen('3333', async () => {
   console.log('App running on http://localhost:3333')
+  await seedDB()
 })
 
 export default app
