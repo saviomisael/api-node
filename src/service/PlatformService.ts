@@ -1,8 +1,11 @@
-import { PlatformRepository } from '../data/repository/PlatformRepository'
+import {
+  PlatformRepository,
+  type IPlatformRepository
+} from '../data/repository'
 import { Platform } from '../model/Platform'
 
 export class PlatformService {
-  private readonly repository = new PlatformRepository()
+  private readonly repository: IPlatformRepository = new PlatformRepository()
 
   async createPlatform (platformName: string): Promise<Platform | null> {
     const isAlreadyCreated = (await this.repository.getByName(platformName)) !=
