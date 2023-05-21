@@ -14,7 +14,9 @@ export class GenreService {
 
     const genre = new Genre(genreName)
 
-    const genreRecorded = await this.repository.createGenre(genre)
+    await this.repository.createGenre(genre)
+
+    const genreRecorded = await this.repository.getGenreById(genre.getId())
 
     return genreRecorded
   }
