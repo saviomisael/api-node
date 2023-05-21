@@ -11,6 +11,6 @@ export class AgeRatingService {
     const alreadyExists = await this.repository
       .ageAlreadyExists(ageRating.getAge())
 
-    if (!alreadyExists) await this.createAgeRating(ageRating)
+    if (!alreadyExists) await this.repository.create(ageRating)
   }
 }
