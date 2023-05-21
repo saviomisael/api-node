@@ -6,17 +6,13 @@ import { type IPlatformRepository } from './IPlatformRepository'
 export class PlatformRepository implements IPlatformRepository {
   private connection!: Connection
 
-  async create (platform: Platform): Promise<Platform | null> {
+  async create (platform: Platform): Promise<void> {
     this.connection = await DBConnection.getConnection()
 
     await this.connection.execute(
       'INSERT INTO platforms (id, name) VALUES (?, ?)',
       [platform.getId(), platform.getName()]
     )
-
-    const newPlatform = await this.getByName(platform.getName())
-
-    return newPlatform
   }
 
   async getByName (name: string): Promise<Platform | null> {
@@ -27,26 +23,22 @@ export class PlatformRepository implements IPlatformRepository {
       [name]
     )
 
-    const row = result[0] as Platform[]
+    const rows = result[0] as Platform[]
 
-    if (row.length === 0) return null
+    if (rows.length === 0) return null
 
-    const [data] = row
+    const [data] = rows
 
     return data
   }
 
-  async deletePlatform (platformId: string): Promise<boolean> {
+  async deletePlatform (platformId: string): Promise<void> {
     this.connection = await DBConnection.getConnection()
 
-    const result = await this.connection.execute(
+    await this.connection.execute(
       'DELETE FROM platforms WHERE id = ?',
       [platformId]
     )
-
-    const data = result[0] as Platform[]
-
-    return data.length > 0
   }
 
   async getById (id: string): Promise<Platform | null> {
@@ -57,13 +49,13 @@ export class PlatformRepository implements IPlatformRepository {
       [id]
     )
 
-    const [row] = result as any[]
+    const rows = result[0] as Platform[]
 
-    const exists = row.length > 0
+    const exists = rows.length > 0
 
     if (!exists) return null
 
-    const [data] = row as Platform[]
+    const [data] = rows
 
     return data
   }
