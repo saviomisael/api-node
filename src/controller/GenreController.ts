@@ -1,9 +1,9 @@
+import { GenreService } from '$/application/services/GenreService'
+import { type Genre } from '$/domain/entities'
+import { apiRoutes } from '$/infrastructure/routes/apiRoutes'
 import { validate } from 'class-validator'
 import { type Request, type Response } from 'express'
 import { CreateGenreDTO, DeleteGenreDTO, type ResponseDTO } from '../dto'
-import { apiRoutes } from '../infrastructure/routes/apiRoutes'
-import { type Genre } from '../model/Genre'
-import { GenreService } from '../service/GenreService'
 import { HalWrapper } from '../util/HalWrapper'
 import { BaseController } from './BaseController'
 

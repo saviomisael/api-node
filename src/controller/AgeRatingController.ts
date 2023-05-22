@@ -1,7 +1,7 @@
+import { AgeRatingService } from '$/application/services/AgeRatingService'
+import { type AgeRating } from '$/domain/entities'
 import { type Request, type Response } from 'express'
 import { type ResponseDTO } from '../dto'
-import { type AgeRating } from '../model/AgeRating'
-import { AgeRatingService } from '../service/AgeRatingService'
 import { BaseController } from './BaseController'
 
 export class AgeRatingController extends BaseController {

@@ -1,9 +1,9 @@
+import { PlatformService } from '$/application/services/PlatformService'
+import { type Platform } from '$/domain/entities'
+import { apiRoutes } from '$/infrastructure/routes/apiRoutes'
 import { validate } from 'class-validator'
 import { type Request, type Response } from 'express'
 import { CreatePlatformDTO, DeletePlatformDTO, type ResponseDTO } from '../dto'
-import { apiRoutes } from '../infrastructure/routes/apiRoutes'
-import { type Platform } from '../model/Platform'
-import { PlatformService } from '../service/PlatformService'
 import { HalWrapper } from '../util/HalWrapper'
 import { BaseController } from './BaseController'
 

@@ -1,5 +1,6 @@
-import { GenreRepository, type IGenreRepository } from '../data/repository'
-import { Genre } from '../model/Genre'
+import { Genre } from '$/domain/entities'
+import { type IGenreRepository } from '$/domain/repositories'
+import { GenreRepository } from '$/infrastructure/repositories'
 
 export class GenreService {
   private readonly repository: IGenreRepository = new GenreRepository()

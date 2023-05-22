@@ -1,5 +1,5 @@
 import { AgeRating } from '$/domain/entities'
-import { AgeRatingService } from '../service/AgeRatingService'
+import { AgeRatingService } from '../application/services/AgeRatingService'
 
 export const seedDB = async (): Promise<void> => {
   const ageRatingService = new AgeRatingService()

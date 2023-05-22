@@ -1,8 +1,6 @@
-import {
-  PlatformRepository,
-  type IPlatformRepository
-} from '../data/repository'
-import { Platform } from '../model/Platform'
+import { Platform } from '$/domain/entities'
+import { type IPlatformRepository } from '$/domain/repositories'
+import { PlatformRepository } from '$/infrastructure/repositories'
 
 export class PlatformService {
   private readonly repository: IPlatformRepository = new PlatformRepository()

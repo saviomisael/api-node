@@ -5,7 +5,7 @@ import {
   noContent,
   notFound,
   ok
-} from '../infrastructure/helpers/http-helper'
+} from '$/infrastructure/helpers/http-helper'
 
 export abstract class BaseController {
   protected badRequest<T>(res: Response, body: T): Response {
