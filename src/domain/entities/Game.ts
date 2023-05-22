@@ -1,8 +1,5 @@
-import { type AgeRating } from './AgeRating'
-import { BaseEntity } from './BaseEntity'
-import { type Genre } from './Genre'
-import { type Platform } from './Platform'
-
+import { type AgeRating, type Genre, type Platform } from '$/domain/entities'
+import { BaseEntity } from '$/domain/entities/BaseEntity'
 export class Game extends BaseEntity {
   constructor (
     private readonly name: string,

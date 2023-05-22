@@ -1,4 +1,4 @@
-import { BaseEntity } from './BaseEntity'
+import { BaseEntity } from '$/domain/entities/BaseEntity'
 
 export class AgeRating extends BaseEntity {
   constructor (

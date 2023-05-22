@@ -1,4 +1,4 @@
-import { type Genre } from '../../model/Genre'
+import { type Genre } from '$/domain/entities'
 
 export interface IGenreRepository {
   createGenre: (genre: Genre) => Promise<void>

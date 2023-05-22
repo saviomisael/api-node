@@ -1,4 +1,4 @@
-import { type AgeRating } from '../../model/AgeRating'
+import { type AgeRating } from '$/domain/entities'
 
 export interface IAgeRatingRepository {
   create: (ageRating: AgeRating) => Promise<void>

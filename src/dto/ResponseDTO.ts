@@ -1,4 +1,4 @@
-import { type BaseEntity } from '../entities/BaseEntity'
+import { type BaseEntity } from '$/domain/entities/BaseEntity'
 
 export interface ResponseDTO<T extends BaseEntity> {
   errors: string[]

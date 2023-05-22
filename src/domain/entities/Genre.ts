@@ -1,4 +1,4 @@
-import { BaseEntity } from './BaseEntity'
+import { BaseEntity } from '$/domain/entities/BaseEntity'
 
 export class Genre extends BaseEntity {
   constructor (private readonly name: string) {

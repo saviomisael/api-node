@@ -1,8 +1,6 @@
-import {
-  AgeRatingRepository,
-  type IAgeRatingRepository
-} from '../data/repository'
-import { type AgeRating } from '../model/AgeRating'
+import { AgeRatingRepository } from '$/data/repository'
+import { type AgeRating } from '$/domain/entities'
+import { type IAgeRatingRepository } from '$/domain/repositories'
 
 export class AgeRatingService {
   private readonly repository: IAgeRatingRepository = new AgeRatingRepository()

@@ -1,4 +1,4 @@
-import { type Platform } from '../../model/Platform'
+import { type Platform } from '$/domain/entities'
 
 export interface IPlatformRepository {
   create: (platform: Platform) => Promise<void>
