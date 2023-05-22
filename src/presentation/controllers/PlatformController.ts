@@ -1,11 +1,11 @@
 import { PlatformService } from '$/application/services/PlatformService'
 import { type Platform } from '$/domain/entities'
 import { apiRoutes } from '$/infrastructure/routes/apiRoutes'
+import { HalWrapper } from '$/presentation/HalWrapper'
+import { BaseController } from '$/presentation/controllers/BaseController'
+import { CreatePlatformDTO, DeletePlatformDTO, type ResponseDTO } from '$/presentation/dto'
 import { validate } from 'class-validator'
 import { type Request, type Response } from 'express'
-import { CreatePlatformDTO, DeletePlatformDTO, type ResponseDTO } from '../dto'
-import { HalWrapper } from '../util/HalWrapper'
-import { BaseController } from './BaseController'
 
 export class PlatformController extends BaseController {
   private readonly service = new PlatformService()

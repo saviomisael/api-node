@@ -1,11 +1,11 @@
 import { GenreService } from '$/application/services/GenreService'
 import { type Genre } from '$/domain/entities'
 import { apiRoutes } from '$/infrastructure/routes/apiRoutes'
+import { HalWrapper } from '$/presentation/HalWrapper'
+import { BaseController } from '$/presentation/controllers/BaseController'
+import { CreateGenreDTO, DeleteGenreDTO, type ResponseDTO } from '$/presentation/dto'
 import { validate } from 'class-validator'
 import { type Request, type Response } from 'express'
-import { CreateGenreDTO, DeleteGenreDTO, type ResponseDTO } from '../dto'
-import { HalWrapper } from '../util/HalWrapper'
-import { BaseController } from './BaseController'
 
 export class GenreController extends BaseController {
   private readonly service: GenreService = new GenreService()

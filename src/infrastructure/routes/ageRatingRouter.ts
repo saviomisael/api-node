@@ -1,4 +1,4 @@
-import { AgeRatingController } from '$/controller/AgeRatingController'
+import { AgeRatingController } from '$/presentation/controllers/AgeRatingController'
 import { Router } from 'express'
 import { apiRoutes } from './apiRoutes'
 
