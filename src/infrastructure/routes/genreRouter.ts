@@ -1,5 +1,5 @@
+import { GenreController } from '$/controller/GenreController'
 import { Router } from 'express'
-import { GenreController } from '../controller/GenreController'
 import { apiRoutes } from './apiRoutes'
 
 const genreRouter = Router()

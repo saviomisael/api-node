@@ -1,7 +1,7 @@
-import { type AgeRating } from '$/domain/entities/AgeRating'
+import { type AgeRating } from '$/domain/entities'
 import { type IAgeRatingRepository } from '$/domain/repositories/IAgeRatingRepository'
+import { DBConnection } from '$/infrastructure/DBConnection'
 import { type Connection } from 'mysql2/promise'
-import { DBConnection } from '../DBConnection'
 
 export class AgeRatingRepository implements IAgeRatingRepository {
   private connection!: Connection

@@ -1,8 +1,8 @@
+import { AgeRating } from '$/domain/entities'
+import { apiRoutes } from '$/infrastructure/routes/apiRoutes'
 import chai from 'chai'
 import chaiHttp from 'chai-http'
-import { AgeRating } from '../../model/AgeRating'
-import { apiRoutes } from '../../routes/apiRoutes'
-import app from '../../server'
+import app from '$/infrastructure/server'
 
 chai.use(chaiHttp)
 

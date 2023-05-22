@@ -1,7 +1,7 @@
+import { type Platform } from '$/domain/entities'
+import { type IPlatformRepository } from '$/domain/repositories'
 import { type Connection } from 'mysql2/promise'
-import { type Platform } from '../../model/Platform'
 import { DBConnection } from '../DBConnection'
-import { type IPlatformRepository } from './IPlatformRepository'
 
 export class PlatformRepository implements IPlatformRepository {
   private connection!: Connection

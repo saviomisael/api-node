@@ -1,5 +1,9 @@
 import 'express-async-errors'
 
+import { internalServerError } from '$/infrastructure/helpers/http-helper'
+import appRouter from '$/infrastructure/routes/appRouter'
+import { seedDB } from '$/infrastructure/seedDB'
+import SwaggerDocs from '$/infrastructure/swagger.json'
 import bodyParser from 'body-parser'
 import cors from 'cors'
 import dotenv from 'dotenv'
@@ -9,10 +13,6 @@ import express, {
   type Response
 } from 'express'
 import Swagger from 'swagger-ui-express'
-import { seedDB } from './data/seedDB'
-import appRouter from './routes/appRouter'
-import SwaggerDocs from './swagger.json'
-import { internalServerError } from './util/http-helper'
 
 dotenv.config()
 

@@ -1,5 +1,5 @@
+import { PlatformController } from '$/controller/PlatformController'
 import { Router } from 'express'
-import { PlatformController } from '../controller/PlatformController'
 import { apiRoutes } from './apiRoutes'
 
 const router = Router()

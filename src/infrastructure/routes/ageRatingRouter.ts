@@ -1,5 +1,5 @@
+import { AgeRatingController } from '$/controller/AgeRatingController'
 import { Router } from 'express'
-import { AgeRatingController } from '../controller/AgeRatingController'
 import { apiRoutes } from './apiRoutes'
 
 const router = Router()

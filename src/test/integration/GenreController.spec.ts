@@ -1,8 +1,8 @@
+import { DBConnection } from '$/infrastructure/DBConnection'
+import { apiRoutes } from '$/infrastructure/routes/apiRoutes'
 import chai from 'chai'
 import chaiHttp from 'chai-http'
-import { DBConnection } from '../../data/DBConnection'
-import { apiRoutes } from '../../routes/apiRoutes'
-import app from '../../server'
+import app from '$/infrastructure/server'
 
 chai.use(chaiHttp)
 

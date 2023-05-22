@@ -1,7 +1,7 @@
+import { type Genre } from '$/domain/entities'
+import { type IGenreRepository } from '$/domain/repositories'
 import { type Connection } from 'mysql2/promise'
-import { type Genre } from '../../model/Genre'
 import { DBConnection } from '../DBConnection'
-import { type IGenreRepository } from './IGenreRepository'
 
 export class GenreRepository implements IGenreRepository {
   private connection!: Connection
