@@ -14,12 +14,6 @@
     "@typescript-eslint/no-misused-promises": "off",
     "@typescript-eslint/no-extraneous-class": "off",
     "@typescript-eslint/no-unused-expressions": "off",
-    "max-len": [
-      "error",
-      {
-        "code": 80
-      }
-    ],
     "no-unused-vars": ["error", {
       "args": "all",
       "argsIgnorePattern": "^_"
