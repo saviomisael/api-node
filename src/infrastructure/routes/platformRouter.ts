@@ -1,4 +1,4 @@
-import { PlatformController } from '$/controller/PlatformController'
+import { PlatformController } from '$/presentation/controllers/PlatformController'
 import { Router } from 'express'
 import { apiRoutes } from './apiRoutes'
 

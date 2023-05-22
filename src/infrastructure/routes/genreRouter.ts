@@ -1,4 +1,4 @@
-import { GenreController } from '$/controller/GenreController'
+import { GenreController } from '$/presentation/controllers/GenreController'
 import { Router } from 'express'
 import { apiRoutes } from './apiRoutes'
 
