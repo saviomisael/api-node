@@ -1,6 +1,6 @@
 import { v4 } from 'uuid'
 
-export abstract class BaseEntity {
+export abstract class AggregateRoot {
   private id: string
 
   constructor () {

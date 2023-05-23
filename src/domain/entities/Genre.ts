@@ -1,6 +1,6 @@
-import { BaseEntity } from '$/domain/entities/BaseEntity'
+import { AggregateRoot } from '$/domain/entities/AggregateRoot'
 
-export class Genre extends BaseEntity {
+export class Genre extends AggregateRoot {
   constructor (private readonly name: string) {
     super()
   }

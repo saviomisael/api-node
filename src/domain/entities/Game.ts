@@ -1,6 +1,6 @@
 import { type AgeRating, type Genre, type Platform } from '$/domain/entities'
-import { BaseEntity } from '$/domain/entities/BaseEntity'
-export class Game extends BaseEntity {
+import { AggregateRoot } from '$/domain/entities/AggregateRoot'
+export class Game extends AggregateRoot {
   constructor (
     private readonly name: string,
     private readonly price: number,

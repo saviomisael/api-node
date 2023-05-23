@@ -1,6 +1,6 @@
-import { BaseEntity } from '$/domain/entities/BaseEntity'
+import { AggregateRoot } from '$/domain/entities/AggregateRoot'
 
-export class AgeRating extends BaseEntity {
+export class AgeRating extends AggregateRoot {
   constructor (
     private readonly age: string,
     private readonly description: string

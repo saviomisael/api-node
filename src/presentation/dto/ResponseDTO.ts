@@ -1,6 +1,5 @@
-import { type BaseEntity } from '$/domain/entities/BaseEntity'
 
-export interface ResponseDTO<T extends BaseEntity> {
+export interface ResponseDTO<T> {
   errors: string[]
   success: boolean
   data: T[]
