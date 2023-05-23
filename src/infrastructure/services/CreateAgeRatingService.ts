@@ -1,8 +1,8 @@
 import { type AgeRating } from '$/domain/entities'
 import { type IAgeRatingRepository } from '$/domain/repositories'
-import { AgeRatingRepository } from '$/infrastructure/repositories'
+import { AgeRatingRepository } from '../repositories'
 
-export class AgeRatingService {
+export class CreateAgeRatingService {
   private readonly repository: IAgeRatingRepository = new AgeRatingRepository()
 
   async createAgeRating (ageRating: AgeRating): Promise<void> {
@@ -10,11 +10,5 @@ export class AgeRatingService {
       .ageAlreadyExists(ageRating.getAge())
 
     if (!alreadyExists) await this.repository.create(ageRating)
-  }
-
-  async getAllAgeRatings (): Promise<AgeRating[]> {
-    const ageRatings = await this.repository.getAll()
-
-    return ageRatings
   }
 }
