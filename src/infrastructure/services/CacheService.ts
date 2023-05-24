@@ -1,15 +1,15 @@
-export abstract class CacheService {
+export abstract class CacheService<T> {
   abstract key: string
 
-  abstract getData<T>(): Promise<T>
+  abstract getData (): Promise<T | null>
 
-  abstract setData<T>(data: T): Promise<void>
+  abstract setData (data: T): Promise<void>
 
-  serialize<T>(data: T): string {
+  serialize (data: T): string {
     return JSON.stringify(data)
   }
 
-  deserialize<T>(rawData: string): T {
+  deserialize (rawData: string): T {
     return JSON.parse(rawData)
   }
 }
