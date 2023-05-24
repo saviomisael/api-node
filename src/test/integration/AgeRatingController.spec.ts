@@ -1,8 +1,8 @@
 import { AgeRating } from '$/domain/entities'
 import { apiRoutes } from '$/infrastructure/routes/apiRoutes'
+import app from '$/infrastructure/server'
 import chai from 'chai'
 import chaiHttp from 'chai-http'
-import app from '$/infrastructure/server'
 
 chai.use(chaiHttp)
 
@@ -38,5 +38,25 @@ describe('GET /api/v1/age-ratings', () => {
 
     chai.expect(parsedJSON
       .some((x: AgeRating) => x.getAge() === '18+')).to.be.true
+  })
+
+  it('should return all age ratings from cache in less time', async () => {
+    const firstRequestStartTime = Date.now()
+
+    await chai.request(app).get(apiRoutes.ageRatings.getAll)
+
+    const firstRequestEndTime = Date.now()
+
+    const secondRequestStartTime = Date.now()
+
+    await chai.request(app).get(apiRoutes.ageRatings.getAll)
+
+    const secondRequestEndTime = Date.now()
+
+    const firstDiff = firstRequestEndTime - firstRequestStartTime
+
+    const secondDiff = secondRequestEndTime - secondRequestStartTime
+
+    chai.expect(firstDiff > secondDiff).to.be.true
   })
 })
