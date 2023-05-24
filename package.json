@@ -4,7 +4,7 @@
   "description": "",
   "main": "./dist/infrastructure/server.js",
   "scripts": {
-    "dev:server": "ts-node-dev --poll --respawn --transpile-only ./src/server.ts",
+    "dev:server": "ts-node-dev --poll --respawn --transpile-only -r tsconfig-paths/register ./src/infrastructure/server.ts",
     "lint": "eslint ./src/**/*.ts --fix",
     "prepare": "husky install",
     "lint-staged": "lint-staged",
