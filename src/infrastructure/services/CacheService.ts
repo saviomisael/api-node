@@ -1,5 +1,5 @@
 export abstract class CacheService<T> {
-  abstract key: string
+  protected abstract key: string
 
   abstract getData (): Promise<T | null>
 
