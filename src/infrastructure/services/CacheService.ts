@@ -5,11 +5,11 @@ export abstract class CacheService<T> {
 
   abstract setData (data: T): Promise<void>
 
-  serialize (data: T): string {
+  protected serialize (data: T): string {
     return JSON.stringify(data)
   }
 
-  deserialize (rawData: string): T {
+  protected deserialize (rawData: string): T {
     return JSON.parse(rawData)
   }
 }
