@@ -12,12 +12,9 @@ export class AgeRatingController extends BaseController {
 
   async getAll (_: Request, res: Response): Promise<Response> {
     const results = await this.cacheService.getData()
-    let ageRatings: AgeRating[]
     let response: ResponseDTO<AgeRating>
 
     if (results != null) {
-      ageRatings = results
-
       response = {
         data: [...results],
         success: true,
@@ -27,7 +24,7 @@ export class AgeRatingController extends BaseController {
       return this.ok(res, response)
     }
 
-    ageRatings = await this.listService.getAllAgeRatings()
+    const ageRatings = await this.listService.getAllAgeRatings()
 
     response = {
       data: [...ageRatings],

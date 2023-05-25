@@ -1,6 +1,8 @@
 import { PlatformService } from '$/application/services/PlatformService'
 import { type Platform } from '$/domain/entities'
 import { apiRoutes } from '$/infrastructure/routes/apiRoutes'
+import { type CacheService } from '$/infrastructure/services/CacheService'
+import { PlatformCacheService } from '$/infrastructure/services/PlatformCacheService'
 import { HalWrapper } from '$/presentation/HalWrapper'
 import { BaseController } from '$/presentation/controllers/BaseController'
 import { CreatePlatformDTO, DeletePlatformDTO, type ResponseDTO } from '$/presentation/dto'
@@ -8,7 +10,8 @@ import { validate } from 'class-validator'
 import { type Request, type Response } from 'express'
 
 export class PlatformController extends BaseController {
-  private readonly service = new PlatformService()
+  private readonly platformService = new PlatformService()
+  private readonly cacheService: CacheService<Platform[]> = new PlatformCacheService()
 
   async createPlatform (req: Request, res: Response): Promise<Response> {
     let response: ResponseDTO<Platform>
@@ -27,7 +30,7 @@ export class PlatformController extends BaseController {
       return this.badRequest(res, response)
     }
 
-    const newPlatform = await this.service.createPlatform(dto.name)
+    const newPlatform = await this.platformService.createPlatform(dto.name)
 
     if (newPlatform == null) {
       response = {
@@ -73,7 +76,7 @@ export class PlatformController extends BaseController {
       return this.badRequest(res, response)
     }
 
-    const isDeleted = await this.service.deletePlatformById(dto.id)
+    const isDeleted = await this.platformService.deletePlatformById(dto.id)
 
     if (!isDeleted) {
       response = {
@@ -89,9 +92,23 @@ export class PlatformController extends BaseController {
   }
 
   async getAllPlatforms (_: Request, res: Response): Promise<Response> {
-    const platforms = await this.service.getAllPlatforms()
+    const platformsFromCache = await this.cacheService.getData()
+    let response: ResponseDTO<Platform>
 
-    const response: ResponseDTO<Platform> = {
+    if (platformsFromCache != null) {
+      response = {
+        data: [...platformsFromCache],
+        success: true,
+        errors: []
+      }
+
+      return this.ok(res, response)
+    }
+
+    const platforms = await this.platformService.getAllPlatforms()
+    await this.cacheService.setData(platforms)
+
+    response = {
       data: [...platforms],
       success: true,
       errors: []

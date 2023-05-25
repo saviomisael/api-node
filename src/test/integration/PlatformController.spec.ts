@@ -1,8 +1,9 @@
 import { DBConnection } from '$/infrastructure/DBConnection'
+import { RedisClient } from '$/infrastructure/RedisClient'
 import { apiRoutes } from '$/infrastructure/routes/apiRoutes'
+import app from '$/infrastructure/server'
 import chai from 'chai'
 import chaiHttp from 'chai-http'
-import app from '$/infrastructure/server'
 
 chai.use(chaiHttp)
 
@@ -135,5 +136,35 @@ describe('GET /api/v1/platforms/', () => {
     chai.expect(response.body.errors).to.have.length(0)
     chai.expect(response.body.data).to.have.length(3)
     chai.expect(response.body.success).to.be.true
+  })
+
+  it('should return a list of platforms from cache in less time', async () => {
+    if (!RedisClient.isOpen) await RedisClient.connect()
+
+    await RedisClient.del('platform')
+
+    for (let index = 0; index < 10; index++) {
+      await chai
+        .request(app)
+        .post(apiRoutes.platforms.create)
+        .send({ name: `platform${index}` })
+    }
+
+    const firstRequestStartTime = Date.now()
+
+    await chai.request(app).get(apiRoutes.platforms.getAll)
+
+    const firstRequestEndTime = Date.now()
+
+    const secondRequestStartTime = Date.now()
+
+    await chai.request(app).get(apiRoutes.platforms.getAll)
+
+    const secondRequestEndTime = Date.now()
+
+    const firstDiff = firstRequestEndTime - firstRequestStartTime
+    const secondDiff = secondRequestEndTime - secondRequestStartTime
+
+    chai.expect(firstDiff > secondDiff).to.be.true
   })
 })
