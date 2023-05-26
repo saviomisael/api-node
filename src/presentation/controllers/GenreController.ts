@@ -1,6 +1,8 @@
 import { GenreService } from '$/application/services/GenreService'
 import { type Genre } from '$/domain/entities'
 import { apiRoutes } from '$/infrastructure/routes/apiRoutes'
+import { type CacheService } from '$/infrastructure/services/CacheService'
+import { GenreCacheService } from '$/infrastructure/services/GenreCacheService'
 import { HalWrapper } from '$/presentation/HalWrapper'
 import { BaseController } from '$/presentation/controllers/BaseController'
 import { CreateGenreDTO, DeleteGenreDTO, type ResponseDTO } from '$/presentation/dto'
@@ -8,7 +10,8 @@ import { validate } from 'class-validator'
 import { type Request, type Response } from 'express'
 
 export class GenreController extends BaseController {
-  private readonly service: GenreService = new GenreService()
+  private readonly genreService: GenreService = new GenreService()
+  private readonly cacheService: CacheService<Genre[]> = new GenreCacheService()
 
   async createGenre (req: Request, res: Response): Promise<Response> {
     let responseDTO: ResponseDTO<Genre>
@@ -27,7 +30,7 @@ export class GenreController extends BaseController {
       return this.badRequest(res, responseDTO)
     }
 
-    const newGenre = await this.service.createGenre(createGenreDTO.name)
+    const newGenre = await this.genreService.createGenre(createGenreDTO.name)
 
     if (newGenre == null) {
       responseDTO = {
@@ -53,19 +56,29 @@ export class GenreController extends BaseController {
   }
 
   async getAllGenres (_: Request, res: Response): Promise<Response> {
-    let responseDTO: ResponseDTO<Genre> = {
-      success: false,
-      data: [],
-      errors: []
+    let responseDTO: ResponseDTO<Genre>
+
+    const results = await this.cacheService.getData()
+
+    if (results != null) {
+      responseDTO = {
+        data: [...results],
+        success: true,
+        errors: []
+      }
+
+      return this.ok(res, responseDTO)
     }
 
-    const genres = await this.service.getAllGenres()
+    const genres = await this.genreService.getAllGenres()
 
     responseDTO = {
       success: true,
       data: [...genres],
       errors: []
     }
+
+    await this.cacheService.setData(genres)
 
     return this.ok(res, responseDTO)
   }
@@ -91,7 +104,7 @@ export class GenreController extends BaseController {
       return this.badRequest(res, responseDTO)
     }
 
-    const result = await this.service.deleteGenre(deleteGenreDTO.id)
+    const result = await this.genreService.deleteGenre(deleteGenreDTO.id)
 
     if (result) return this.noContent(res)
 

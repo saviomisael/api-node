@@ -1,8 +1,9 @@
 import { DBConnection } from '$/infrastructure/DBConnection'
+import { RedisClient } from '$/infrastructure/RedisClient'
 import { apiRoutes } from '$/infrastructure/routes/apiRoutes'
+import app from '$/infrastructure/server'
 import chai from 'chai'
 import chaiHttp from 'chai-http'
-import app from '$/infrastructure/server'
 
 chai.use(chaiHttp)
 
@@ -10,6 +11,10 @@ const clearData = async (): Promise<void> => {
   const connection = await DBConnection.getConnection()
 
   await connection.execute('DELETE FROM genres')
+
+  if (!RedisClient.isOpen) await RedisClient.connect()
+
+  await RedisClient.del('genre')
 }
 
 describe('POST /api/v1/genres', () => {
@@ -86,7 +91,7 @@ describe('GET /api/v1/genres', () => {
     chai.expect(response.body.errors).to.have.length(0)
   })
 
-  it('should return an genre array with status 200', async () => {
+  it('should return a genre array with status 200', async () => {
     await chai.request(app)
       .post(apiRoutes.genres.create)
       .send({ name: 'action' })
@@ -102,6 +107,31 @@ describe('GET /api/v1/genres', () => {
     chai.expect(response.body.data).to.have.length(2)
     chai.expect(response.body.data[0].name).to.be.equal('action')
     chai.expect(response.body.data[1].name).to.be.equal('drama')
+  })
+
+  it('should return a genre list from cache in less time', async () => {
+    for (let index = 0; index < 10; index++) {
+      await chai.request(app)
+        .post(apiRoutes.genres.create)
+        .send({ name: `genre${index}` })
+    }
+
+    const firstRequestStartTime = Date.now()
+
+    await chai.request(app).get(apiRoutes.genres.getAll)
+
+    const firstRequestEndTime = Date.now()
+
+    const secondRequestStartTime = Date.now()
+
+    await chai.request(app).get(apiRoutes.genres.getAll)
+
+    const secondRequestEndTime = Date.now()
+
+    const firstDiff = firstRequestEndTime - firstRequestStartTime
+    const secondDiff = secondRequestEndTime - secondRequestStartTime
+
+    chai.expect(firstDiff > secondDiff).to.be.true
   })
 })
 
