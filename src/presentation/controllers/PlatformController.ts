@@ -2,7 +2,7 @@ import { PlatformService } from '$/application/services/PlatformService'
 import { type Platform } from '$/domain/entities'
 import { apiRoutes } from '$/infrastructure/routes/apiRoutes'
 import { type CacheService } from '$/infrastructure/services/CacheService'
-import { PlatformCacheService } from '$/infrastructure/services/PlatformCacheService'
+import { CacheServiceFactory } from '$/infrastructure/services/CacheServiceFactory'
 import { HalWrapper } from '$/presentation/HalWrapper'
 import { BaseController } from '$/presentation/controllers/BaseController'
 import { CreatePlatformDTO, DeletePlatformDTO, type ResponseDTO } from '$/presentation/dto'
@@ -11,7 +11,7 @@ import { type Request, type Response } from 'express'
 
 export class PlatformController extends BaseController {
   private readonly platformService = new PlatformService()
-  private readonly cacheService: CacheService<Platform[]> = new PlatformCacheService()
+  private readonly cacheService: CacheService<Platform[]> = CacheServiceFactory.getPlatformCacheService()
 
   async createPlatform (req: Request, res: Response): Promise<Response> {
     let response: ResponseDTO<Platform>

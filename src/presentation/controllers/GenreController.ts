@@ -2,7 +2,7 @@ import { GenreService } from '$/application/services/GenreService'
 import { type Genre } from '$/domain/entities'
 import { apiRoutes } from '$/infrastructure/routes/apiRoutes'
 import { type CacheService } from '$/infrastructure/services/CacheService'
-import { GenreCacheService } from '$/infrastructure/services/GenreCacheService'
+import { CacheServiceFactory } from '$/infrastructure/services/CacheServiceFactory'
 import { HalWrapper } from '$/presentation/HalWrapper'
 import { BaseController } from '$/presentation/controllers/BaseController'
 import { CreateGenreDTO, DeleteGenreDTO, type ResponseDTO } from '$/presentation/dto'
@@ -11,7 +11,7 @@ import { type Request, type Response } from 'express'
 
 export class GenreController extends BaseController {
   private readonly genreService: GenreService = new GenreService()
-  private readonly cacheService: CacheService<Genre[]> = new GenreCacheService()
+  private readonly cacheService: CacheService<Genre[]> = CacheServiceFactory.getGenreCacheService()
 
   async createGenre (req: Request, res: Response): Promise<Response> {
     let responseDTO: ResponseDTO<Genre>

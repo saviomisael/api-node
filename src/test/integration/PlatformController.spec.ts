@@ -141,7 +141,7 @@ describe('GET /api/v1/platforms/', () => {
   it('should return a list of platforms from cache in less time', async () => {
     if (!RedisClient.isOpen) await RedisClient.connect()
 
-    await RedisClient.del('platform')
+    await RedisClient.del('platforms')
 
     for (let index = 0; index < 10; index++) {
       await chai

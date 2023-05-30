@@ -14,7 +14,7 @@ const clearData = async (): Promise<void> => {
 
   if (!RedisClient.isOpen) await RedisClient.connect()
 
-  await RedisClient.del('genre')
+  await RedisClient.del('genres')
 }
 
 describe('POST /api/v1/genres', () => {
