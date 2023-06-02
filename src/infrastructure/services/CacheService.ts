@@ -20,7 +20,7 @@ export class CacheService<T> {
       throw new Error('replaceKeys should call before this method.')
     }
 
-    await RedisClient.set(this.key, this.serialize(data), { EX: 180 })
+    await RedisClient.set(this.key, this.serialize(data), { EX: 180, NX: true })
   }
 
   protected serialize (data: T): string {
