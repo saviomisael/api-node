@@ -3,6 +3,7 @@ import { apiRoutes } from '$/infrastructure/routes/apiRoutes'
 import app from '$/infrastructure/server'
 import chai from 'chai'
 import chaiHttp from 'chai-http'
+import { performance } from 'perf_hooks'
 
 chai.use(chaiHttp)
 
@@ -41,17 +42,17 @@ describe('GET /api/v1/age-ratings', () => {
   })
 
   it('should return all age ratings from cache in less time', async () => {
-    const firstRequestStartTime = Date.now()
+    const firstRequestStartTime = performance.now()
 
     await chai.request(app).get(apiRoutes.ageRatings.getAll)
 
-    const firstRequestEndTime = Date.now()
+    const firstRequestEndTime = performance.now()
 
-    const secondRequestStartTime = Date.now()
+    const secondRequestStartTime = performance.now()
 
     await chai.request(app).get(apiRoutes.ageRatings.getAll)
 
-    const secondRequestEndTime = Date.now()
+    const secondRequestEndTime = performance.now()
 
     const firstDiff = firstRequestEndTime - firstRequestStartTime
 
