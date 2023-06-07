@@ -12,6 +12,10 @@ const clearData = async (): Promise<void> => {
   const connection = await DBConnection.getConnection()
 
   await connection.execute('DELETE FROM platforms')
+
+  if (!RedisClient.isOpen) await RedisClient.connect()
+
+  await RedisClient.del('platforms')
 }
 
 describe('POST /api/v1/platforms', () => {
@@ -140,10 +144,6 @@ describe('GET /api/v1/platforms/', () => {
   })
 
   it('should return a list of platforms from cache in less time', async () => {
-    if (!RedisClient.isOpen) await RedisClient.connect()
-
-    await RedisClient.del('platforms')
-
     for (let index = 0; index < 10; index++) {
       await chai
         .request(app)
