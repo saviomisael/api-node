@@ -12,4 +12,32 @@ export class Game extends AggregateRoot {
   ) {
     super()
   }
+
+  getName (): string {
+    return this.name
+  }
+
+  getPrice (): number {
+    return this.price
+  }
+
+  getDescription (): string {
+    return this.description
+  }
+
+  getReleaseDate (): Date {
+    return this.releaseDate
+  }
+
+  getAgeRating (): AgeRating {
+    return this.ageRating
+  }
+
+  getPlatforms (): Set<Platform> {
+    return this.platforms
+  }
+
+  getGenres (): Set<Genre> {
+    return this.genres
+  }
 }
