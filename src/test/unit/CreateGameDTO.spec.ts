@@ -120,4 +120,15 @@ describe('CreateGameDTO', () => {
     chai.expect(errors.length > 0).to.be.true
     chai.expect(genresErrors?.constraints?.arrayMaxSize).to.be.equal('Os gêneros podem ser no máximo 4.')
   })
+
+  it('should return an error when price is negative', async () => {
+    const dto = new CreateGameDTO()
+    dto.price = -1
+
+    const errors = await validate(dto)
+    const priceErrors = errors.find(x => x.property === 'price')
+
+    chai.expect(errors.length > 0).to.be.true
+    chai.expect(priceErrors?.constraints?.isPositive).to.be.equal('O preço do jogo deve ser um valor positivo.')
+  })
 })
