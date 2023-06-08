@@ -2,7 +2,7 @@ import { MinLength } from 'class-validator'
 
 export class CreatePlatformDTO {
   @MinLength(3, {
-    message: 'The platform name must have at least 3 characters.'
+    message: 'O nome da plataforma deve ter no mínimo 3 caracteres.'
   })
     name: string
 
