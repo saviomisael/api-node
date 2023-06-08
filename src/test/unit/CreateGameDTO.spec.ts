@@ -75,4 +75,15 @@ describe('CreateGameDTO', () => {
     chai.expect(errors.length > 0).to.be.true
     chai.expect(platformsErrors?.constraints?.arrayMinSize).to.be.equal('Deve ter pelo menos uma plataforma no array.')
   })
+
+  it('should return an error when platforms length is greater than 4', async () => {
+    const dto = new CreateGameDTO()
+    dto.platforms = ['9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d', '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6a', '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6b', '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6c', '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6e']
+
+    const errors = await validate(dto)
+    const platformsErrors = errors.find(x => x.property === 'platforms')
+
+    chai.expect(errors.length > 0).to.be.true
+    chai.expect(platformsErrors?.constraints?.arrayMaxSize).to.be.equal('As plataformas podem ser no máximo 4.')
+  })
 })
