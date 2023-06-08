@@ -69,4 +69,14 @@ export class PlatformRepository implements IPlatformRepository {
 
     return platforms
   }
+
+  async platformIdExists (platformId: string): Promise<boolean> {
+    this.connection = await DBConnection.getConnection()
+
+    const result = await this.connection.execute('SELECT id FROM platforms WHERE id = ?', [platformId])
+
+    const rows = result[0] as any[]
+
+    return rows.length > 0
+  }
 }
