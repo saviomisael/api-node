@@ -1,5 +1,5 @@
 export class PlatformNotExistsError extends Error {
-  constructor (platformName: string) {
-    super(`A plataforma ${platformName} não existe.`)
+  constructor (platformId: string) {
+    super(`A plataforma ${platformId} não existe.`)
   }
 }
