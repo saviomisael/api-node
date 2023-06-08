@@ -58,7 +58,7 @@ describe('POST /api/v1/genres', () => {
       chai.expect(secondResponse.body.errors).to.have.length(1)
       chai.expect(secondResponse.body.errors[0]).to
         .be
-        .equal('This genre already exists.')
+        .equal('Esse gênero já existe.')
       chai.expect(secondResponse.body.data).to.have.length(0)
     })
 
@@ -164,7 +164,7 @@ describe('DELETE /api/v1/genres/:id', () => {
     chai.expect(response.body.success).to.be.false
     chai.expect(response.body.data).to.have.length(0)
     chai.expect(response.body.errors).to.have.length(1)
-    chai.expect(response.body.errors[0]).to.be.equal('The genre not exists.')
+    chai.expect(response.body.errors[0]).to.be.equal('O gênero não existe.')
   })
 
   it('should delete genre', async () => {
