@@ -11,5 +11,8 @@ export const apiRoutes = {
   },
   ageRatings: {
     getAll: '/api/v1/age-ratings'
+  },
+  games: {
+    create: '/api/v1/games'
   }
 }
