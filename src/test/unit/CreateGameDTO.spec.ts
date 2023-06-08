@@ -40,4 +40,16 @@ describe('CreateGameDTO', () => {
     chai.expect(errors.length > 0).to.be.true
     chai.expect(releaseDateErrors?.constraints?.matches).to.be.equal('A data de lançamento deve ser uma data.')
   })
+
+  it('should return an error when ageRatingId is not an uuid', async () => {
+    const dto = new CreateGameDTO()
+    dto.ageRatingId = '123'
+
+    const errors = await validate(dto)
+
+    const ageRatingIdErrors = errors.find(x => x.property === 'ageRatingId')
+
+    chai.expect(errors.length > 0)
+    chai.expect(ageRatingIdErrors?.constraints?.matches).to.be.equal('O id da faixa etária deve ser um uuid válido.')
+  })
 })
