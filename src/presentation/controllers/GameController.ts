@@ -46,15 +46,17 @@ export class GameController extends BaseController {
     const errors = await validate(dto)
 
     if (errors.length > 0) {
+      const errorsMessages = errors.flatMap(x => Object.values(x.constraints as Record<string, string>))
+
       response = {
         data: [],
         success: false,
-        errors: []
+        errors: [...errorsMessages]
       }
 
       return this.badRequest(res, response)
     }
 
-    return res
+    return this.created(res, { ok: true })
   }
 }
