@@ -35,7 +35,7 @@ export class GenreController extends BaseController {
     if (newGenre == null) {
       responseDTO = {
         data: [],
-        errors: ['This genre already exists.'],
+        errors: ['Esse gênero já existe.'],
         success: false
       }
 
@@ -111,7 +111,7 @@ export class GenreController extends BaseController {
     responseDTO = {
       data: [],
       success: false,
-      errors: ['The genre not exists.']
+      errors: ['O gênero não existe.']
     }
 
     return this.notFound(res, responseDTO)
