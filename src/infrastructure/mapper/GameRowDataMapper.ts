@@ -14,7 +14,6 @@ export class GameRowDataMapper {
       const genreName = row.genre_names.split(',')[index]
       const genre = new Genre(genreName)
       genre.id = genreId
-      console.log(genre)
       game.addGenre(genre)
     }
 
@@ -23,7 +22,6 @@ export class GameRowDataMapper {
       const platformName = row.platform_names.split(',')[index]
       const platform = new Platform(platformName)
       platform.id = platformId
-      console.log(platform)
       game.addPlatform(platform)
     }
 
