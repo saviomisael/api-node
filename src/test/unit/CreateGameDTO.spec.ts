@@ -15,4 +15,17 @@ describe('CreateGameDTO', () => {
     chai.expect(nameErrors !== undefined).to.be.true
     chai.expect(nameErrors?.constraints?.minLength).to.be.equal('O jogo deve ter pelo menos 3 caracteres.')
   })
+
+  it('should return an error when description does not have 10 characters', async () => {
+    const dto = new CreateGameDTO()
+    dto.description = 'cool game'
+
+    const errors = await validate(dto)
+
+    const descriptionErrors = errors.find(x => x.property === 'description')
+
+    chai.expect(errors.length > 0).to.be.true
+    chai.expect(descriptionErrors !== undefined).to.be.true
+    chai.expect(descriptionErrors?.constraints?.minLength).to.be.equal('A descrição deve ter pelo menos 10 caracteres.')
+  })
 })
