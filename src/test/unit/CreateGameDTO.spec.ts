@@ -28,4 +28,16 @@ describe('CreateGameDTO', () => {
     chai.expect(descriptionErrors !== undefined).to.be.true
     chai.expect(descriptionErrors?.constraints?.minLength).to.be.equal('A descrição deve ter pelo menos 10 caracteres.')
   })
+
+  it('should return an error when releaseDate is not a valid date', async () => {
+    const dto = new CreateGameDTO()
+    dto.releaseDate = '01/01/2020'
+
+    const errors = await validate(dto)
+
+    const releaseDateErrors = errors.find(x => x.property === 'releaseDate')
+
+    chai.expect(errors.length > 0).to.be.true
+    chai.expect(releaseDateErrors?.constraints?.matches).to.be.equal('A data de lançamento deve ser uma data.')
+  })
 })
