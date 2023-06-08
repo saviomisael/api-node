@@ -139,7 +139,6 @@ describe('CreateGameDTO', () => {
     const errors = await validate(dto)
     const priceErrors = errors.find(x => x.property === 'price')
 
-    console.log(priceErrors)
     chai.expect(priceErrors?.constraints).to.be.undefined
   })
 })
