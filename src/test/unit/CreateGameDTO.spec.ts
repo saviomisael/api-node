@@ -86,4 +86,38 @@ describe('CreateGameDTO', () => {
     chai.expect(errors.length > 0).to.be.true
     chai.expect(platformsErrors?.constraints?.arrayMaxSize).to.be.equal('As plataformas podem ser no máximo 4.')
   })
+
+  it('should test each genre and return an error when genre is not an uuid', async () => {
+    const dto = new CreateGameDTO()
+    dto.genres = ['123', '321', '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d']
+
+    const errors = await validate(dto)
+    const genresErrors = errors.find(x => x.property === 'genres')
+
+    chai.expect(errors.length > 0).to.be.true
+
+    chai.expect(genresErrors?.constraints?.matches).to.be.equal('O id do gênero deve ser um uuid válido.')
+  })
+
+  it('should return an error when genres length is lower than 1', async () => {
+    const dto = new CreateGameDTO()
+    dto.genres = []
+
+    const errors = await validate(dto)
+    const genresErrors = errors.find(x => x.property === 'genres')
+
+    chai.expect(errors.length > 0).to.be.true
+    chai.expect(genresErrors?.constraints?.arrayMinSize).to.be.equal('Deve ter pelo menos um gênero no array.')
+  })
+
+  it('should return an error when genres length is greater than 4', async () => {
+    const dto = new CreateGameDTO()
+    dto.genres = ['9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d', '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6a', '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6b', '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6c', '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6e']
+
+    const errors = await validate(dto)
+    const genresErrors = errors.find(x => x.property === 'genres')
+
+    chai.expect(errors.length > 0).to.be.true
+    chai.expect(genresErrors?.constraints?.arrayMaxSize).to.be.equal('Os gêneros podem ser no máximo 4.')
+  })
 })
