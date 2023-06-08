@@ -17,7 +17,7 @@ export class GameService {
   private readonly platformRepository: IPlatformRepository = new PlatformRepository()
   private readonly genreRepository: IGenreRepository = new GenreRepository()
 
-  async createGame (game: Game): Promise<Game | null> {
+  async createGame (game: Game): Promise<void> {
     const ageIdExists = await this.ageRepository.ageIdExists(game.getAgeRating().id)
 
     if (!ageIdExists) {
@@ -41,8 +41,5 @@ export class GameService {
     }
 
     await this.gameRepository.create(game)
-    const newGame = await this.gameRepository.getById(game.id)
-
-    return newGame
   }
 }

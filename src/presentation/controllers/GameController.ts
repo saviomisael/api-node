@@ -1,9 +1,13 @@
+import { AgeNotExistsError } from '$/application/errors/AgeNotExistsError'
+import { GenreNotExistsError } from '$/application/errors/GenreNotExistsError'
+import { PlatformNotExistsError } from '$/application/errors/PlatformNotExistsError'
 import { GameService } from '$/application/services/GameService'
 import { type Game } from '$/domain/entities'
 import { validate } from 'class-validator'
 import { type Request, type Response } from 'express'
 import { type ResponseDTO } from '../dto'
 import { CreateGameDTO } from '../dto/CreateGameDTO'
+import { GameMapper } from '../mapper/GameMapper'
 import { BaseController } from './BaseController'
 
 export class GameController extends BaseController {
@@ -57,6 +61,24 @@ export class GameController extends BaseController {
       return this.badRequest(res, response)
     }
 
-    return this.created(res, { ok: true })
+    try {
+      await this.gameService.createGame(GameMapper.toEntity(dto))
+
+      return this.noContent(res)
+    } catch (error) {
+      if (error instanceof AgeNotExistsError ||
+        error instanceof PlatformNotExistsError ||
+        error instanceof GenreNotExistsError) {
+        response = {
+          data: [],
+          success: false,
+          errors: [error.message]
+        }
+
+        return this.notFound(res, response)
+      }
+
+      throw error
+    }
   }
 }
