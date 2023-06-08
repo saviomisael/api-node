@@ -26,6 +26,16 @@ export class AgeRatingRepository implements IAgeRatingRepository {
     return rows.length > 0
   }
 
+  async ageIdExists (ageId: string): Promise<boolean> {
+    this.connection = await DBConnection.getConnection()
+
+    const result = await this.connection.execute('SELECT id FROM ageRatings WHERE id = ?', [ageId])
+
+    const rows = result[0] as any[]
+
+    return rows.length > 0
+  }
+
   async getAll (): Promise<AgeRating[]> {
     this.connection = await DBConnection.getConnection()
 
