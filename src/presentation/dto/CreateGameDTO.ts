@@ -1,4 +1,4 @@
-import { ArrayMaxSize, ArrayMinSize, IsArray, IsPositive, Matches, MinLength } from 'class-validator'
+import { ArrayMaxSize, ArrayMinSize, IsArray, Matches, Min, MinLength } from 'class-validator'
 
 export class CreateGameDTO {
   @MinLength(3, {
@@ -6,8 +6,8 @@ export class CreateGameDTO {
   })
     name!: string
 
-  @IsPositive({
-    message: 'O preço do jogo deve ser um valor positivo.'
+  @Min(0, {
+    message: 'O preço do jogo deve ser um valor positivo ou igual a zero.'
   })
     price!: number
 

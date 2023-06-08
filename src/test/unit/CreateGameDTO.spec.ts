@@ -129,6 +129,17 @@ describe('CreateGameDTO', () => {
     const priceErrors = errors.find(x => x.property === 'price')
 
     chai.expect(errors.length > 0).to.be.true
-    chai.expect(priceErrors?.constraints?.isPositive).to.be.equal('O preço do jogo deve ser um valor positivo.')
+    chai.expect(priceErrors?.constraints?.min).to.be.equal('O preço do jogo deve ser um valor positivo ou igual a zero.')
+  })
+
+  it('should not return an error when price is equal to zero', async () => {
+    const dto = new CreateGameDTO()
+    dto.price = 0
+
+    const errors = await validate(dto)
+    const priceErrors = errors.find(x => x.property === 'price')
+
+    console.log(priceErrors)
+    chai.expect(priceErrors?.constraints).to.be.undefined
   })
 })
