@@ -64,4 +64,15 @@ describe('CreateGameDTO', () => {
 
     chai.expect(platformsErrors?.constraints?.matches).to.be.equal('O id da plataforma deve ser um uuid válido.')
   })
+
+  it('should return an error when platforms is lower than 1', async () => {
+    const dto = new CreateGameDTO()
+    dto.platforms = []
+
+    const errors = await validate(dto)
+    const platformsErrors = errors.find(x => x.property === 'platforms')
+
+    chai.expect(errors.length > 0).to.be.true
+    chai.expect(platformsErrors?.constraints?.arrayMinSize).to.be.equal('Deve ter pelo menos uma plataforma no array.')
+  })
 })
