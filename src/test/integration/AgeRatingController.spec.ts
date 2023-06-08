@@ -1,4 +1,5 @@
 import { AgeRating } from '$/domain/entities'
+import { RedisClient } from '$/infrastructure/RedisClient'
 import { apiRoutes } from '$/infrastructure/routes/apiRoutes'
 import app from '$/infrastructure/server'
 import chai from 'chai'
@@ -7,7 +8,17 @@ import { performance } from 'perf_hooks'
 
 chai.use(chaiHttp)
 
+const clearData = async (): Promise<void> => {
+  if (!RedisClient.isOpen) await RedisClient.connect()
+
+  await RedisClient.del('age-ratings')
+}
+
 describe('GET /api/v1/age-ratings', () => {
+  afterEach(async () => {
+    await clearData()
+  })
+
   it('should return all age ratings seeded in database', async () => {
     const response = await chai.request(app).get(apiRoutes.ageRatings.getAll)
 
