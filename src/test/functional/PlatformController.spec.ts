@@ -35,7 +35,7 @@ describe('POST /api/v1/platforms', () => {
       chai.expect(response.body.errors).to.have.length(1)
       chai.expect(response.body.errors[0]).to
         .be
-        .equal('The platform name must have at least 3 characters.')
+        .equal('O nome da plataforma deve ter no mínimo 3 caracteres.')
     }
   )
 
