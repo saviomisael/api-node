@@ -2,10 +2,10 @@ import { IsNotEmpty, MinLength } from 'class-validator'
 
 export class CreateGenreDTO {
   @IsNotEmpty({
-    message: "Genre's name must not be empty."
+    message: 'O nome do gênero nao pode estar vazio.'
   })
   @MinLength(2, {
-    message: "Genre's name must have at least 2 characters."
+    message: 'O nome do gênero deve ter pelo menos dois caracteres.'
   })
     name!: string
 
