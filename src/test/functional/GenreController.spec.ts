@@ -11,7 +11,7 @@ chai.use(chaiHttp)
 const clearData = async (): Promise<void> => {
   const connection = await DBConnection.getConnection()
 
-  await connection.execute('DELETE FROM genres')
+  await Promise.all([connection.execute('DELETE FROM games_genres'), connection.execute('DELETE FROM genres')])
 
   if (!RedisClient.isOpen) await RedisClient.connect()
 
