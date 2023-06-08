@@ -11,7 +11,7 @@ export class GenreRepository implements IGenreRepository {
 
     await this.connection.execute(
       'INSERT INTO genres (id, name) VALUES (?, ?)',
-      [genre.getId(), genre.getName()]
+      [genre.id, genre.getName()]
     )
   }
 

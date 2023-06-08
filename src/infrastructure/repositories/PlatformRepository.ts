@@ -11,7 +11,7 @@ export class PlatformRepository implements IPlatformRepository {
 
     await this.connection.execute(
       'INSERT INTO platforms (id, name) VALUES (?, ?)',
-      [platform.getId(), platform.getName()]
+      [platform.id, platform.getName()]
     )
   }
 

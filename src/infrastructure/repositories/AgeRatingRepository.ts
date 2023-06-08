@@ -11,7 +11,7 @@ export class AgeRatingRepository implements IAgeRatingRepository {
 
     await this.connection
       .execute('INSERT INTO ageRatings (id, age, description) VALUE (?, ?, ?)',
-        [ageRating.getId(), ageRating.getAge(), ageRating.getDescription()])
+        [ageRating.id, ageRating.getAge(), ageRating.getDescription()])
   }
 
   async ageAlreadyExists (age: string): Promise<boolean> {

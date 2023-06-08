@@ -23,10 +23,10 @@ describe('GET /api/v1/age-ratings', () => {
     const response = await chai.request(app).get(apiRoutes.ageRatings.getAll)
 
     const parsedJSON = response.body.data.map((x: any) => {
-      x = new AgeRating(x.age, x.description)
-      x.setId(x.id)
+      const age = new AgeRating(x.age, x.description)
+      age.id = x.id
 
-      return x
+      return age
     })
 
     chai.expect(response).to.have.status(200)
