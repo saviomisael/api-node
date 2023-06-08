@@ -35,7 +35,7 @@ export class PlatformController extends BaseController {
     if (newPlatform == null) {
       response = {
         data: [],
-        errors: ['This platform already exists.'],
+        errors: ['Essa plataforma já existe.'],
         success: false
       }
 
@@ -82,7 +82,7 @@ export class PlatformController extends BaseController {
       response = {
         data: [],
         success: false,
-        errors: ['This platform do not exists.']
+        errors: ['Essa plataforma não existe.']
       }
 
       return this.notFound(res, response)
