@@ -2,11 +2,11 @@ import { AgeNotExistsError } from '$/application/errors/AgeNotExistsError'
 import { GenreNotExistsError } from '$/application/errors/GenreNotExistsError'
 import { PlatformNotExistsError } from '$/application/errors/PlatformNotExistsError'
 import { GameService } from '$/application/services/GameService'
-import { type Game } from '$/domain/entities'
 import { validate } from 'class-validator'
 import { type Request, type Response } from 'express'
 import { type ResponseDTO } from '../dto'
 import { CreateGameDTO } from '../dto/CreateGameDTO'
+import { type GameResponseDTO } from '../dto/GameResponseDTO'
 import { GameMapper } from '../mapper/GameMapper'
 import { BaseController } from './BaseController'
 
@@ -14,14 +14,14 @@ export class GameController extends BaseController {
   private readonly gameService: GameService = new GameService()
 
   async createGame (req: Request, res: Response): Promise<Response> {
-    let response: ResponseDTO<Game>
+    let response: ResponseDTO<GameResponseDTO>
     const containsGenresDuplicates = req.body.genres.length !== [...new Set([...req.body.genres])].length
 
     if (containsGenresDuplicates) {
       response = {
         data: [],
         success: false,
-        errors: ['Você enviou gêneros duplicados']
+        errors: ['Você enviou gêneros duplicados.']
       }
       return this.badRequest(res, response)
     }
@@ -32,7 +32,7 @@ export class GameController extends BaseController {
       response = {
         data: [],
         success: false,
-        errors: ['Você enviou plataformas duplicadas']
+        errors: ['Você enviou plataformas duplicadas.']
       }
 
       return this.badRequest(res, response)
@@ -62,9 +62,25 @@ export class GameController extends BaseController {
     }
 
     try {
-      await this.gameService.createGame(GameMapper.toEntity(dto))
+      const newGame = await this.gameService.createGame(GameMapper.toEntity(dto))
 
-      return this.noContent(res)
+      if (newGame == null) {
+        response = {
+          data: [],
+          success: false,
+          errors: ['Erro ao retornar o jogo criado.']
+        }
+
+        return this.internalServerError(res, response)
+      }
+
+      response = {
+        data: [GameMapper.fromEntityToGameResponse(newGame)],
+        success: true,
+        errors: []
+      }
+
+      return this.created(res, response)
     } catch (error) {
       if (error instanceof AgeNotExistsError ||
         error instanceof PlatformNotExistsError ||

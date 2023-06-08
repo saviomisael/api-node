@@ -1,7 +1,8 @@
-import { AgeRating, Game } from '$/domain/entities'
+import { type Game } from '$/domain/entities'
 import { type IGameRepository } from '$/domain/repositories'
 import { type Connection } from 'mysql2/promise'
 import { DBConnection } from '../DBConnection'
+import { GameRowDataMapper } from '../mapper/GameRowDataMapper'
 
 export class GameRepository implements IGameRepository {
   private connection!: Connection
@@ -18,10 +19,10 @@ export class GameRepository implements IGameRepository {
       ar.id AS age_rating_id,
       ar.age,
       ar.description AS age_rating_description,
-      gr.id AS genre_id,
-      gr.name AS genre_name,
-      p.id AS platform_id,
-      p.name AS platform_name
+      GROUP_CONCAT(DISTINCT gr.id) AS genre_ids,
+      GROUP_CONCAT(DISTINCT gr.name) AS genre_names,
+      GROUP_CONCAT(DISTINCT p.id) AS platform_ids,
+      GROUP_CONCAT(DISTINCT p.name) AS platform_names
       FROM games AS g
       JOIN ageRatings AS ar ON g.fkAgeRating = ar.id
       JOIN games_genres AS gg ON gg.fk_game = g.id
@@ -29,14 +30,16 @@ export class GameRepository implements IGameRepository {
       JOIN games_platforms AS gp ON gp.fk_game = g.id
       JOIN platforms AS p ON gp.fk_platform = p.id
       WHERE g.id = ?
+      GROUP BY g.id
     `, [gameId])
 
     const rows = results[0] as any[]
 
     if (rows.length === 0) return null
 
-    // TODO finishes sql mapper
-    return new Game('', 0, '', new Date(), new AgeRating('', ''))
+    const game = GameRowDataMapper.toEntity(rows[0])
+
+    return game
   }
 
   async create (game: Game): Promise<void> {
