@@ -2,7 +2,7 @@ import { MinLength } from 'class-validator'
 
 export class DeletePlatformDTO {
   @MinLength(36, {
-    message: 'Id must have 36 characters.'
+    message: 'O id precisa ter 36 caracteres.'
   })
     id: string
 
