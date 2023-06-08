@@ -52,4 +52,16 @@ describe('CreateGameDTO', () => {
     chai.expect(errors.length > 0)
     chai.expect(ageRatingIdErrors?.constraints?.matches).to.be.equal('O id da faixa etária deve ser um uuid válido.')
   })
+
+  it('should test each platform and return an error when platform is not an uuid', async () => {
+    const dto = new CreateGameDTO()
+    dto.platforms = ['123', '321', '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d']
+
+    const errors = await validate(dto)
+    const platformsErrors = errors.find(x => x.property === 'platforms')
+
+    chai.expect(errors.length > 0).to.be.true
+
+    chai.expect(platformsErrors?.constraints?.matches).to.be.equal('O id da plataforma deve ser um uuid válido.')
+  })
 })
