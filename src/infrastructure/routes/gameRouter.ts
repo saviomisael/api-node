@@ -8,5 +8,6 @@ const controller = new GameController()
 router.post(apiRoutes.games.create, controller.createGame.bind(controller))
 router.get(apiRoutes.games.getById, controller.getGameById.bind(controller))
 router.put(apiRoutes.games.updateGameById, controller.updateGameById.bind(controller))
+router.delete(apiRoutes.games.deleteById, controller.deleteGameById.bind(controller))
 
 export default router
