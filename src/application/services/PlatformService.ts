@@ -1,6 +1,7 @@
 import { Platform } from '$/domain/entities'
 import { type IPlatformRepository } from '$/domain/repositories'
 import { PlatformRepository } from '$/infrastructure/repositories'
+import { HasRelatedGamesError } from '../errors/HasRelatedGamesError'
 
 export class PlatformService {
   private readonly repository: IPlatformRepository = new PlatformRepository()
@@ -22,6 +23,12 @@ export class PlatformService {
     const platformAlreadyExists = await this.repository.getById(platformId)
 
     if (platformAlreadyExists == null) return false
+
+    const hasRelatedGames = await this.repository.hasRelatedGames(platformId)
+
+    if (hasRelatedGames) {
+      throw new HasRelatedGamesError(platformId)
+    }
 
     await this.repository.deletePlatform(platformId)
 
