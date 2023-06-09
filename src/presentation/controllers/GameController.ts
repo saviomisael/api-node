@@ -167,6 +167,17 @@ export class GameController extends BaseController {
       return this.badRequest(res, response)
     }
 
+    const containsPlatformsDuplicates = req.body.platforms.length !== [...new Set([...req.body.platforms as string[]])].length
+
+    if (containsPlatformsDuplicates) {
+      response = {
+        data: [],
+        success: false,
+        errors: ['Você enviou plataformas duplicadas.']
+      }
+      return this.badRequest(res, response)
+    }
+
     const dto = new UpdateGameDTO()
     dto.id = req.params.id
     dto.ageRatingId = req.body.ageRatingId

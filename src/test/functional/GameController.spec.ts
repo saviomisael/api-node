@@ -314,4 +314,20 @@ describe('PUT /api/v1/games/:id 2', () => {
 
     chai.expect(response).to.have.status(400)
   })
+
+  it('should return bad request when platforms property has duplicates', async () => {
+    const gameMock = {
+      ageRatingId: '8904dc7d-acc7-4106-9ff6-367090fe2e48',
+      description: 'O jogo mais premiado de uma geração agora aprimorado para a atual! Experimente The Witcher 3: Wild Hunt e suas expansões nesta coleção definitiva, com melhor desempenho, visuais aprimorados, novo conteúdo adicional, modo fotografia e muito mais!',
+      genres: ['8904dc7d-acc7-4106-9ff6-367090fe2e48'],
+      name: 'The Witcher 3',
+      platforms: ['8904dc7d-acc7-4106-9ff6-367090fe2e48', '8904dc7d-acc7-4106-9ff6-367090fe2e48'],
+      price: 100,
+      releaseDate: '2020-05-14'
+    }
+
+    const response = await chai.request(app).put(apiRoutes.games.updateGameById.replace(':id', gameId)).send(gameMock)
+
+    chai.expect(response).to.have.status(400)
+  })
 })
