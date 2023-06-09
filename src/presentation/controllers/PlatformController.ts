@@ -1,3 +1,4 @@
+import { HasRelatedGamesError } from '$/application/errors/HasRelatedGamesError'
 import { PlatformService } from '$/application/services/PlatformService'
 import { type Platform } from '$/domain/entities'
 import { apiRoutes } from '$/infrastructure/routes/apiRoutes'
@@ -76,19 +77,33 @@ export class PlatformController extends BaseController {
       return this.badRequest(res, response)
     }
 
-    const isDeleted = await this.platformService.deletePlatformById(dto.id)
+    try {
+      const isDeleted = await this.platformService.deletePlatformById(dto.id)
 
-    if (!isDeleted) {
-      response = {
-        data: [],
-        success: false,
-        errors: ['Essa plataforma não existe.']
+      if (!isDeleted) {
+        response = {
+          data: [],
+          success: false,
+          errors: ['Essa plataforma não existe.']
+        }
+
+        return this.notFound(res, response)
       }
 
-      return this.notFound(res, response)
-    }
+      return this.noContent(res)
+    } catch (error) {
+      if (error instanceof HasRelatedGamesError) {
+        response = {
+          data: [],
+          success: false,
+          errors: [error.message]
+        }
 
-    return this.noContent(res)
+        return this.conflict(res, response)
+      }
+
+      throw error
+    }
   }
 
   async getAllPlatforms (_: Request, res: Response): Promise<Response> {
