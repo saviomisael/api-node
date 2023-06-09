@@ -1,4 +1,5 @@
 import { GameRowDataMapper } from '$/infrastructure/mapper/GameRowDataMapper'
+import { type GameRowData } from '$/infrastructure/row-data/GameRowData'
 import chai from 'chai'
 
 describe('GameRowData', () => {
@@ -7,7 +8,7 @@ describe('GameRowData', () => {
       game_id: '8904dc7d-acc7-4106-9ff6-367090fe2e48',
       game_name: 'The Witcher 3: Wild Hunt - Complete Edition',
       game_description: 'O jogo mais premiado de uma geração agora aprimorado para a atual! Experimente The Witcher 3: Wild Hunt e suas expansões nesta coleção definitiva, com melhor desempenho, visuais aprimorados, novo conteúdo adicional, modo fotografia e muito mais!',
-      game_price: '100.00',
+      game_price: 100,
       releaseDate: '2020-05-14T00:00:00.000Z',
       age_rating_id: '4f7138f0-9181-424e-b240-f7ca66988c46',
       age: '12+',
@@ -18,7 +19,7 @@ describe('GameRowData', () => {
       platform_names: 'platform_x,platform_y'
     }
 
-    const gameMapped = GameRowDataMapper.toEntity(rowData)
+    const gameMapped = GameRowDataMapper.toEntity(rowData as GameRowData)
 
     chai.expect(gameMapped.id).to.be.equal(rowData.game_id)
     chai.expect(gameMapped.getName()).to.be.equal(rowData.game_name)
