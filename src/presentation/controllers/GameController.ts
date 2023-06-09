@@ -1,4 +1,5 @@
 import { AgeNotExistsError } from '$/application/errors/AgeNotExistsError'
+import { GameNotExistsError } from '$/application/errors/GameNotExistsError'
 import { GenreNotExistsError } from '$/application/errors/GenreNotExistsError'
 import { PlatformNotExistsError } from '$/application/errors/PlatformNotExistsError'
 import { GameService } from '$/application/services/GameService'
@@ -8,6 +9,7 @@ import { validate } from 'class-validator'
 import { type Request, type Response } from 'express'
 import { type ResponseDTO } from '../dto'
 import { CreateGameDTO } from '../dto/CreateGameDTO'
+import { DeleteGameDTO } from '../dto/DeleteGameDTO'
 import { type GameResponseDTO } from '../dto/GameResponseDTO'
 import { GetGameDTO } from '../dto/GetGameDTO'
 import { UpdateGameDTO } from '../dto/UpdateGameDTO'
@@ -224,6 +226,43 @@ export class GameController extends BaseController {
       if (error instanceof AgeNotExistsError ||
         error instanceof PlatformNotExistsError ||
         error instanceof GenreNotExistsError) {
+        response = {
+          data: [],
+          success: false,
+          errors: [error.message]
+        }
+
+        return this.notFound(res, response)
+      }
+
+      throw error
+    }
+  }
+
+  async deleteGameById (req: Request, res: Response): Promise<Response> {
+    let response: ResponseDTO<GameResponseDTO>
+
+    const dto = new DeleteGameDTO()
+    dto.id = req.params.id
+
+    const errors = await validate(dto)
+
+    if (errors.length > 0) {
+      response = {
+        data: [],
+        success: false,
+        errors: errors.flatMap(x => Object.values(x.constraints as Record<string, string>))
+      }
+
+      return this.badRequest(res, response)
+    }
+
+    try {
+      await this.gameService.deleteGameById(dto.id)
+
+      return this.noContent(res)
+    } catch (error) {
+      if (error instanceof GameNotExistsError) {
         response = {
           data: [],
           success: false,
