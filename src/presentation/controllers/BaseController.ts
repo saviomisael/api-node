@@ -1,5 +1,6 @@
 import {
   badRequest,
+  conflict,
   created,
   internalServerError,
   noContent,
@@ -31,5 +32,9 @@ export abstract class BaseController {
 
   protected internalServerError<T>(res: Response, body: T): Response {
     return internalServerError(res, body)
+  }
+
+  protected conflict<T>(res: Response, body: T): Response {
+    return conflict(res, body)
   }
 }
