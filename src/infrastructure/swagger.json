@@ -337,6 +337,64 @@
             }
           }
         }
+      },
+      "put": {
+        "tags": [
+          "games"
+        ],
+        "summary": "Returns a game.",
+        "description": "Returns a game.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "game id.",
+            "type": "string",
+            "example": "131db526-4599-4485-803d-cca8573693d5"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GamePostRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "404": {
+            "description": "Returns genres, game, platforms or age rating that does not exists.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GameResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GameResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Returns an updated game.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GameResponse"
+                }
+              }
+            }
+          }
+        }
       }
     }
   },
