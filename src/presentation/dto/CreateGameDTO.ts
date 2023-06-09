@@ -1,4 +1,5 @@
 import { ArrayMaxSize, ArrayMinSize, IsArray, Matches, Min, MinLength } from 'class-validator'
+import { dateRegex, uuidRegex } from '../constants'
 
 export class CreateGameDTO {
   @MinLength(3, {
@@ -16,12 +17,12 @@ export class CreateGameDTO {
   })
     description!: string
 
-  @Matches(/^\d{4}-(0?[1-9]|1[012])-(0?[1-9]|[12][0-9]|3[01])$/, {
+  @Matches(dateRegex, {
     message: 'A data de lançamento deve ser uma data.'
   })
     releaseDate!: string
 
-  @Matches(/^[a-z0-9]{8}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{12}$/, {
+  @Matches(uuidRegex, {
     message: 'O id da faixa etária deve ser um uuid válido.'
   })
     ageRatingId!: string
@@ -35,7 +36,7 @@ export class CreateGameDTO {
   @ArrayMinSize(1, {
     message: 'Deve ter pelo menos uma plataforma no array.'
   })
-  @Matches(/^[a-z0-9]{8}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{12}$/, {
+  @Matches(uuidRegex, {
     message: 'O id da plataforma deve ser um uuid válido.',
     each: true
   })
@@ -50,7 +51,7 @@ export class CreateGameDTO {
   @ArrayMinSize(1, {
     message: 'Deve ter pelo menos um gênero no array.'
   })
-  @Matches(/^[a-z0-9]{8}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{12}$/, {
+  @Matches(uuidRegex, {
     message: 'O id do gênero deve ser um uuid válido.',
     each: true
   })
