@@ -62,7 +62,7 @@ describe('POST /api/v1/games', () => {
   })
 })
 
-describe('Create a game successfuly', () => {
+describe('GameController/createGame', () => {
   beforeEach(async () => {
     const requester = chai.request(app).keepOpen()
 
@@ -95,11 +95,11 @@ describe('Create a game successfuly', () => {
       requester.get(apiRoutes.platforms.getAll)
     ])
 
-    const age = allAges.body.data[0].id
-    const platform1 = allPlatforms.body.data[0].id
-    const platform2 = allPlatforms.body.data[1].id
-    const genre1 = allGenres.body.data[0].id
-    const genre2 = allGenres.body.data[1].id
+    const age = allAges.body.data[0].id as string
+    const platform1 = allPlatforms.body.data[0].id as string
+    const platform2 = allPlatforms.body.data[1].id as string
+    const genre1 = allGenres.body.data[0].id as string
+    const genre2 = allGenres.body.data[1].id as string
 
     const gameRequestData = {
       ageRatingId: age,
@@ -116,5 +116,36 @@ describe('Create a game successfuly', () => {
     chai.expect(response).to.have.status(201)
     chai.expect(response.body.data[0].platforms).to.have.length(2)
     chai.expect(response.body.data[0].genres).to.have.length(2)
+  })
+})
+
+describe('GameController/getGameById', () => {
+  beforeEach(async () => {
+    const requester = chai.request(app).keepOpen()
+
+    await requester.post(apiRoutes.platforms.create).send({ name: 'platform_x' })
+    await requester.post(apiRoutes.platforms.create).send({ name: 'platform_y' })
+    await Promise.all([
+      requester.post(apiRoutes.platforms.create).send({ name: 'platform_x' }),
+      requester.post(apiRoutes.platforms.create).send({ name: 'platform_y' }),
+      requester.post(apiRoutes.genres.create).send({ name: 'genre_x' }),
+      requester.post(apiRoutes.genres.create).send({ name: 'genre_y' })
+    ])
+  })
+
+  afterEach(async () => {
+    const conn = await DBConnection.getConnection()
+
+    await Promise.all([
+      conn.execute('DELETE FROM games_genres'),
+      conn.execute('DELETE FROM games_platforms'),
+      conn.execute('DELETE FROM games')
+    ])
+  })
+
+  it('should return a bad request when game id provided is not valid', async () => {
+    const response = await chai.request(app).get(apiRoutes.games.getById.replace(':id', '123'))
+
+    chai.expect(response).to.have.status(400)
   })
 })
