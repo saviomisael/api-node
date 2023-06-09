@@ -362,3 +362,11 @@ describe('PUT /api/v1/games/:id 2', () => {
     chai.expect(response.body.data[0].ageRating.name).to.be.equal(age.name)
   })
 })
+
+describe('DELETE /api/v1/games/:id', () => {
+  it('should return bad request when id is not valid', async () => {
+    const response = await chai.request(app).delete(apiRoutes.games.deleteById.replace(':id', '123'))
+
+    chai.expect(response).to.have.status(400)
+  })
+})
