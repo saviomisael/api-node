@@ -14,6 +14,7 @@ export const apiRoutes = {
   },
   games: {
     create: '/api/v1/games',
-    getById: '/api/v1/games/:id'
+    getById: '/api/v1/games/:id',
+    updateGameById: '/api/v1/games/:id'
   }
 }
