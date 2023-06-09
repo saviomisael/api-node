@@ -83,7 +83,7 @@ export class PlatformRepository implements IPlatformRepository {
   async hasRelatedGames (platformId: string): Promise<boolean> {
     this.connection = await DBConnection.getConnection()
 
-    const result = await this.connection.execute('SELECT id FROM games_platforms WHERE fk_platform = ?', [platformId])
+    const result = await this.connection.execute('SELECT fk_platform FROM games_platforms WHERE fk_platform = ?', [platformId])
 
     const rows = result[0] as any[]
 
