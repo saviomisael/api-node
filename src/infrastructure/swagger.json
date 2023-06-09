@@ -237,10 +237,208 @@
           }
         }
       }
+    },
+    "/api/v1/games": {
+      "post": {
+        "tags": [
+          "games"
+        ],
+        "summary": "Creates a game.",
+        "description": "Creates a game and return it.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GamePostRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Returns the game created.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GameResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Returns errors on the request.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GameResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Returns genres, platforms or age rating that does not exists.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GameResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GameResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/games/{id}": {
+      "get": {
+        "tags": [
+          "games"
+        ],
+        "summary": "Returns a game.",
+        "description": "Returns a game.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "game id.",
+            "type": "string",
+            "example": "131db526-4599-4485-803d-cca8573693d5"
+          }
+        ],
+        "responses": {
+          "404": {
+            "description": "Game not exists.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GameResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Returns a game.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GameResponse"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
     "schemas": {
+      "GamePostRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "The Witcher 3"
+          },
+          "price": {
+            "type": "number",
+            "example": 100
+          },
+          "description": {
+            "type": "string",
+            "example": "O jogo mais premiado de uma geração agora aprimorado para a atual! Experimente The Witcher 3: Wild Hunt e suas expansões nesta coleção definitiva, com melhor desempenho, visuais aprimorados, novo conteúdo adicional, modo fotografia e muito mais!"
+          },
+          "ageRatingId": {
+            "type": "string",
+            "example": "131db526-4599-4485-803d-cca8573693d5"
+          },
+          "platforms": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "example": "131db526-4599-4485-803d-cca8573693d5"
+            }
+          },
+          "genres": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "example": "131db526-4599-4485-803d-cca8573693d5"
+            }
+          }
+        }
+      },
+      "Game": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "131db526-4599-4485-803d-cca8573693d5"
+          },
+          "name": {
+            "type": "string",
+            "example": "The Witcher 3"
+          },
+          "description": {
+            "type": "string",
+            "example": "O jogo mais premiado de uma geração agora aprimorado para a atual! Experimente The Witcher 3: Wild Hunt e suas expansões nesta coleção definitiva, com melhor desempenho, visuais aprimorados, novo conteúdo adicional, modo fotografia e muito mais!"
+          },
+          "price": {
+            "type": "number",
+            "example": 100
+          },
+          "releaseDate": {
+            "type": "string",
+            "example": "2020-05-14T00:00:00.000Z"
+          },
+          "ageRating": {
+            "type": "object",
+            "$ref": "#/components/schemas/AgeRating"
+          },
+          "platforms": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Platform"
+            }
+          },
+          "genres": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Genre"
+            }
+          }
+        }
+      },
+      "GameResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Game"
+            }
+          },
+          "success": {
+            "type": "boolean"
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "example": "Você enviou gêneros duplicados."
+            }
+          }
+        }
+      },
       "AgeRating": {
         "type": "object",
         "properties": {
