@@ -1,4 +1,5 @@
 import { AgeNotExistsError } from '$/application/errors/AgeNotExistsError'
+import { GameNotExistsError } from '$/application/errors/GameNotExistsError'
 import { GenreNotExistsError } from '$/application/errors/GenreNotExistsError'
 import { PlatformNotExistsError } from '$/application/errors/PlatformNotExistsError'
 import { GameService } from '$/application/services/GameService'
@@ -8,6 +9,7 @@ import { type ResponseDTO } from '../dto'
 import { CreateGameDTO } from '../dto/CreateGameDTO'
 import { type GameResponseDTO } from '../dto/GameResponseDTO'
 import { GetGameDTO } from '../dto/GetGameDTO'
+import { UpdateGameDTO } from '../dto/UpdateGameDTO'
 import { GameMapper } from '../mapper/GameMapper'
 import { BaseController } from './BaseController'
 
@@ -135,5 +137,68 @@ export class GameController extends BaseController {
     }
 
     return this.ok(res, response)
+  }
+
+  async updateGameById (req: Request, res: Response): Promise<Response> {
+    let response: ResponseDTO<GameResponseDTO>
+
+    const dto = new UpdateGameDTO()
+    dto.id = req.params.id
+    dto.ageRatingId = req.body.ageRatingId
+    dto.description = req.body.description
+    dto.genres = req.body.genres
+    dto.name = req.body.name
+    dto.platforms = req.body.platforms
+    dto.price = req.body.price
+    dto.releaseDate = req.body.releaseDate
+
+    const errors = await validate(dto)
+
+    if (errors.length > 0) {
+      response = {
+        data: [],
+        success: false,
+        errors: errors.flatMap(x => Object.values(x.constraints as Record<string, string>))
+      }
+
+      return this.badRequest(res, response)
+    }
+
+    try {
+      const updatedGame = await this.gameService.updateGameById(GameMapper.fromUpdateGameDtoToEntity(dto))
+
+      if (updatedGame == null) {
+        response = {
+          data: [],
+          success: false,
+          errors: ['Erro ao retornar o jogo atualizado.']
+        }
+
+        return this.internalServerError(res, response)
+      }
+
+      response = {
+        data: [GameMapper.fromEntityToGameResponse(updatedGame)],
+        success: true,
+        errors: []
+      }
+
+      return this.ok(res, response)
+    } catch (error) {
+      if (error instanceof AgeNotExistsError ||
+        error instanceof PlatformNotExistsError ||
+        error instanceof GenreNotExistsError ||
+        error instanceof GameNotExistsError) {
+        response = {
+          data: [],
+          success: false,
+          errors: [error.message]
+        }
+
+        return this.notFound(res, response)
+      }
+
+      throw error
+    }
   }
 }
