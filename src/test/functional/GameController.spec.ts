@@ -330,4 +330,35 @@ describe('PUT /api/v1/games/:id 2', () => {
 
     chai.expect(response).to.have.status(400)
   })
+
+  it('should update a game successfully', async () => {
+    const requester = chai.request(app).keepOpen()
+
+    const [allAges, allGenres, allPlatforms] = await Promise.all([
+      requester.get(apiRoutes.ageRatings.getAll),
+      requester.get(apiRoutes.genres.getAll),
+      requester.get(apiRoutes.platforms.getAll)
+    ])
+
+    const age = allAges.body.data[1]
+    const platform1 = allPlatforms.body.data[0].id as string
+    const genre1 = allGenres.body.data[0].id as string
+
+    const gameMock = {
+      ageRatingId: age.id,
+      description: 'O jogo mais premiado de uma geração agora aprimorado para a atual! Experimente The Witcher 3: Wild Hunt e suas expansões nesta coleção definitiva, com melhor desempenho, visuais aprimorados, novo conteúdo adicional, modo fotografia e muito mais!',
+      genres: [genre1],
+      platforms: [platform1],
+      name: 'The Witcher 3: Wild Hunt - Complete Edition',
+      price: 100,
+      releaseDate: '2020-05-14'
+    }
+
+    const response = await requester.put(apiRoutes.games.updateGameById.replace(':id', gameId)).send(gameMock)
+
+    chai.expect(response).to.have.status(200)
+    chai.expect(response.body.data[0].platforms).to.have.length(1)
+    chai.expect(response.body.data[0].genres).to.have.length(1)
+    chai.expect(response.body.data[0].ageRating.name).to.be.equal(age.name)
+  })
 })

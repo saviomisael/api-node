@@ -94,16 +94,18 @@ export class GameRepository implements IGameRepository {
     pipeline.push(this.connection.execute(`
       UPDATE games
       SET price = ?,
-      SET name = ?,
-      SET description = ?,
-      SET releaseDate = ?,
-      SET fkAgeRating = ?
+      name = ?,
+      description = ?,
+      releaseDate = ?,
+      fkAgeRating = ?
+      WHERE id = ?
     `, [
       newGame.getPrice(),
       newGame.getName(),
       newGame.getDescription(),
       newGame.getReleaseDate(),
-      newGame.getAgeRating().id
+      newGame.getAgeRating().id,
+      newGame.id
     ]))
 
     await Promise.all([...pipeline])
