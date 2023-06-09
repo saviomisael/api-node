@@ -7,6 +7,7 @@ import { type Request, type Response } from 'express'
 import { type ResponseDTO } from '../dto'
 import { CreateGameDTO } from '../dto/CreateGameDTO'
 import { type GameResponseDTO } from '../dto/GameResponseDTO'
+import { GetGameDTO } from '../dto/GetGameDTO'
 import { GameMapper } from '../mapper/GameMapper'
 import { BaseController } from './BaseController'
 
@@ -96,5 +97,43 @@ export class GameController extends BaseController {
 
       throw error
     }
+  }
+
+  async getGameById (req: Request, res: Response): Promise<Response> {
+    const dto = new GetGameDTO()
+    dto.id = req.params.id
+    let response: ResponseDTO<GameResponseDTO>
+
+    const errors = await validate(dto)
+
+    if (errors.length > 0) {
+      response = {
+        data: [],
+        success: false,
+        errors: [...errors.flatMap(x => Object.values(x.constraints as Record<string, string>))]
+      }
+
+      return this.badRequest(res, response)
+    }
+
+    const game = await this.gameService.getGameById(dto.id)
+
+    if (game == null) {
+      response = {
+        data: [],
+        success: false,
+        errors: ['Jogo não encontrado.']
+      }
+
+      return this.notFound(res, response)
+    }
+
+    response = {
+      data: [GameMapper.fromEntityToGameResponse(game)],
+      success: true,
+      errors: []
+    }
+
+    return this.ok(res, response)
   }
 }
