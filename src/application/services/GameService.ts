@@ -8,6 +8,7 @@ import {
 import { AgeRatingRepository, GenreRepository, PlatformRepository } from '$/infrastructure/repositories'
 import { GameRepository } from '$/infrastructure/repositories/GameRepository'
 import { AgeNotExistsError } from '../errors/AgeNotExistsError'
+import { GameNotExistsError } from '../errors/GameNotExistsError'
 import { GenreNotExistsError } from '../errors/GenreNotExistsError'
 import { PlatformNotExistsError } from '../errors/PlatformNotExistsError'
 
@@ -76,5 +77,15 @@ export class GameService {
     const [, updatedGame] = await Promise.all([this.gameRepository.updateGame(game), this.gameRepository.getById(game.id)])
 
     return updatedGame
+  }
+
+  async deleteGameById (gameId: string): Promise<void> {
+    const game = await this.gameRepository.getById(gameId)
+
+    if (game == null) {
+      throw new GameNotExistsError()
+    }
+
+    await this.gameRepository.deleteGameById(gameId)
   }
 }
