@@ -13,6 +13,7 @@ export const apiRoutes = {
     getAll: '/api/v1/age-ratings'
   },
   games: {
-    create: '/api/v1/games'
+    create: '/api/v1/games',
+    getById: '/api/v1/games/:id'
   }
 }
