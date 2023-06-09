@@ -50,7 +50,14 @@ export class GameRepository implements IGameRepository {
       INSERT INTO games (id, price, name, description, releaseDate, fkAgeRating)
       VALUES (?, ?, ?, ?, ?, ?)
     `,
-    [game.id, game.getPrice(), game.getName(), game.getDescription(), game.getReleaseDate(), game.getAgeRating().id])]
+    [
+      game.id,
+      game.getPrice(),
+      game.getName(),
+      game.getDescription(),
+      game.getReleaseDate(),
+      game.getAgeRating().id
+    ])]
 
     for (const platform of [...game.getPlatforms()]) {
       pipeline.push(this.connection.execute('INSERT INTO games_platforms (fk_platform, fk_game) VALUES (?, ?)',
@@ -63,5 +70,42 @@ export class GameRepository implements IGameRepository {
     }
 
     await Promise.all(pipeline)
+  }
+
+  async updateGame (newGame: Game): Promise<void> {
+    this.connection = await DBConnection.getConnection()
+
+    const pipeline = [this.connection.execute('DELETE FROM games_platforms WHERE fk_game = ?',
+      [newGame.id]
+    )]
+
+    for (const platform of [...newGame.getPlatforms()]) {
+      pipeline.push(this.connection.execute('INSERT INTO games_platforms (fk_platform, fk_game) VALUES (?, ?)',
+        [platform.id, newGame.id]
+      ))
+    }
+    pipeline.push(this.connection.execute('DELETE FROM games_genres WHERE fk_game = ?', [newGame.id]))
+
+    for (const genre of [...newGame.getGenres()]) {
+      pipeline.push(this.connection.execute('INSERT INTO games_genres (fk_genre, fk_game) VALUES (?, ?)',
+        [genre.id, newGame.id]
+      ))
+    }
+    pipeline.push(this.connection.execute(`
+      UPDATE games
+      SET price = ?,
+      SET name = ?,
+      SET description = ?,
+      SET releaseDate = ?,
+      SET fkAgeRating = ?
+    `, [
+      newGame.getPrice(),
+      newGame.getName(),
+      newGame.getDescription(),
+      newGame.getReleaseDate(),
+      newGame.getAgeRating().id
+    ]))
+
+    await Promise.all([...pipeline])
   }
 }
