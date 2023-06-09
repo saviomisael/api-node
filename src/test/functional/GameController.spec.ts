@@ -62,7 +62,7 @@ describe('POST /api/v1/games', () => {
   })
 })
 
-describe('GameController/createGame', () => {
+describe('POST /api/v1/games 2', () => {
   beforeEach(async () => {
     const requester = chai.request(app).keepOpen()
 
@@ -119,7 +119,7 @@ describe('GameController/createGame', () => {
   })
 })
 
-describe('GameController/getGameById', () => {
+describe('GET /api/v1/games/:id', () => {
   beforeEach(async () => {
     const requester = chai.request(app).keepOpen()
 
@@ -156,7 +156,7 @@ describe('GameController/getGameById', () => {
   })
 })
 
-describe('GameController/getGameById 2', () => {
+describe('GET /api/v1/games/:id 2', () => {
   let gameId: string
 
   beforeEach(async () => {
