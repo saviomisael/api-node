@@ -110,4 +110,18 @@ export class GameRepository implements IGameRepository {
 
     await Promise.all([...pipeline])
   }
+
+  async deleteGameById (gameId: string): Promise<void> {
+    this.connection = await DBConnection.getConnection()
+
+    const pipeline = [this.connection.execute('DELETE FROM games_platforms WHERE fk_game = ?',
+      [gameId]
+    )]
+
+    pipeline.push(this.connection.execute('DELETE FROM games_genres WHERE fk_game = ?', [gameId]))
+
+    pipeline.push(this.connection.execute('DELETE FROM games WHERE id = ?', [gameId]))
+
+    await Promise.all([...pipeline])
+  }
 }
