@@ -7,4 +7,5 @@ export interface IPlatformRepository {
   getById: (platformId: string) => Promise<Platform | null>
   getAll: () => Promise<Platform[]>
   platformIdExists: (platformId: string) => Promise<boolean>
+  hasRelatedGames: (platformId: string) => Promise<boolean>
 }
