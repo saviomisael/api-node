@@ -1,6 +1,7 @@
 import { Genre } from '$/domain/entities'
 import { type IGenreRepository } from '$/domain/repositories'
 import { GenreRepository } from '$/infrastructure/repositories'
+import { HasRelatedGamesError } from '../errors/HasRelatedGamesError'
 
 export class GenreService {
   private readonly repository: IGenreRepository = new GenreRepository()
@@ -32,6 +33,12 @@ export class GenreService {
     const genreToDelete = await this.repository.getGenreById(id)
 
     if (genreToDelete == null) return false
+
+    const hasRelatedGames = await this.repository.hasRelatedGames(id)
+
+    if (hasRelatedGames) {
+      throw new HasRelatedGamesError(id)
+    }
 
     await this.repository.deleteGenreById(id)
 
