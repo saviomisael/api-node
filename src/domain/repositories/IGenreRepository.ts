@@ -6,4 +6,5 @@ export interface IGenreRepository {
   getGenreByName: (name: string) => Promise<Genre | null>
   getAll: () => Promise<Genre[]>
   deleteGenreById: (id: string) => Promise<void>
+  hasRelatedGames: (genreId: string) => Promise<boolean>
 }

@@ -69,4 +69,15 @@ export class GenreRepository implements IGenreRepository {
       [id]
     )
   }
+
+  async hasRelatedGames (genreId: string): Promise<boolean> {
+    this.connection = await DBConnection.getConnection()
+
+    const result = await this.connection.execute('SELECT fk_genre FROM games_genres WHERE fk_genre = ?',
+      [genreId])
+
+    const rows = result[0] as any[]
+
+    return rows.length > 0
+  }
 }
