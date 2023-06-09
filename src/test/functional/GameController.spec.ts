@@ -369,4 +369,10 @@ describe('DELETE /api/v1/games/:id', () => {
 
     chai.expect(response).to.have.status(400)
   })
+
+  it('should return not found when game not exists', async () => {
+    const response = await chai.request(app).delete(apiRoutes.games.deleteById.replace(':id', '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d'))
+
+    chai.expect(response).to.have.status(404)
+  })
 })
