@@ -218,3 +218,12 @@ describe('GameController/getGameById 2', () => {
     chai.expect(response.body.data).to.have.length(1)
   })
 })
+
+describe('PUT /api/v1/games/:id', () => {
+  it('should return a bad request when only id is provided', async () => {
+    const response = await chai.request(app).put(apiRoutes.games.updateGameById.replace(':id', '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d'))
+
+    chai.expect(response).to.have.status(400)
+    chai.expect(response.body.errors.length > 0).to.be.true
+  })
+})
