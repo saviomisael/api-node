@@ -220,10 +220,10 @@ describe('GET /api/v1/games/:id 2', () => {
 })
 
 describe('PUT /api/v1/games/:id', () => {
-  it('should return a bad request when only id is provided', async () => {
-    const response = await chai.request(app).put(apiRoutes.games.updateGameById.replace(':id', '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d'))
+  it('should return not found when only id is provided', async () => {
+    const response = await chai.request(app).put(apiRoutes.games.updateGameById.replace(':id', '9b1deb4d-aaaa-aaaa-aaaa-2b0d7b3dcb6d'))
 
-    chai.expect(response).to.have.status(400)
+    chai.expect(response).to.have.status(404)
     chai.expect(response.body.errors.length > 0).to.be.true
   })
 
@@ -241,5 +241,77 @@ describe('PUT /api/v1/games/:id', () => {
     const response = await chai.request(app).put(apiRoutes.games.updateGameById.replace(':id', '8904dc7d-acc7-4106-9ff6-367090fe2e48')).send(gameMock)
 
     chai.expect(response).to.have.status(404)
+  })
+})
+
+describe('PUT /api/v1/games/:id 2', () => {
+  let gameId: string
+
+  beforeEach(async () => {
+    const requester = chai.request(app).keepOpen()
+
+    await requester.post(apiRoutes.platforms.create).send({ name: 'platform_x' })
+    await requester.post(apiRoutes.platforms.create).send({ name: 'platform_y' })
+    await Promise.all([
+      requester.post(apiRoutes.platforms.create).send({ name: 'platform_x' }),
+      requester.post(apiRoutes.platforms.create).send({ name: 'platform_y' }),
+      requester.post(apiRoutes.genres.create).send({ name: 'genre_x' }),
+      requester.post(apiRoutes.genres.create).send({ name: 'genre_y' })
+    ])
+  })
+
+  beforeEach(async () => {
+    const requester = chai.request(app).keepOpen()
+
+    const [allAges, allGenres, allPlatforms] = await Promise.all([
+      requester.get(apiRoutes.ageRatings.getAll),
+      requester.get(apiRoutes.genres.getAll),
+      requester.get(apiRoutes.platforms.getAll)
+    ])
+
+    const age = allAges.body.data[0].id as string
+    const platform1 = allPlatforms.body.data[0].id as string
+    const platform2 = allPlatforms.body.data[1].id as string
+    const genre1 = allGenres.body.data[0].id as string
+    const genre2 = allGenres.body.data[1].id as string
+
+    const gameRequestData = {
+      ageRatingId: age,
+      description: 'O jogo mais premiado de uma geração agora aprimorado para a atual! Experimente The Witcher 3: Wild Hunt e suas expansões nesta coleção definitiva, com melhor desempenho, visuais aprimorados, novo conteúdo adicional, modo fotografia e muito mais!',
+      genres: [genre1, genre2],
+      platforms: [platform1, platform2],
+      name: 'The Witcher 3: Wild Hunt - Complete Edition',
+      price: 100,
+      releaseDate: '2020-05-14'
+    }
+
+    const response = await requester.post(apiRoutes.games.create).send(gameRequestData)
+    gameId = response.body.data[0].id
+  })
+
+  afterEach(async () => {
+    const conn = await DBConnection.getConnection()
+
+    await Promise.all([
+      conn.execute('DELETE FROM games_genres'),
+      conn.execute('DELETE FROM games_platforms'),
+      conn.execute('DELETE FROM games')
+    ])
+  })
+
+  it('should return bad request when genres property has duplicates', async () => {
+    const gameMock = {
+      ageRatingId: '8904dc7d-acc7-4106-9ff6-367090fe2e48',
+      description: 'O jogo mais premiado de uma geração agora aprimorado para a atual! Experimente The Witcher 3: Wild Hunt e suas expansões nesta coleção definitiva, com melhor desempenho, visuais aprimorados, novo conteúdo adicional, modo fotografia e muito mais!',
+      genres: ['8904dc7d-acc7-4106-9ff6-367090fe2e48', '8904dc7d-acc7-4106-9ff6-367090fe2e48'],
+      name: 'The Witcher 3',
+      platforms: ['8904dc7d-acc7-4106-9ff6-367090fe2e48'],
+      price: 100,
+      releaseDate: '2020-05-14'
+    }
+
+    const response = await chai.request(app).put(apiRoutes.games.updateGameById.replace(':id', gameId)).send(gameMock)
+
+    chai.expect(response).to.have.status(400)
   })
 })

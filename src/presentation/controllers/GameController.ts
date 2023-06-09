@@ -1,8 +1,9 @@
 import { AgeNotExistsError } from '$/application/errors/AgeNotExistsError'
-import { GameNotExistsError } from '$/application/errors/GameNotExistsError'
 import { GenreNotExistsError } from '$/application/errors/GenreNotExistsError'
 import { PlatformNotExistsError } from '$/application/errors/PlatformNotExistsError'
 import { GameService } from '$/application/services/GameService'
+import { type IGameRepository } from '$/domain/repositories'
+import { GameRepository } from '$/infrastructure/repositories/GameRepository'
 import { validate } from 'class-validator'
 import { type Request, type Response } from 'express'
 import { type ResponseDTO } from '../dto'
@@ -15,6 +16,7 @@ import { BaseController } from './BaseController'
 
 export class GameController extends BaseController {
   private readonly gameService: GameService = new GameService()
+  private readonly gameRepository: IGameRepository = new GameRepository()
 
   async createGame (req: Request, res: Response): Promise<Response> {
     let response: ResponseDTO<GameResponseDTO>
@@ -142,6 +144,29 @@ export class GameController extends BaseController {
   async updateGameById (req: Request, res: Response): Promise<Response> {
     let response: ResponseDTO<GameResponseDTO>
 
+    const oldGame = await this.gameRepository.getById(req.params.id)
+
+    if (oldGame == null) {
+      response = {
+        data: [],
+        success: false,
+        errors: ['O jogo não existe.']
+      }
+
+      return this.notFound(res, response)
+    }
+
+    const containsGenresDuplicates = req.body.genres.length !== [...new Set([...req.body.genres as string[]])].length
+
+    if (containsGenresDuplicates) {
+      response = {
+        data: [],
+        success: false,
+        errors: ['Você enviou gêneros duplicados.']
+      }
+      return this.badRequest(res, response)
+    }
+
     const dto = new UpdateGameDTO()
     dto.id = req.params.id
     dto.ageRatingId = req.body.ageRatingId
@@ -187,8 +212,7 @@ export class GameController extends BaseController {
     } catch (error) {
       if (error instanceof AgeNotExistsError ||
         error instanceof PlatformNotExistsError ||
-        error instanceof GenreNotExistsError ||
-        error instanceof GameNotExistsError) {
+        error instanceof GenreNotExistsError) {
         response = {
           data: [],
           success: false,

@@ -8,7 +8,6 @@ import {
 import { AgeRatingRepository, GenreRepository, PlatformRepository } from '$/infrastructure/repositories'
 import { GameRepository } from '$/infrastructure/repositories/GameRepository'
 import { AgeNotExistsError } from '../errors/AgeNotExistsError'
-import { GameNotExistsError } from '../errors/GameNotExistsError'
 import { GenreNotExistsError } from '../errors/GenreNotExistsError'
 import { PlatformNotExistsError } from '../errors/PlatformNotExistsError'
 
@@ -52,12 +51,6 @@ export class GameService {
   }
 
   async updateGameById (game: Game): Promise<Game | null> {
-    const oldGame = await this.gameRepository.getById(game.id)
-
-    if (oldGame == null) {
-      throw new GameNotExistsError()
-    }
-
     const ageIdExists = await this.ageRepository.ageIdExists(game.getAgeRating().id)
 
     if (!ageIdExists) {
