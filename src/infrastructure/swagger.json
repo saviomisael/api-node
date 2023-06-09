@@ -338,6 +338,38 @@
           }
         }
       },
+      "delete": {
+        "tags": [
+          "games"
+        ],
+        "summary": "Deletes a game.",
+        "description": "Deletes a game.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "game id.",
+            "type": "string",
+            "example": "131db526-4599-4485-803d-cca8573693d5"
+          }
+        ],
+        "responses": {
+          "404": {
+            "description": "Game not exists.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GameResponse"
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "Game deleted successfully."
+          }
+        }
+      },
       "put": {
         "tags": [
           "games"
