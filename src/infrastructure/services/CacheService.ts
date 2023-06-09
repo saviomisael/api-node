@@ -28,7 +28,7 @@ export class CacheService<T> {
   }
 
   protected deserialize (rawData: string): T {
-    return JSON.parse(rawData)
+    return JSON.parse(rawData) as T
   }
 
   replaceKeys (replacements: Record<string, string>): this {

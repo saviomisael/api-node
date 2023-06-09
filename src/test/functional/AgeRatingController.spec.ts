@@ -23,7 +23,7 @@ describe('GET /api/v1/age-ratings', () => {
     const response = await chai.request(app).get(apiRoutes.ageRatings.getAll)
 
     const parsedJSON = response.body.data.map((x: any) => {
-      const age = new AgeRating(x.age, x.description)
+      const age = new AgeRating(x.age as string, x.description as string)
       age.id = x.id
 
       return age

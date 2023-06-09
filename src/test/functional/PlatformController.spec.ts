@@ -106,7 +106,7 @@ describe('DELETE /api/v1/platforms/:id', () => {
       .send({ name: 'Xbox Series S' })
       .then(async response => {
         const deleteRoute = apiRoutes.platforms.delete
-          .replace(':id', response.body.data[0].id)
+          .replace(':id', response.body.data[0].id as string)
 
         return await chai
           .request(app)

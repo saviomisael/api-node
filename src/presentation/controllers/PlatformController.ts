@@ -16,7 +16,7 @@ export class PlatformController extends BaseController {
   async createPlatform (req: Request, res: Response): Promise<Response> {
     let response: ResponseDTO<Platform>
 
-    const dto = new CreatePlatformDTO(req.body.name)
+    const dto = new CreatePlatformDTO(req.body.name as string)
 
     const errors = await validate(dto)
 

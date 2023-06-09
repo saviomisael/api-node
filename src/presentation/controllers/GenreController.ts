@@ -16,7 +16,7 @@ export class GenreController extends BaseController {
   async createGenre (req: Request, res: Response): Promise<Response> {
     let responseDTO: ResponseDTO<Genre>
 
-    const createGenreDTO = new CreateGenreDTO(req.body.name)
+    const createGenreDTO = new CreateGenreDTO(req.body.name as string)
 
     const errorsDTO = await validate(createGenreDTO)
 

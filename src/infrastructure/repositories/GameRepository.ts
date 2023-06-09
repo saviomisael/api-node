@@ -3,6 +3,7 @@ import { type IGameRepository } from '$/domain/repositories'
 import { type Connection } from 'mysql2/promise'
 import { DBConnection } from '../DBConnection'
 import { GameRowDataMapper } from '../mapper/GameRowDataMapper'
+import { type GameRowData } from '../row-data/GameRowData'
 
 export class GameRepository implements IGameRepository {
   private connection!: Connection
@@ -37,7 +38,7 @@ export class GameRepository implements IGameRepository {
 
     if (rows.length === 0) return null
 
-    const game = GameRowDataMapper.toEntity(rows[0])
+    const game = GameRowDataMapper.toEntity(rows[0] as GameRowData)
 
     return game
   }

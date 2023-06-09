@@ -16,7 +16,7 @@ export class GameController extends BaseController {
 
   async createGame (req: Request, res: Response): Promise<Response> {
     let response: ResponseDTO<GameResponseDTO>
-    const containsGenresDuplicates = req.body.genres.length !== [...new Set([...req.body.genres])].length
+    const containsGenresDuplicates = req.body.genres.length !== [...new Set([...req.body.genres as string[]])].length
 
     if (containsGenresDuplicates) {
       response = {
@@ -27,7 +27,7 @@ export class GameController extends BaseController {
       return this.badRequest(res, response)
     }
 
-    const containsPlatformsDuplicates = req.body.platforms.length !== [...new Set([...req.body.platforms])].length
+    const containsPlatformsDuplicates = req.body.platforms.length !== [...new Set([...req.body.platforms as string[]])].length
 
     if (containsPlatformsDuplicates) {
       response = {
@@ -40,13 +40,13 @@ export class GameController extends BaseController {
     }
 
     const dto = new CreateGameDTO()
-    dto.name = req.body.name
-    dto.price = req.body.price
-    dto.description = req.body.description
-    dto.releaseDate = req.body.releaseDate
-    dto.ageRatingId = req.body.ageRatingId
-    dto.platforms = req.body.platforms
-    dto.genres = req.body.genres
+    dto.name = req.body.name as string
+    dto.price = req.body.price as number
+    dto.description = req.body.description as string
+    dto.releaseDate = req.body.releaseDate as string
+    dto.ageRatingId = req.body.ageRatingId as string
+    dto.platforms = req.body.platforms as string[]
+    dto.genres = req.body.genres as string[]
 
     const errors = await validate(dto)
 
