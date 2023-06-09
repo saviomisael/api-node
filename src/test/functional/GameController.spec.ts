@@ -376,3 +376,65 @@ describe('DELETE /api/v1/games/:id', () => {
     chai.expect(response).to.have.status(404)
   })
 })
+
+describe('DELETE /api/v1/games/:id 2', () => {
+  let gameId: string
+
+  beforeEach(async () => {
+    const requester = chai.request(app).keepOpen()
+
+    await requester.post(apiRoutes.platforms.create).send({ name: 'platform_x' })
+    await requester.post(apiRoutes.platforms.create).send({ name: 'platform_y' })
+    await Promise.all([
+      requester.post(apiRoutes.platforms.create).send({ name: 'platform_x' }),
+      requester.post(apiRoutes.platforms.create).send({ name: 'platform_y' }),
+      requester.post(apiRoutes.genres.create).send({ name: 'genre_x' }),
+      requester.post(apiRoutes.genres.create).send({ name: 'genre_y' })
+    ])
+  })
+
+  beforeEach(async () => {
+    const requester = chai.request(app).keepOpen()
+
+    const [allAges, allGenres, allPlatforms] = await Promise.all([
+      requester.get(apiRoutes.ageRatings.getAll),
+      requester.get(apiRoutes.genres.getAll),
+      requester.get(apiRoutes.platforms.getAll)
+    ])
+
+    const age = allAges.body.data[0].id as string
+    const platform1 = allPlatforms.body.data[0].id as string
+    const platform2 = allPlatforms.body.data[1].id as string
+    const genre1 = allGenres.body.data[0].id as string
+    const genre2 = allGenres.body.data[1].id as string
+
+    const gameRequestData = {
+      ageRatingId: age,
+      description: 'O jogo mais premiado de uma geração agora aprimorado para a atual! Experimente The Witcher 3: Wild Hunt e suas expansões nesta coleção definitiva, com melhor desempenho, visuais aprimorados, novo conteúdo adicional, modo fotografia e muito mais!',
+      genres: [genre1, genre2],
+      platforms: [platform1, platform2],
+      name: 'The Witcher 3: Wild Hunt - Complete Edition',
+      price: 100,
+      releaseDate: '2020-05-14'
+    }
+
+    const response = await requester.post(apiRoutes.games.create).send(gameRequestData)
+    gameId = response.body.data[0].id
+  })
+
+  afterEach(async () => {
+    const conn = await DBConnection.getConnection()
+
+    await Promise.all([
+      conn.execute('DELETE FROM games_genres'),
+      conn.execute('DELETE FROM games_platforms'),
+      conn.execute('DELETE FROM games')
+    ])
+  })
+
+  it('should delete a game succesfully', async () => {
+    const response = await chai.request(app).delete(apiRoutes.games.deleteById.replace(':id', gameId))
+
+    chai.expect(response).to.have.status(204)
+  })
+})
