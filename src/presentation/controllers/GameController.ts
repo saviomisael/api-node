@@ -7,7 +7,9 @@ import { type IGameRepository } from '$/domain/repositories'
 import { GameRepository } from '$/infrastructure/repositories/GameRepository'
 import { validate } from 'class-validator'
 import { type Request, type Response } from 'express'
+import { minPages } from '../constants'
 import { CreateGameDTO, DeleteGameDTO, GetGameDTO, UpdateGameDTO, type GameResponseDTO, type ResponseDTO } from '../dto'
+import { type GamesGetAllResponseDTO } from '../dto/GamesGetAllResponseDTO'
 import { GameMapper } from '../mapper/GameMapper'
 import { BaseController } from './BaseController'
 
@@ -272,7 +274,7 @@ export class GameController extends BaseController {
   }
 
   async getAll (req: Request, res: Response): Promise<Response> {
-    const page = req.query.page !== undefined || Number(req.query.page) > 0 ? Number(req.query.page) : 1
+    let page = req.query.page !== undefined || Number(req.query.page) > 0 ? Number(req.query.page) : minPages
     const sort = req.query.sort !== undefined &&
     ['asc(releaseDate)', 'desc(releaseDate)'].includes(String(req.query.sort))
       ? String(req.query.sort)
@@ -281,10 +283,24 @@ export class GameController extends BaseController {
     const sortType = 'releaseDate'
     const sortOrder = sort.includes('asc') ? 'ASC' : 'DESC'
 
+    const maxPages = await this.gameRepository.getMaxPages()
+
+    if (page > maxPages) {
+      page = minPages
+    }
+
     const games = await this.gameService.getAll(page, sortType, sortOrder)
 
-    const response: ResponseDTO<GameResponseDTO> = {
-      data: games.map(x => GameMapper.fromEntityToGameResponse(x)),
+    const gamesResponse: GamesGetAllResponseDTO = {
+      games: games.map(x => GameMapper.fromEntityToGameResponse(x)),
+      currentPage: page,
+      lastPage: maxPages,
+      nextPage: page < maxPages ? page + 1 : null,
+      previousPage: page > minPages ? page - 1 : null
+    }
+
+    const response: ResponseDTO<GamesGetAllResponseDTO> = {
+      data: [gamesResponse],
       success: true,
       errors: []
     }
