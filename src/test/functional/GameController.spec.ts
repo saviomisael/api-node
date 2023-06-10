@@ -438,3 +438,12 @@ describe('DELETE /api/v1/games/:id 2', () => {
     chai.expect(response).to.have.status(204)
   })
 })
+
+describe('GET /api/v1/games', () => {
+  it('should return previousPage null', async () => {
+    const response = await chai.request(app).get(apiRoutes.games.getAll)
+
+    chai.expect(response).to.have.status(200)
+    chai.expect(response.body.data[0].previousPage).to.be.null
+  })
+})
