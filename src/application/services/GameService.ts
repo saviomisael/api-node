@@ -88,4 +88,10 @@ export class GameService {
 
     await this.gameRepository.deleteGameById(gameId)
   }
+
+  async getAll (page: number, sortType: 'releaseDate', sortOrder: 'ASC' | 'DESC'): Promise<Game[]> {
+    const allGames = await this.gameRepository.getAll(page, sortType, sortOrder)
+
+    return allGames
+  }
 }
