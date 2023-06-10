@@ -1,3 +1,4 @@
+import { HasRelatedGamesError } from '$/application/errors/HasRelatedGamesError'
 import { GenreService } from '$/application/services/GenreService'
 import { type Genre } from '$/domain/entities'
 import { apiRoutes } from '$/infrastructure/routes/apiRoutes'
@@ -104,16 +105,30 @@ export class GenreController extends BaseController {
       return this.badRequest(res, responseDTO)
     }
 
-    const result = await this.genreService.deleteGenre(deleteGenreDTO.id)
+    try {
+      const isDeleted = await this.genreService.deleteGenre(deleteGenreDTO.id)
 
-    if (result) return this.noContent(res)
+      if (isDeleted) return this.noContent(res)
 
-    responseDTO = {
-      data: [],
-      success: false,
-      errors: ['O gênero não existe.']
+      responseDTO = {
+        data: [],
+        success: false,
+        errors: ['O gênero não existe.']
+      }
+
+      return this.notFound(res, responseDTO)
+    } catch (error) {
+      if (error instanceof HasRelatedGamesError) {
+        responseDTO = {
+          data: [],
+          success: false,
+          errors: [error.message]
+        }
+
+        return this.conflict(res, responseDTO)
+      }
+
+      throw error
     }
-
-    return this.notFound(res, responseDTO)
   }
 }
