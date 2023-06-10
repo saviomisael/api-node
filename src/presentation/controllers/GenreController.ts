@@ -108,15 +108,17 @@ export class GenreController extends BaseController {
     try {
       const isDeleted = await this.genreService.deleteGenre(deleteGenreDTO.id)
 
-      if (isDeleted) return this.noContent(res)
+      if (!isDeleted) {
+        responseDTO = {
+          data: [],
+          success: false,
+          errors: ['O gênero não existe.']
+        }
 
-      responseDTO = {
-        data: [],
-        success: false,
-        errors: ['O gênero não existe.']
+        return this.notFound(res, responseDTO)
       }
 
-      return this.notFound(res, responseDTO)
+      return this.noContent(res)
     } catch (error) {
       if (error instanceof HasRelatedGamesError) {
         responseDTO = {
