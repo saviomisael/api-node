@@ -111,6 +111,16 @@
           },
           "204": {
             "description": "No content response."
+          },
+          "409": {
+            "description": "This genre has games using it.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GenreDeleteResponse"
+                }
+              }
+            }
           }
         }
       }
@@ -213,6 +223,16 @@
           },
           "204": {
             "description": "Successful operation."
+          },
+          "409": {
+            "description": "This platform has games using it.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlatformResponse"
+                }
+              }
+            }
           }
         }
       }
@@ -276,7 +296,7 @@
             }
           },
           "404": {
-            "description": "Returns genres, platforms or age rating that does not exists.",
+            "description": "Returns genres, platforms, or age rating that does not exist.",
             "content": {
               "application/json": {
                 "schema": {
@@ -397,7 +417,7 @@
         },
         "responses": {
           "404": {
-            "description": "Returns genres, game, platforms or age rating that does not exists.",
+            "description": "Returns genres, game, platforms, or age rating that does not exist.",
             "content": {
               "application/json": {
                 "schema": {
