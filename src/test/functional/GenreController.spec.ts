@@ -1,5 +1,8 @@
+import { AgeRating, Game, Genre, Platform } from '$/domain/entities'
 import { DBConnection } from '$/infrastructure/DBConnection'
 import { RedisClient } from '$/infrastructure/RedisClient'
+import { GenreRepository, PlatformRepository } from '$/infrastructure/repositories'
+import { GameRepository } from '$/infrastructure/repositories/GameRepository'
 import { apiRoutes } from '$/infrastructure/routes/apiRoutes'
 import app from '$/infrastructure/server'
 import chai from 'chai'
@@ -11,7 +14,13 @@ chai.use(chaiHttp)
 const clearData = async (): Promise<void> => {
   const connection = await DBConnection.getConnection()
 
-  await Promise.all([connection.execute('DELETE FROM games_genres'), connection.execute('DELETE FROM genres')])
+  await Promise.all([
+    connection.execute('DELETE FROM games_platforms'),
+    connection.execute('DELETE FROM games_genres'),
+    connection.execute('DELETE FROM platforms'),
+    connection.execute('DELETE FROM genres'),
+    connection.execute('DELETE FROM games')
+  ])
 
   if (!RedisClient.isOpen) await RedisClient.connect()
 
@@ -186,5 +195,44 @@ describe('DELETE /api/v1/genres/:id', () => {
       .get(apiRoutes.genres.getAll)
 
     chai.expect(allGenresResponse.body.data).to.have.length(0)
+  })
+})
+
+describe('DELETE /api/v1/genres/:id 2', () => {
+  beforeEach(async () => {
+    const allAges = await chai.request(app).get(apiRoutes.ageRatings.getAll)
+    const genreRepository = new GenreRepository()
+    const platformRepository = new PlatformRepository()
+    const gameRepository = new GameRepository()
+
+    const age = new AgeRating(allAges.body.data[0].age as string, allAges.body.data[0].description as string)
+    age.id = allAges.body.data[0].id
+
+    const genre = new Genre('genre_x')
+    genre.id = '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d'
+
+    const platform = new Platform('platform_x')
+    platform.id = '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d'
+
+    const game = new Game('The Witcher 3', 100, 'O jogo mais premiado de uma geração agora aprimorado para a atual! Experimente The Witcher 3: Wild Hunt e suas expansões nesta coleção definitiva, com melhor desempenho, visuais aprimorados, novo conteúdo adicional, modo fotografia e muito mais!', new Date(), age)
+    game.addGenre(genre)
+    game.addPlatform(platform)
+    game.id = '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d'
+
+    await Promise.all([
+      genreRepository.createGenre(genre),
+      platformRepository.create(platform),
+      gameRepository.create(game)
+    ])
+  })
+
+  afterEach(async () => {
+    await clearData()
+  })
+
+  it('should return conflict when genre has related games', async () => {
+    const response = await chai.request(app).delete(apiRoutes.genres.deleteById.replace(':id', '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d'))
+
+    chai.expect(response).to.have.status(409)
   })
 })
