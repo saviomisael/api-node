@@ -1,5 +1,5 @@
 import { HasRelatedGamesError } from '$/application/errors/HasRelatedGamesError'
-import { GenreService } from '$/application/services/GenreService'
+import { type GenreService } from '$/application/services/GenreService'
 import { type Genre } from '$/domain/entities'
 import { apiRoutes } from '$/infrastructure/routes/apiRoutes'
 import { type CacheService } from '$/infrastructure/services/CacheService'
@@ -11,8 +11,11 @@ import { validate } from 'class-validator'
 import { type Request, type Response } from 'express'
 
 export class GenreController extends BaseController {
-  private readonly genreService: GenreService = new GenreService()
   private readonly cacheService: CacheService<Genre[]> = CacheServiceFactory.getGenreCacheService()
+
+  constructor (private readonly genreService: GenreService) {
+    super()
+  }
 
   async createGenre (req: Request, res: Response): Promise<Response> {
     let responseDTO: ResponseDTO<Genre>

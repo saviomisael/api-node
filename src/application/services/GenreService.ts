@@ -1,10 +1,9 @@
 import { Genre } from '$/domain/entities'
 import { type IGenreRepository } from '$/domain/repositories'
-import { GenreRepository } from '$/infrastructure/repositories'
 import { HasRelatedGamesError } from '../errors/HasRelatedGamesError'
 
 export class GenreService {
-  private readonly repository: IGenreRepository = new GenreRepository()
+  constructor (private readonly repository: IGenreRepository) {}
 
   async createGenre (genreName: string): Promise<Genre | null> {
     const isAlreadyCreated =
