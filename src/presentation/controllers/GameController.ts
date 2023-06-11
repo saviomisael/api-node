@@ -8,8 +8,15 @@ import { GameRepository } from '$/infrastructure/repositories/GameRepository'
 import { validate } from 'class-validator'
 import { type Request, type Response } from 'express'
 import { minPages } from '../constants'
-import { CreateGameDTO, DeleteGameDTO, GetGameDTO, UpdateGameDTO, type GameResponseDTO, type ResponseDTO } from '../dto'
-import { type GamesGetAllResponseDTO } from '../dto/GamesGetAllResponseDTO'
+import {
+  CreateGameDTO,
+  DeleteGameDTO,
+  GetGameDTO,
+  UpdateGameDTO,
+  type GameResponseDTO,
+  type GamesGetAllResponseDTO,
+  type ResponseDTO
+} from '../dto'
 import { GameMapper } from '../mapper/GameMapper'
 import { BaseController } from './BaseController'
 
