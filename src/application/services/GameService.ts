@@ -6,6 +6,8 @@ import {
   type IPlatformRepository
 } from '$/domain/repositories'
 import { AgeRatingRepository, GameRepository, GenreRepository, PlatformRepository } from '$/infrastructure/repositories'
+import { type CacheService } from '$/infrastructure/services/CacheService'
+import { CacheServiceFactory } from '$/infrastructure/services/CacheServiceFactory'
 import { AgeNotExistsError } from '../errors/AgeNotExistsError'
 import { GameNotExistsError } from '../errors/GameNotExistsError'
 import { GenreNotExistsError } from '../errors/GenreNotExistsError'
@@ -16,6 +18,7 @@ export class GameService {
   private readonly ageRepository: IAgeRatingRepository = new AgeRatingRepository()
   private readonly platformRepository: IPlatformRepository = new PlatformRepository()
   private readonly genreRepository: IGenreRepository = new GenreRepository()
+  private cacheService!: CacheService<Game[]>
 
   async createGame(game: Game): Promise<Game | null> {
     const ageIdExists = await this.ageRepository.ageIdExists(game.getAgeRating().id)
@@ -92,8 +95,16 @@ export class GameService {
   }
 
   async getAll(page: number, sortType: 'releaseDate', sortOrder: 'ASC' | 'DESC'): Promise<Game[]> {
-    const allGames = await this.gameRepository.getAll(page, sortType, sortOrder)
+    this.cacheService = CacheServiceFactory.getGamesCacheService()
 
-    return allGames
+    const replacements = { page: String(page), sortType, sortOrder }
+    let games = await this.cacheService.replaceKeys(replacements).getData()
+
+    if (games != null) return games
+
+    games = await this.gameRepository.getAll(page, sortType, sortOrder)
+    await this.cacheService.replaceKeys(replacements).setData(games)
+
+    return games
   }
 }
