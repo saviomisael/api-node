@@ -18,7 +18,7 @@ export class GameService {
   private readonly platformRepository: IPlatformRepository = new PlatformRepository()
   private readonly genreRepository: IGenreRepository = new GenreRepository()
 
-  async createGame (game: Game): Promise<Game | null> {
+  async createGame(game: Game): Promise<Game | null> {
     const ageIdExists = await this.ageRepository.ageIdExists(game.getAgeRating().id)
 
     if (!ageIdExists) {
@@ -46,12 +46,12 @@ export class GameService {
     return newGame
   }
 
-  async getGameById (gameId: string): Promise<Game | null> {
+  async getGameById(gameId: string): Promise<Game | null> {
     const game = await this.gameRepository.getById(gameId)
     return game
   }
 
-  async updateGameById (game: Game): Promise<Game | null> {
+  async updateGameById(game: Game): Promise<Game | null> {
     const ageIdExists = await this.ageRepository.ageIdExists(game.getAgeRating().id)
 
     if (!ageIdExists) {
@@ -74,12 +74,15 @@ export class GameService {
       }
     }
 
-    const [, updatedGame] = await Promise.all([this.gameRepository.updateGame(game), this.gameRepository.getById(game.id)])
+    const [, updatedGame] = await Promise.all([
+      this.gameRepository.updateGame(game),
+      this.gameRepository.getById(game.id)
+    ])
 
     return updatedGame
   }
 
-  async deleteGameById (gameId: string): Promise<void> {
+  async deleteGameById(gameId: string): Promise<void> {
     const game = await this.gameRepository.getById(gameId)
 
     if (game == null) {
@@ -89,7 +92,7 @@ export class GameService {
     await this.gameRepository.deleteGameById(gameId)
   }
 
-  async getAll (page: number, sortType: 'releaseDate', sortOrder: 'ASC' | 'DESC'): Promise<Game[]> {
+  async getAll(page: number, sortType: 'releaseDate', sortOrder: 'ASC' | 'DESC'): Promise<Game[]> {
     const allGames = await this.gameRepository.getAll(page, sortType, sortOrder)
 
     return allGames

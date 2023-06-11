@@ -6,22 +6,16 @@ import { DBConnection } from '../DBConnection'
 export class PlatformRepository implements IPlatformRepository {
   private connection!: Connection
 
-  async create (platform: Platform): Promise<void> {
+  async create(platform: Platform): Promise<void> {
     this.connection = await DBConnection.getConnection()
 
-    await this.connection.execute(
-      'INSERT INTO platforms (id, name) VALUES (?, ?)',
-      [platform.id, platform.getName()]
-    )
+    await this.connection.execute('INSERT INTO platforms (id, name) VALUES (?, ?)', [platform.id, platform.getName()])
   }
 
-  async getByName (name: string): Promise<Platform | null> {
+  async getByName(name: string): Promise<Platform | null> {
     this.connection = await DBConnection.getConnection()
 
-    const result = await this.connection.execute(
-      'SELECT * FROM platforms WHERE name = ?',
-      [name]
-    )
+    const result = await this.connection.execute('SELECT * FROM platforms WHERE name = ?', [name])
 
     const rows = result[0] as Platform[]
 
@@ -32,22 +26,16 @@ export class PlatformRepository implements IPlatformRepository {
     return data
   }
 
-  async deletePlatform (platformId: string): Promise<void> {
+  async deletePlatform(platformId: string): Promise<void> {
     this.connection = await DBConnection.getConnection()
 
-    await this.connection.execute(
-      'DELETE FROM platforms WHERE id = ?',
-      [platformId]
-    )
+    await this.connection.execute('DELETE FROM platforms WHERE id = ?', [platformId])
   }
 
-  async getById (id: string): Promise<Platform | null> {
+  async getById(id: string): Promise<Platform | null> {
     this.connection = await DBConnection.getConnection()
 
-    const result = await this.connection.execute(
-      'SELECT * FROM platforms WHERE id = ?',
-      [id]
-    )
+    const result = await this.connection.execute('SELECT * FROM platforms WHERE id = ?', [id])
 
     const rows = result[0] as Platform[]
 
@@ -60,7 +48,7 @@ export class PlatformRepository implements IPlatformRepository {
     return data
   }
 
-  async getAll (): Promise<Platform[]> {
+  async getAll(): Promise<Platform[]> {
     this.connection = await DBConnection.getConnection()
 
     const result = await this.connection.execute('SELECT * FROM platforms')
@@ -70,7 +58,7 @@ export class PlatformRepository implements IPlatformRepository {
     return platforms
   }
 
-  async platformIdExists (platformId: string): Promise<boolean> {
+  async platformIdExists(platformId: string): Promise<boolean> {
     this.connection = await DBConnection.getConnection()
 
     const result = await this.connection.execute('SELECT id FROM platforms WHERE id = ?', [platformId])
@@ -80,10 +68,12 @@ export class PlatformRepository implements IPlatformRepository {
     return rows.length > 0
   }
 
-  async hasRelatedGames (platformId: string): Promise<boolean> {
+  async hasRelatedGames(platformId: string): Promise<boolean> {
     this.connection = await DBConnection.getConnection()
 
-    const result = await this.connection.execute('SELECT fk_platform FROM games_platforms WHERE fk_platform = ?', [platformId])
+    const result = await this.connection.execute('SELECT fk_platform FROM games_platforms WHERE fk_platform = ?', [
+      platformId
+    ])
 
     const rows = result[0] as any[]
 

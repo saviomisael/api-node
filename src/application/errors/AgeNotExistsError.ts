@@ -1,5 +1,5 @@
 export class AgeNotExistsError extends Error {
-  constructor () {
+  constructor() {
     super('Faixa etária provida não existe.')
   }
 }

@@ -7,9 +7,9 @@ export class CreateGenreDTO {
   @MinLength(2, {
     message: 'O nome do gênero deve ter pelo menos dois caracteres.'
   })
-    name!: string
+  name!: string
 
-  constructor (name: string) {
+  constructor(name: string) {
     this.name = name
   }
 }

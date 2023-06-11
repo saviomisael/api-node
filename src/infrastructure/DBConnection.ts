@@ -3,9 +3,9 @@ import mysql, { type Connection } from 'mysql2/promise'
 export class DBConnection {
   private static instance: Connection
 
-  private constructor () {}
+  private constructor() {}
 
-  public static async getConnection (): Promise<Connection> {
+  public static async getConnection(): Promise<Connection> {
     const { MYSQL_DATABASE, MYSQL_USER, MYSQL_PASSWORD } = process.env
 
     if (DBConnection.instance === null || DBConnection.instance === undefined) {

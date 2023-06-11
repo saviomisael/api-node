@@ -14,7 +14,7 @@ export class PlatformController extends BaseController {
   private readonly platformService = new PlatformService()
   private readonly cacheService: CacheService<Platform[]> = CacheServiceFactory.getPlatformCacheService()
 
-  async createPlatform (req: Request, res: Response): Promise<Response> {
+  async createPlatform(req: Request, res: Response): Promise<Response> {
     let response: ResponseDTO<Platform>
 
     const dto = new CreatePlatformDTO(req.body.name as string)
@@ -56,7 +56,7 @@ export class PlatformController extends BaseController {
     return this.created(res, response)
   }
 
-  async deletePlatform (req: Request, res: Response): Promise<Response> {
+  async deletePlatform(req: Request, res: Response): Promise<Response> {
     let response: ResponseDTO<Platform> = {
       data: [],
       errors: [],
@@ -106,7 +106,7 @@ export class PlatformController extends BaseController {
     }
   }
 
-  async getAllPlatforms (_: Request, res: Response): Promise<Response> {
+  async getAllPlatforms(_: Request, res: Response): Promise<Response> {
     const platformsFromCache = await this.cacheService.getData()
     let response: ResponseDTO<Platform>
 

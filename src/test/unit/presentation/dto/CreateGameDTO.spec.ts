@@ -9,7 +9,7 @@ describe('CreateGameDTO', () => {
 
     const errors = await validate(dto)
 
-    const nameErrors = errors.find(x => x.property === 'name')
+    const nameErrors = errors.find((x) => x.property === 'name')
 
     chai.expect(errors.length > 0).to.be.true
     chai.expect(nameErrors !== undefined).to.be.true
@@ -22,7 +22,7 @@ describe('CreateGameDTO', () => {
 
     const errors = await validate(dto)
 
-    const descriptionErrors = errors.find(x => x.property === 'description')
+    const descriptionErrors = errors.find((x) => x.property === 'description')
 
     chai.expect(errors.length > 0).to.be.true
     chai.expect(descriptionErrors !== undefined).to.be.true
@@ -35,7 +35,7 @@ describe('CreateGameDTO', () => {
 
     const errors = await validate(dto)
 
-    const releaseDateErrors = errors.find(x => x.property === 'releaseDate')
+    const releaseDateErrors = errors.find((x) => x.property === 'releaseDate')
 
     chai.expect(errors.length > 0).to.be.true
     chai.expect(releaseDateErrors?.constraints?.matches).to.be.equal('A data de lançamento deve ser uma data.')
@@ -47,7 +47,7 @@ describe('CreateGameDTO', () => {
 
     const errors = await validate(dto)
 
-    const ageRatingIdErrors = errors.find(x => x.property === 'ageRatingId')
+    const ageRatingIdErrors = errors.find((x) => x.property === 'ageRatingId')
 
     chai.expect(errors.length > 0)
     chai.expect(ageRatingIdErrors?.constraints?.matches).to.be.equal('O id da faixa etária deve ser um uuid válido.')
@@ -58,7 +58,7 @@ describe('CreateGameDTO', () => {
     dto.platforms = ['123', '321', '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d']
 
     const errors = await validate(dto)
-    const platformsErrors = errors.find(x => x.property === 'platforms')
+    const platformsErrors = errors.find((x) => x.property === 'platforms')
 
     chai.expect(errors.length > 0).to.be.true
 
@@ -70,7 +70,7 @@ describe('CreateGameDTO', () => {
     dto.platforms = []
 
     const errors = await validate(dto)
-    const platformsErrors = errors.find(x => x.property === 'platforms')
+    const platformsErrors = errors.find((x) => x.property === 'platforms')
 
     chai.expect(errors.length > 0).to.be.true
     chai.expect(platformsErrors?.constraints?.arrayMinSize).to.be.equal('Deve ter pelo menos uma plataforma no array.')
@@ -78,10 +78,16 @@ describe('CreateGameDTO', () => {
 
   it('should return an error when platforms length is greater than 4', async () => {
     const dto = new CreateGameDTO()
-    dto.platforms = ['9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d', '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6a', '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6b', '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6c', '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6e']
+    dto.platforms = [
+      '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d',
+      '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6a',
+      '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6b',
+      '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6c',
+      '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6e'
+    ]
 
     const errors = await validate(dto)
-    const platformsErrors = errors.find(x => x.property === 'platforms')
+    const platformsErrors = errors.find((x) => x.property === 'platforms')
 
     chai.expect(errors.length > 0).to.be.true
     chai.expect(platformsErrors?.constraints?.arrayMaxSize).to.be.equal('As plataformas podem ser no máximo 4.')
@@ -92,7 +98,7 @@ describe('CreateGameDTO', () => {
     dto.genres = ['123', '321', '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d']
 
     const errors = await validate(dto)
-    const genresErrors = errors.find(x => x.property === 'genres')
+    const genresErrors = errors.find((x) => x.property === 'genres')
 
     chai.expect(errors.length > 0).to.be.true
 
@@ -104,7 +110,7 @@ describe('CreateGameDTO', () => {
     dto.genres = []
 
     const errors = await validate(dto)
-    const genresErrors = errors.find(x => x.property === 'genres')
+    const genresErrors = errors.find((x) => x.property === 'genres')
 
     chai.expect(errors.length > 0).to.be.true
     chai.expect(genresErrors?.constraints?.arrayMinSize).to.be.equal('Deve ter pelo menos um gênero no array.')
@@ -112,10 +118,16 @@ describe('CreateGameDTO', () => {
 
   it('should return an error when genres length is greater than 4', async () => {
     const dto = new CreateGameDTO()
-    dto.genres = ['9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d', '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6a', '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6b', '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6c', '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6e']
+    dto.genres = [
+      '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d',
+      '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6a',
+      '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6b',
+      '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6c',
+      '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6e'
+    ]
 
     const errors = await validate(dto)
-    const genresErrors = errors.find(x => x.property === 'genres')
+    const genresErrors = errors.find((x) => x.property === 'genres')
 
     chai.expect(errors.length > 0).to.be.true
     chai.expect(genresErrors?.constraints?.arrayMaxSize).to.be.equal('Os gêneros podem ser no máximo 4.')
@@ -126,10 +138,12 @@ describe('CreateGameDTO', () => {
     dto.price = -1
 
     const errors = await validate(dto)
-    const priceErrors = errors.find(x => x.property === 'price')
+    const priceErrors = errors.find((x) => x.property === 'price')
 
     chai.expect(errors.length > 0).to.be.true
-    chai.expect(priceErrors?.constraints?.min).to.be.equal('O preço do jogo deve ser um valor positivo ou igual a zero.')
+    chai
+      .expect(priceErrors?.constraints?.min)
+      .to.be.equal('O preço do jogo deve ser um valor positivo ou igual a zero.')
   })
 
   it('should not return an error when price is equal to zero', async () => {
@@ -137,7 +151,7 @@ describe('CreateGameDTO', () => {
     dto.price = 0
 
     const errors = await validate(dto)
-    const priceErrors = errors.find(x => x.property === 'price')
+    const priceErrors = errors.find((x) => x.property === 'price')
 
     chai.expect(priceErrors?.constraints).to.be.undefined
   })

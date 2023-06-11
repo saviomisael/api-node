@@ -32,52 +32,37 @@ describe('POST /api/v1/genres', () => {
     await clearData()
   })
 
-  it('should return a bad request response when name is not provided',
-    async () => {
-      const response = await chai.request(app)
-        .post(apiRoutes.genres.create)
-        .send({})
+  it('should return a bad request response when name is not provided', async () => {
+    const response = await chai.request(app).post(apiRoutes.genres.create).send({})
 
-      chai.expect(response).to.have.status(400)
-      chai.expect(response.body.errors).to.have.length(2)
-      chai.expect(response.body.data).to.have.length(0)
-      chai.expect(response.body.success).to.be.false
+    chai.expect(response).to.have.status(400)
+    chai.expect(response.body.errors).to.have.length(2)
+    chai.expect(response.body.data).to.have.length(0)
+    chai.expect(response.body.success).to.be.false
+  })
+
+  it('should return a bad request when genre already exists.', async () => {
+    const firstResponse = await chai.request(app).post(apiRoutes.genres.create).send({
+      name: 'action'
     })
 
-  it('should return a bad request when genre already exists.',
-    async () => {
-      const firstResponse = await chai
-        .request(app)
-        .post(apiRoutes.genres.create)
-        .send({
-          name: 'action'
-        })
+    chai.expect(firstResponse).to.have.status(201)
 
-      chai.expect(firstResponse).to.have.status(201)
-
-      const secondResponse = await chai
-        .request(app)
-        .post(apiRoutes.genres.create)
-        .send({
-          name: 'action'
-        })
-
-      chai.expect(secondResponse).to.have.status(400)
-      chai.expect(secondResponse.body.success).to.be.false
-      chai.expect(secondResponse.body.errors).to.have.length(1)
-      chai.expect(secondResponse.body.errors[0]).to
-        .be
-        .equal('Esse gênero já existe.')
-      chai.expect(secondResponse.body.data).to.have.length(0)
+    const secondResponse = await chai.request(app).post(apiRoutes.genres.create).send({
+      name: 'action'
     })
+
+    chai.expect(secondResponse).to.have.status(400)
+    chai.expect(secondResponse.body.success).to.be.false
+    chai.expect(secondResponse.body.errors).to.have.length(1)
+    chai.expect(secondResponse.body.errors[0]).to.be.equal('Esse gênero já existe.')
+    chai.expect(secondResponse.body.data).to.have.length(0)
+  })
 
   it('should create a genre', async () => {
-    const response = await chai
-      .request(app)
-      .post(apiRoutes.genres.create)
-      .send({
-        name: 'action'
-      })
+    const response = await chai.request(app).post(apiRoutes.genres.create).send({
+      name: 'action'
+    })
 
     chai.expect(response).to.have.status(201)
     chai.expect(response.body.success).to.be.true
@@ -102,12 +87,8 @@ describe('GET /api/v1/genres', () => {
   })
 
   it('should return a genre array with status 200', async () => {
-    await chai.request(app)
-      .post(apiRoutes.genres.create)
-      .send({ name: 'action' })
-    await chai.request(app)
-      .post(apiRoutes.genres.create)
-      .send({ name: 'drama' })
+    await chai.request(app).post(apiRoutes.genres.create).send({ name: 'action' })
+    await chai.request(app).post(apiRoutes.genres.create).send({ name: 'drama' })
 
     const response = await chai.request(app).get(apiRoutes.genres.getAll)
 
@@ -121,7 +102,8 @@ describe('GET /api/v1/genres', () => {
 
   it('should return a genre list from cache in less time', async () => {
     for (let index = 0; index < 10; index++) {
-      await chai.request(app)
+      await chai
+        .request(app)
         .post(apiRoutes.genres.create)
         .send({ name: `genre${index}` })
     }
@@ -150,24 +132,19 @@ describe('DELETE /api/v1/genres/:id', () => {
     await clearData()
   })
 
-  it('should not delete genre when genre id does not have 32 characters.',
-    async () => {
-      const response = await chai
-        .request(app)
-        .delete(apiRoutes.genres.deleteById.replace(':id', '123'))
+  it('should not delete genre when genre id does not have 32 characters.', async () => {
+    const response = await chai.request(app).delete(apiRoutes.genres.deleteById.replace(':id', '123'))
 
-      chai.expect(response).to.have.status(400)
-      chai.expect(response.body.data).to.have.length(0)
-      chai.expect(response.body.errors).to.have.length(1)
-      chai.expect(response.body.success).to.be.false
-    })
+    chai.expect(response).to.have.status(400)
+    chai.expect(response.body.data).to.have.length(0)
+    chai.expect(response.body.errors).to.have.length(1)
+    chai.expect(response.body.success).to.be.false
+  })
 
   it('should not delete genre when genre not exists.', async () => {
     const response = await chai
       .request(app)
-      .delete(apiRoutes.genres.deleteById
-        .replace(':id', '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d')
-      )
+      .delete(apiRoutes.genres.deleteById.replace(':id', '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d'))
 
     chai.expect(response).to.have.status(404)
     chai.expect(response.body.success).to.be.false
@@ -177,22 +154,15 @@ describe('DELETE /api/v1/genres/:id', () => {
   })
 
   it('should delete genre', async () => {
-    const response = await chai
-      .request(app)
-      .post(apiRoutes.genres.create)
-      .send({ name: 'action' })
+    const response = await chai.request(app).post(apiRoutes.genres.create).send({ name: 'action' })
 
     const genreId = response.body.data[0].id as string
 
-    const deleteResponse = await chai
-      .request(app)
-      .delete(apiRoutes.genres.deleteById.replace(':id', genreId))
+    const deleteResponse = await chai.request(app).delete(apiRoutes.genres.deleteById.replace(':id', genreId))
 
     chai.expect(deleteResponse).to.have.status(204)
 
-    const allGenresResponse = await chai
-      .request(app)
-      .get(apiRoutes.genres.getAll)
+    const allGenresResponse = await chai.request(app).get(apiRoutes.genres.getAll)
 
     chai.expect(allGenresResponse.body.data).to.have.length(0)
   })
@@ -214,7 +184,13 @@ describe('DELETE /api/v1/genres/:id 2', () => {
     const platform = new Platform('platform_x')
     platform.id = '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d'
 
-    const game = new Game('The Witcher 3', 100, 'O jogo mais premiado de uma geração agora aprimorado para a atual! Experimente The Witcher 3: Wild Hunt e suas expansões nesta coleção definitiva, com melhor desempenho, visuais aprimorados, novo conteúdo adicional, modo fotografia e muito mais!', new Date(), age)
+    const game = new Game(
+      'The Witcher 3',
+      100,
+      'O jogo mais premiado de uma geração agora aprimorado para a atual! Experimente The Witcher 3: Wild Hunt e suas expansões nesta coleção definitiva, com melhor desempenho, visuais aprimorados, novo conteúdo adicional, modo fotografia e muito mais!',
+      new Date(),
+      age
+    )
     game.addGenre(genre)
     game.addPlatform(platform)
     game.id = '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d'
@@ -231,7 +207,9 @@ describe('DELETE /api/v1/genres/:id 2', () => {
   })
 
   it('should return conflict when genre has related games', async () => {
-    const response = await chai.request(app).delete(apiRoutes.genres.deleteById.replace(':id', '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d'))
+    const response = await chai
+      .request(app)
+      .delete(apiRoutes.genres.deleteById.replace(':id', '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d'))
 
     chai.expect(response).to.have.status(409)
   })

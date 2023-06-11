@@ -7,31 +7,31 @@ import chai from 'chai'
 
 describe('GenreService', () => {
   it('should throw a HasRelatedGamesError', async () => {
-    const GenreRepositoryMock = new class implements IGenreRepository {
-      async createGenre (_: Genre): Promise<void> {
+    const GenreRepositoryMock = new (class implements IGenreRepository {
+      async createGenre(_: Genre): Promise<void> {
         throw new NotImplementedError()
       }
 
-      async getGenreById (_: string): Promise<Genre | null> {
+      async getGenreById(_: string): Promise<Genre | null> {
         return new Genre('genre_x')
       }
 
-      async getGenreByName (_: string): Promise<Genre | null> {
+      async getGenreByName(_: string): Promise<Genre | null> {
         throw new NotImplementedError()
       }
 
-      async getAll (): Promise<Genre[]> {
+      async getAll(): Promise<Genre[]> {
         throw new NotImplementedError()
       }
 
-      async deleteGenreById (_: string): Promise<void> {
+      async deleteGenreById(_: string): Promise<void> {
         throw new NotImplementedError()
       }
 
-      async hasRelatedGames (_: string): Promise<boolean> {
+      async hasRelatedGames(_: string): Promise<boolean> {
         return true
       }
-    }()
+    })()
 
     const genreService = new GenreService(GenreRepositoryMock)
 

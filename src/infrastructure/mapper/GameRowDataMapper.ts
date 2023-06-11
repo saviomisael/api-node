@@ -2,9 +2,9 @@ import { AgeRating, Game, Genre, Platform } from '$/domain/entities'
 import { type GameRowData } from '../row-data/GameRowData'
 
 export class GameRowDataMapper {
-  private constructor () {}
+  private constructor() {}
 
-  static toEntity (row: GameRowData): Game {
+  static toEntity(row: GameRowData): Game {
     const age = new AgeRating(row.age, row.age_rating_description)
     age.id = row.age_rating_id
     const game = new Game(row.game_name, row.game_price, row.game_description, new Date(row.releaseDate), age)

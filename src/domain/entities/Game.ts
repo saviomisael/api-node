@@ -3,7 +3,7 @@ import { AggregateRoot } from '$/domain/entities/AggregateRoot'
 export class Game extends AggregateRoot {
   private readonly platforms!: Set<Platform>
   private readonly genres!: Set<Genre>
-  constructor (
+  constructor(
     private readonly name: string,
     private readonly price: number,
     private readonly description: string,
@@ -15,39 +15,39 @@ export class Game extends AggregateRoot {
     this.genres = new Set()
   }
 
-  addPlatform (platform: Platform): void {
+  addPlatform(platform: Platform): void {
     this.platforms.add(platform)
   }
 
-  addGenre (genre: Genre): void {
+  addGenre(genre: Genre): void {
     this.genres.add(genre)
   }
 
-  getName (): string {
+  getName(): string {
     return this.name
   }
 
-  getPrice (): number {
+  getPrice(): number {
     return this.price
   }
 
-  getDescription (): string {
+  getDescription(): string {
     return this.description
   }
 
-  getReleaseDate (): Date {
+  getReleaseDate(): Date {
     return this.releaseDate
   }
 
-  getAgeRating (): AgeRating {
+  getAgeRating(): AgeRating {
     return this.ageRating
   }
 
-  getPlatforms (): Set<Platform> {
+  getPlatforms(): Set<Platform> {
     return this.platforms
   }
 
-  getGenres (): Set<Genre> {
+  getGenres(): Set<Genre> {
     return this.genres
   }
 }

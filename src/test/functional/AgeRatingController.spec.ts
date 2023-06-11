@@ -33,23 +33,17 @@ describe('GET /api/v1/age-ratings', () => {
     chai.expect(response.body.success).to.be.true
     chai.expect(response.body.errors).to.have.length(0)
 
-    chai.expect(parsedJSON
-      .some((x: AgeRating) => x.getAge() === 'L')).to.be.true
+    chai.expect(parsedJSON.some((x: AgeRating) => x.getAge() === 'L')).to.be.true
 
-    chai.expect(parsedJSON
-      .some((x: AgeRating) => x.getAge() === '10+')).to.be.true
+    chai.expect(parsedJSON.some((x: AgeRating) => x.getAge() === '10+')).to.be.true
 
-    chai.expect(parsedJSON
-      .some((x: AgeRating) => x.getAge() === '12+')).to.be.true
+    chai.expect(parsedJSON.some((x: AgeRating) => x.getAge() === '12+')).to.be.true
 
-    chai.expect(parsedJSON
-      .some((x: AgeRating) => x.getAge() === '14+')).to.be.true
+    chai.expect(parsedJSON.some((x: AgeRating) => x.getAge() === '14+')).to.be.true
 
-    chai.expect(parsedJSON
-      .some((x: AgeRating) => x.getAge() === '16+')).to.be.true
+    chai.expect(parsedJSON.some((x: AgeRating) => x.getAge() === '16+')).to.be.true
 
-    chai.expect(parsedJSON
-      .some((x: AgeRating) => x.getAge() === '18+')).to.be.true
+    chai.expect(parsedJSON.some((x: AgeRating) => x.getAge() === '18+')).to.be.true
   })
 
   it('should return all age ratings from cache in less time', async () => {

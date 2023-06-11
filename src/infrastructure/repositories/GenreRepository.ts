@@ -6,22 +6,16 @@ import { DBConnection } from '../DBConnection'
 export class GenreRepository implements IGenreRepository {
   private connection!: Connection
 
-  async createGenre (genre: Genre): Promise<void> {
+  async createGenre(genre: Genre): Promise<void> {
     this.connection = await DBConnection.getConnection()
 
-    await this.connection.execute(
-      'INSERT INTO genres (id, name) VALUES (?, ?)',
-      [genre.id, genre.getName()]
-    )
+    await this.connection.execute('INSERT INTO genres (id, name) VALUES (?, ?)', [genre.id, genre.getName()])
   }
 
-  async getGenreById (id: string): Promise<Genre | null> {
+  async getGenreById(id: string): Promise<Genre | null> {
     this.connection = await DBConnection.getConnection()
 
-    const result = await this.connection.execute(
-      'SELECT * FROM genres WHERE id = ?',
-      [id]
-    )
+    const result = await this.connection.execute('SELECT * FROM genres WHERE id = ?', [id])
 
     const rows = result[0] as Genre[]
 
@@ -32,13 +26,10 @@ export class GenreRepository implements IGenreRepository {
     return data
   }
 
-  async getGenreByName (name: string): Promise<Genre | null> {
+  async getGenreByName(name: string): Promise<Genre | null> {
     this.connection = await DBConnection.getConnection()
 
-    const result = await this.connection.execute(
-      'SELECT * FROM genres WHERE name = ?',
-      [name]
-    )
+    const result = await this.connection.execute('SELECT * FROM genres WHERE name = ?', [name])
 
     const rows = result[0] as Genre[]
 
@@ -51,7 +42,7 @@ export class GenreRepository implements IGenreRepository {
     return genre
   }
 
-  async getAll (): Promise<Genre[]> {
+  async getAll(): Promise<Genre[]> {
     this.connection = await DBConnection.getConnection()
 
     const result = await this.connection.execute('SELECT * FROM genres')
@@ -61,20 +52,16 @@ export class GenreRepository implements IGenreRepository {
     return data
   }
 
-  async deleteGenreById (id: string): Promise<void> {
+  async deleteGenreById(id: string): Promise<void> {
     this.connection = await DBConnection.getConnection()
 
-    await this.connection.execute(
-      'DELETE FROM genres WHERE id = ?',
-      [id]
-    )
+    await this.connection.execute('DELETE FROM genres WHERE id = ?', [id])
   }
 
-  async hasRelatedGames (genreId: string): Promise<boolean> {
+  async hasRelatedGames(genreId: string): Promise<boolean> {
     this.connection = await DBConnection.getConnection()
 
-    const result = await this.connection.execute('SELECT fk_genre FROM games_genres WHERE fk_genre = ?',
-      [genreId])
+    const result = await this.connection.execute('SELECT fk_genre FROM games_genres WHERE fk_genre = ?', [genreId])
 
     const rows = result[0] as any[]
 

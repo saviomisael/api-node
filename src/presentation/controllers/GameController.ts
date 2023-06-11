@@ -17,9 +17,9 @@ export class GameController extends BaseController {
   private readonly gameService: GameService = new GameService()
   private readonly gameRepository: IGameRepository = new GameRepository()
 
-  async createGame (req: Request, res: Response): Promise<Response> {
+  async createGame(req: Request, res: Response): Promise<Response> {
     let response: ResponseDTO<GameResponseDTO>
-    const containsGenresDuplicates = req.body.genres.length !== [...new Set([...req.body.genres as string[]])].length
+    const containsGenresDuplicates = req.body.genres.length !== [...new Set([...(req.body.genres as string[])])].length
 
     if (containsGenresDuplicates) {
       response = {
@@ -30,7 +30,8 @@ export class GameController extends BaseController {
       return this.badRequest(res, response)
     }
 
-    const containsPlatformsDuplicates = req.body.platforms.length !== [...new Set([...req.body.platforms as string[]])].length
+    const containsPlatformsDuplicates =
+      req.body.platforms.length !== [...new Set([...(req.body.platforms as string[])])].length
 
     if (containsPlatformsDuplicates) {
       response = {
@@ -54,7 +55,7 @@ export class GameController extends BaseController {
     const errors = await validate(dto)
 
     if (errors.length > 0) {
-      const errorsMessages = errors.flatMap(x => Object.values(x.constraints as Record<string, string>))
+      const errorsMessages = errors.flatMap((x) => Object.values(x.constraints as Record<string, string>))
 
       response = {
         data: [],
@@ -86,9 +87,11 @@ export class GameController extends BaseController {
 
       return this.created(res, response)
     } catch (error) {
-      if (error instanceof AgeNotExistsError ||
+      if (
+        error instanceof AgeNotExistsError ||
         error instanceof PlatformNotExistsError ||
-        error instanceof GenreNotExistsError) {
+        error instanceof GenreNotExistsError
+      ) {
         response = {
           data: [],
           success: false,
@@ -102,7 +105,7 @@ export class GameController extends BaseController {
     }
   }
 
-  async getGameById (req: Request, res: Response): Promise<Response> {
+  async getGameById(req: Request, res: Response): Promise<Response> {
     const dto = new GetGameDTO()
     dto.id = req.params.id
     let response: ResponseDTO<GameResponseDTO>
@@ -113,7 +116,7 @@ export class GameController extends BaseController {
       response = {
         data: [],
         success: false,
-        errors: [...errors.flatMap(x => Object.values(x.constraints as Record<string, string>))]
+        errors: [...errors.flatMap((x) => Object.values(x.constraints as Record<string, string>))]
       }
 
       return this.badRequest(res, response)
@@ -140,7 +143,7 @@ export class GameController extends BaseController {
     return this.ok(res, response)
   }
 
-  async updateGameById (req: Request, res: Response): Promise<Response> {
+  async updateGameById(req: Request, res: Response): Promise<Response> {
     let response: ResponseDTO<GameResponseDTO>
 
     const oldGame = await this.gameRepository.getById(req.params.id)
@@ -155,7 +158,7 @@ export class GameController extends BaseController {
       return this.notFound(res, response)
     }
 
-    const containsGenresDuplicates = req.body.genres.length !== [...new Set([...req.body.genres as string[]])].length
+    const containsGenresDuplicates = req.body.genres.length !== [...new Set([...(req.body.genres as string[])])].length
 
     if (containsGenresDuplicates) {
       response = {
@@ -166,7 +169,8 @@ export class GameController extends BaseController {
       return this.badRequest(res, response)
     }
 
-    const containsPlatformsDuplicates = req.body.platforms.length !== [...new Set([...req.body.platforms as string[]])].length
+    const containsPlatformsDuplicates =
+      req.body.platforms.length !== [...new Set([...(req.body.platforms as string[])])].length
 
     if (containsPlatformsDuplicates) {
       response = {
@@ -193,7 +197,7 @@ export class GameController extends BaseController {
       response = {
         data: [],
         success: false,
-        errors: errors.flatMap(x => Object.values(x.constraints as Record<string, string>))
+        errors: errors.flatMap((x) => Object.values(x.constraints as Record<string, string>))
       }
 
       return this.badRequest(res, response)
@@ -220,9 +224,11 @@ export class GameController extends BaseController {
 
       return this.ok(res, response)
     } catch (error) {
-      if (error instanceof AgeNotExistsError ||
+      if (
+        error instanceof AgeNotExistsError ||
         error instanceof PlatformNotExistsError ||
-        error instanceof GenreNotExistsError) {
+        error instanceof GenreNotExistsError
+      ) {
         response = {
           data: [],
           success: false,
@@ -236,7 +242,7 @@ export class GameController extends BaseController {
     }
   }
 
-  async deleteGameById (req: Request, res: Response): Promise<Response> {
+  async deleteGameById(req: Request, res: Response): Promise<Response> {
     let response: ResponseDTO<GameResponseDTO>
 
     const dto = new DeleteGameDTO()
@@ -248,7 +254,7 @@ export class GameController extends BaseController {
       response = {
         data: [],
         success: false,
-        errors: errors.flatMap(x => Object.values(x.constraints as Record<string, string>))
+        errors: errors.flatMap((x) => Object.values(x.constraints as Record<string, string>))
       }
 
       return this.badRequest(res, response)
@@ -273,12 +279,12 @@ export class GameController extends BaseController {
     }
   }
 
-  async getAll (req: Request, res: Response): Promise<Response> {
+  async getAll(req: Request, res: Response): Promise<Response> {
     let page = req.query.page !== undefined || Number(req.query.page) > 0 ? Number(req.query.page) : minPages
-    const sort = req.query.sort !== undefined &&
-    ['asc(releaseDate)', 'desc(releaseDate)'].includes(String(req.query.sort))
-      ? String(req.query.sort)
-      : 'desc(releaseDate)'
+    const sort =
+      req.query.sort !== undefined && ['asc(releaseDate)', 'desc(releaseDate)'].includes(String(req.query.sort))
+        ? String(req.query.sort)
+        : 'desc(releaseDate)'
 
     const sortType = 'releaseDate'
     const sortOrder = sort.includes('asc') ? 'ASC' : 'DESC'
@@ -292,7 +298,7 @@ export class GameController extends BaseController {
     const games = await this.gameService.getAll(page, sortType, sortOrder)
 
     const gamesResponse: GamesGetAllResponseDTO = {
-      games: games.map(x => GameMapper.fromEntityToGameResponse(x)),
+      games: games.map((x) => GameMapper.fromEntityToGameResponse(x)),
       currentPage: page,
       lastPage: maxPages,
       nextPage: page < maxPages ? page + 1 : null,

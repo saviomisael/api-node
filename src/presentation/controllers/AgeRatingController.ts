@@ -10,7 +10,7 @@ export class AgeRatingController extends BaseController {
   private readonly listService = new ListAgeRatingService()
   private readonly cacheService: CacheService<AgeRating[]> = CacheServiceFactory.getAgeRatingCacheService()
 
-  async getAll (_: Request, res: Response): Promise<Response> {
+  async getAll(_: Request, res: Response): Promise<Response> {
     const results = await this.cacheService.getData()
     let response: ResponseDTO<AgeRating>
 

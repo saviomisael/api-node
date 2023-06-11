@@ -1,5 +1,5 @@
 export class NotImplementedError extends Error {
-  constructor () {
+  constructor() {
     super('Método não implementado.')
   }
 }

@@ -5,5 +5,5 @@ export class DeleteGameDTO {
   @Matches(uuidRegex, {
     message: 'O id do jogo deve ser um uuid válido.'
   })
-    id!: string
+  id!: string
 }

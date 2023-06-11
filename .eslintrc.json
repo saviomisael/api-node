@@ -3,7 +3,13 @@
     "es2021": true,
     "node": true
   },
-  "extends": ["standard-with-typescript", "eslint:recommended", "plugin:@typescript-eslint/recommended", "plugin:@typescript-eslint/recommended-requiring-type-checking"],
+  "extends": [
+    "standard-with-typescript",
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:@typescript-eslint/recommended-requiring-type-checking",
+    "plugin:prettier/recommended"
+  ],
   "parser": "@typescript-eslint/parser",
   "plugins": ["@typescript-eslint"],
   "root": true,
@@ -17,10 +23,13 @@
     "@typescript-eslint/no-misused-promises": "off",
     "@typescript-eslint/no-extraneous-class": "off",
     "@typescript-eslint/no-unused-expressions": "off",
-    "no-unused-vars": ["error", {
-      "args": "all",
-      "argsIgnorePattern": "^_"
-    }],
+    "no-unused-vars": [
+      "error",
+      {
+        "args": "all",
+        "argsIgnorePattern": "^_"
+      }
+    ],
     "@typescript-eslint/no-floating-promises": "error",
     "@typescript-eslint/no-unsafe-member-access": "off",
     "@typescript-eslint/no-empty-function": "off",

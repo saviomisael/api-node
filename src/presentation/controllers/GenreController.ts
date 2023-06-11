@@ -13,11 +13,11 @@ import { type Request, type Response } from 'express'
 export class GenreController extends BaseController {
   private readonly cacheService: CacheService<Genre[]> = CacheServiceFactory.getGenreCacheService()
 
-  constructor (private readonly genreService: GenreService) {
+  constructor(private readonly genreService: GenreService) {
     super()
   }
 
-  async createGenre (req: Request, res: Response): Promise<Response> {
+  async createGenre(req: Request, res: Response): Promise<Response> {
     let responseDTO: ResponseDTO<Genre>
 
     const createGenreDTO = new CreateGenreDTO(req.body.name as string)
@@ -59,7 +59,7 @@ export class GenreController extends BaseController {
     return this.created(res, responseDTO)
   }
 
-  async getAllGenres (_: Request, res: Response): Promise<Response> {
+  async getAllGenres(_: Request, res: Response): Promise<Response> {
     let responseDTO: ResponseDTO<Genre>
 
     const results = await this.cacheService.getData()
@@ -87,7 +87,7 @@ export class GenreController extends BaseController {
     return this.ok(res, responseDTO)
   }
 
-  async deleteGenre (req: Request, res: Response): Promise<Response> {
+  async deleteGenre(req: Request, res: Response): Promise<Response> {
     let responseDTO: ResponseDTO<Genre> = {
       data: [],
       success: false,

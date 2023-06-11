@@ -9,10 +9,11 @@ import { type GameRowData } from '../row-data/GameRowData'
 export class GameRepository implements IGameRepository {
   private connection!: Connection
 
-  async getById (gameId: string): Promise<Game | null> {
+  async getById(gameId: string): Promise<Game | null> {
     this.connection = await DBConnection.getConnection()
 
-    const results = await this.connection.execute(`
+    const results = await this.connection.execute(
+      `
       SELECT g.id AS game_id,
       g.name AS game_name,
       g.description AS game_description,
@@ -33,7 +34,9 @@ export class GameRepository implements IGameRepository {
       JOIN platforms AS p ON gp.fk_platform = p.id
       WHERE g.id = ?
       GROUP BY g.id
-    `, [gameId])
+    `,
+      [gameId]
+    )
 
     const rows = results[0] as any[]
 
@@ -44,55 +47,60 @@ export class GameRepository implements IGameRepository {
     return game
   }
 
-  async create (game: Game): Promise<void> {
+  async create(game: Game): Promise<void> {
     this.connection = await DBConnection.getConnection()
 
-    const pipeline: Array<Promise<any>> = [this.connection.execute(`
+    const pipeline: Array<Promise<any>> = [
+      this.connection.execute(
+        `
       INSERT INTO games (id, price, name, description, releaseDate, fkAgeRating)
       VALUES (?, ?, ?, ?, ?, ?)
     `,
-    [
-      game.id,
-      game.getPrice(),
-      game.getName(),
-      game.getDescription(),
-      game.getReleaseDate(),
-      game.getAgeRating().id
-    ])]
+        [game.id, game.getPrice(), game.getName(), game.getDescription(), game.getReleaseDate(), game.getAgeRating().id]
+      )
+    ]
 
     for (const platform of [...game.getPlatforms()]) {
-      pipeline.push(this.connection.execute('INSERT INTO games_platforms (fk_platform, fk_game) VALUES (?, ?)',
-        [platform.id, game.id]))
+      pipeline.push(
+        this.connection.execute('INSERT INTO games_platforms (fk_platform, fk_game) VALUES (?, ?)', [
+          platform.id,
+          game.id
+        ])
+      )
     }
 
     for (const genre of [...game.getGenres()]) {
-      pipeline.push(this.connection.execute('INSERT INTO games_genres (fk_genre, fk_game) VALUES (?, ?)',
-        [genre.id, game.id]))
+      pipeline.push(
+        this.connection.execute('INSERT INTO games_genres (fk_genre, fk_game) VALUES (?, ?)', [genre.id, game.id])
+      )
     }
 
     await Promise.all(pipeline)
   }
 
-  async updateGame (newGame: Game): Promise<void> {
+  async updateGame(newGame: Game): Promise<void> {
     this.connection = await DBConnection.getConnection()
 
-    const pipeline = [this.connection.execute('DELETE FROM games_platforms WHERE fk_game = ?',
-      [newGame.id]
-    )]
+    const pipeline = [this.connection.execute('DELETE FROM games_platforms WHERE fk_game = ?', [newGame.id])]
 
     for (const platform of [...newGame.getPlatforms()]) {
-      pipeline.push(this.connection.execute('INSERT INTO games_platforms (fk_platform, fk_game) VALUES (?, ?)',
-        [platform.id, newGame.id]
-      ))
+      pipeline.push(
+        this.connection.execute('INSERT INTO games_platforms (fk_platform, fk_game) VALUES (?, ?)', [
+          platform.id,
+          newGame.id
+        ])
+      )
     }
     pipeline.push(this.connection.execute('DELETE FROM games_genres WHERE fk_game = ?', [newGame.id]))
 
     for (const genre of [...newGame.getGenres()]) {
-      pipeline.push(this.connection.execute('INSERT INTO games_genres (fk_genre, fk_game) VALUES (?, ?)',
-        [genre.id, newGame.id]
-      ))
+      pipeline.push(
+        this.connection.execute('INSERT INTO games_genres (fk_genre, fk_game) VALUES (?, ?)', [genre.id, newGame.id])
+      )
     }
-    pipeline.push(this.connection.execute(`
+    pipeline.push(
+      this.connection.execute(
+        `
       UPDATE games
       SET price = ?,
       name = ?,
@@ -100,24 +108,25 @@ export class GameRepository implements IGameRepository {
       releaseDate = ?,
       fkAgeRating = ?
       WHERE id = ?
-    `, [
-      newGame.getPrice(),
-      newGame.getName(),
-      newGame.getDescription(),
-      newGame.getReleaseDate(),
-      newGame.getAgeRating().id,
-      newGame.id
-    ]))
+    `,
+        [
+          newGame.getPrice(),
+          newGame.getName(),
+          newGame.getDescription(),
+          newGame.getReleaseDate(),
+          newGame.getAgeRating().id,
+          newGame.id
+        ]
+      )
+    )
 
     await Promise.all([...pipeline])
   }
 
-  async deleteGameById (gameId: string): Promise<void> {
+  async deleteGameById(gameId: string): Promise<void> {
     this.connection = await DBConnection.getConnection()
 
-    const pipeline = [this.connection.execute('DELETE FROM games_platforms WHERE fk_game = ?',
-      [gameId]
-    )]
+    const pipeline = [this.connection.execute('DELETE FROM games_platforms WHERE fk_game = ?', [gameId])]
 
     pipeline.push(this.connection.execute('DELETE FROM games_genres WHERE fk_game = ?', [gameId]))
 
@@ -126,7 +135,7 @@ export class GameRepository implements IGameRepository {
     await Promise.all([...pipeline])
   }
 
-  async getAll (page: number, sortType: 'releaseDate', sortOrder: 'ASC' | 'DESC'): Promise<Game[]> {
+  async getAll(page: number, sortType: 'releaseDate', sortOrder: 'ASC' | 'DESC'): Promise<Game[]> {
     this.connection = await DBConnection.getConnection()
 
     const orders = {
@@ -161,16 +170,16 @@ export class GameRepository implements IGameRepository {
 
     const rows = result[0] as GameRowData[]
 
-    return rows.map(x => GameRowDataMapper.toEntity(x))
+    return rows.map((x) => GameRowDataMapper.toEntity(x))
   }
 
-  async getMaxPages (): Promise<number> {
+  async getMaxPages(): Promise<number> {
     this.connection = await DBConnection.getConnection()
 
     const result = await this.connection.execute('SELECT COUNT(id) AS numGames FROM games')
 
     const rows = result[0] as any[]
 
-    return Math.ceil(rows[0].numGames as number / maxGamesPerPage)
+    return Math.ceil((rows[0].numGames as number) / maxGamesPerPage)
   }
 }

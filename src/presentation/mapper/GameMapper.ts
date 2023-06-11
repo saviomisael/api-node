@@ -4,9 +4,9 @@ import { GameResponseDTO } from '../dto/GameResponseDTO'
 import { type UpdateGameDTO } from '../dto/UpdateGameDTO'
 
 export class GameMapper {
-  private constructor () {}
+  private constructor() {}
 
-  static toEntity (dto: CreateGameDTO): Game {
+  static toEntity(dto: CreateGameDTO): Game {
     const ageRating = new AgeRating('', '')
     ageRating.id = dto.ageRatingId
 
@@ -27,7 +27,7 @@ export class GameMapper {
     return game
   }
 
-  static fromUpdateGameDtoToEntity (dto: UpdateGameDTO): Game {
+  static fromUpdateGameDtoToEntity(dto: UpdateGameDTO): Game {
     const ageRating = new AgeRating('', '')
     ageRating.id = dto.ageRatingId
 
@@ -49,7 +49,7 @@ export class GameMapper {
     return game
   }
 
-  static fromEntityToGameResponse (game: Game): GameResponseDTO {
+  static fromEntityToGameResponse(game: Game): GameResponseDTO {
     const gameDTO = new GameResponseDTO()
     gameDTO.id = game.id
     gameDTO.ageRating = game.getAgeRating()

@@ -1,18 +1,15 @@
 import { AggregateRoot } from '$/domain/entities/AggregateRoot'
 
 export class AgeRating extends AggregateRoot {
-  constructor (
-    private readonly age: string,
-    private readonly description: string
-  ) {
+  constructor(private readonly age: string, private readonly description: string) {
     super()
   }
 
-  getAge (): string {
+  getAge(): string {
     return this.age
   }
 
-  getDescription (): string {
+  getDescription(): string {
     return this.description
   }
 }

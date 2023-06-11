@@ -1,9 +1,6 @@
 import { AgeRating, Game, Genre, Platform } from '$/domain/entities'
 import { DBConnection } from '$/infrastructure/DBConnection'
-import {
-  GenreRepository,
-  PlatformRepository
-} from '$/infrastructure/repositories'
+import { GenreRepository, PlatformRepository } from '$/infrastructure/repositories'
 import { GameRepository } from '$/infrastructure/repositories/GameRepository'
 import { apiRoutes } from '$/infrastructure/routes/apiRoutes'
 import app from '$/infrastructure/server'
@@ -35,10 +32,7 @@ describe('POST /api/v1/games', () => {
       price: 0,
       releaseDate: '2020-01-01'
     }
-    const response = await chai
-      .request(app)
-      .post(apiRoutes.games.create)
-      .send(requestData)
+    const response = await chai.request(app).post(apiRoutes.games.create).send(requestData)
 
     chai.expect(response).to.have.status(400)
     chai.expect(response.body.data).to.have.length(0)
@@ -56,10 +50,7 @@ describe('POST /api/v1/games', () => {
       price: 0,
       releaseDate: '2020-01-01'
     }
-    const response = await chai
-      .request(app)
-      .post(apiRoutes.games.create)
-      .send(requestData)
+    const response = await chai.request(app).post(apiRoutes.games.create).send(requestData)
 
     chai.expect(response).to.have.status(400)
     chai.expect(response.body.data).to.have.length(0)
@@ -77,10 +68,7 @@ describe('POST /api/v1/games', () => {
       price: -1,
       releaseDate: '01/01/2020'
     }
-    const response = await chai
-      .request(app)
-      .post(apiRoutes.games.create)
-      .send(requestData)
+    const response = await chai.request(app).post(apiRoutes.games.create).send(requestData)
 
     chai.expect(response).to.have.status(400)
     chai.expect(response.body.data).to.have.length(0)
@@ -140,9 +128,7 @@ describe('POST /api/v1/games 2', () => {
       releaseDate: '2020-05-14'
     }
 
-    const response = await requester
-      .post(apiRoutes.games.create)
-      .send(gameRequestData)
+    const response = await requester.post(apiRoutes.games.create).send(gameRequestData)
 
     chai.expect(response).to.have.status(201)
     chai.expect(response.body.data[0].platforms).to.have.length(2)
@@ -154,12 +140,8 @@ describe('GET /api/v1/games/:id', () => {
   beforeEach(async () => {
     const requester = chai.request(app).keepOpen()
 
-    await requester
-      .post(apiRoutes.platforms.create)
-      .send({ name: 'platform_x' })
-    await requester
-      .post(apiRoutes.platforms.create)
-      .send({ name: 'platform_y' })
+    await requester.post(apiRoutes.platforms.create).send({ name: 'platform_x' })
+    await requester.post(apiRoutes.platforms.create).send({ name: 'platform_y' })
     await Promise.all([
       requester.post(apiRoutes.platforms.create).send({ name: 'platform_x' }),
       requester.post(apiRoutes.platforms.create).send({ name: 'platform_y' }),
@@ -173,9 +155,7 @@ describe('GET /api/v1/games/:id', () => {
   })
 
   it('should return a bad request when game id provided is not valid', async () => {
-    const response = await chai
-      .request(app)
-      .get(apiRoutes.games.getById.replace(':id', '123'))
+    const response = await chai.request(app).get(apiRoutes.games.getById.replace(':id', '123'))
 
     chai.expect(response).to.have.status(400)
   })
@@ -183,12 +163,7 @@ describe('GET /api/v1/games/:id', () => {
   it('should return not found when game not exists', async () => {
     const response = await chai
       .request(app)
-      .get(
-        apiRoutes.games.getById.replace(
-          ':id',
-          '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d'
-        )
-      )
+      .get(apiRoutes.games.getById.replace(':id', '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d'))
 
     chai.expect(response).to.have.status(404)
   })
@@ -201,10 +176,7 @@ describe('GET /api/v1/games/:id 2', () => {
     const platformRepository = new PlatformRepository()
     const gameRepository = new GameRepository()
 
-    const age = new AgeRating(
-      allAges.body.data[0].age as string,
-      allAges.body.data[0].description as string
-    )
+    const age = new AgeRating(allAges.body.data[0].age as string, allAges.body.data[0].description as string)
     age.id = allAges.body.data[0].id
 
     const genre1 = new Genre('action 1')
@@ -265,12 +237,7 @@ describe('PUT /api/v1/games/:id', () => {
   it('should return not found when only id is provided', async () => {
     const response = await chai
       .request(app)
-      .put(
-        apiRoutes.games.updateGameById.replace(
-          ':id',
-          '9b1deb4d-aaaa-aaaa-aaaa-2b0d7b3dcb6d'
-        )
-      )
+      .put(apiRoutes.games.updateGameById.replace(':id', '9b1deb4d-aaaa-aaaa-aaaa-2b0d7b3dcb6d'))
 
     chai.expect(response).to.have.status(404)
     chai.expect(response.body.errors.length > 0).to.be.true
@@ -290,12 +257,7 @@ describe('PUT /api/v1/games/:id', () => {
 
     const response = await chai
       .request(app)
-      .put(
-        apiRoutes.games.updateGameById.replace(
-          ':id',
-          '8904dc7d-acc7-4106-9ff6-367090fe2e48'
-        )
-      )
+      .put(apiRoutes.games.updateGameById.replace(':id', '8904dc7d-acc7-4106-9ff6-367090fe2e48'))
       .send(gameMock)
 
     chai.expect(response).to.have.status(404)
@@ -309,10 +271,7 @@ describe('PUT /api/v1/games/:id 2', () => {
     const platformRepository = new PlatformRepository()
     const gameRepository = new GameRepository()
 
-    const age = new AgeRating(
-      allAges.body.data[0].age as string,
-      allAges.body.data[0].description as string
-    )
+    const age = new AgeRating(allAges.body.data[0].age as string, allAges.body.data[0].description as string)
     age.id = allAges.body.data[0].id
 
     const genre1 = new Genre('action 4')
@@ -358,10 +317,7 @@ describe('PUT /api/v1/games/:id 2', () => {
       ageRatingId: '8904dc7d-acc7-4106-9ff6-367090fe2e48',
       description:
         'O jogo mais premiado de uma geração agora aprimorado para a atual! Experimente The Witcher 3: Wild Hunt e suas expansões nesta coleção definitiva, com melhor desempenho, visuais aprimorados, novo conteúdo adicional, modo fotografia e muito mais!',
-      genres: [
-        '8904dc7d-acc7-4106-9ff6-367090fe2e48',
-        '8904dc7d-acc7-4106-9ff6-367090fe2e48'
-      ],
+      genres: ['8904dc7d-acc7-4106-9ff6-367090fe2e48', '8904dc7d-acc7-4106-9ff6-367090fe2e48'],
       name: 'The Witcher 3',
       platforms: ['8904dc7d-acc7-4106-9ff6-367090fe2e48'],
       price: 100,
@@ -383,10 +339,7 @@ describe('PUT /api/v1/games/:id 2', () => {
         'O jogo mais premiado de uma geração agora aprimorado para a atual! Experimente The Witcher 3: Wild Hunt e suas expansões nesta coleção definitiva, com melhor desempenho, visuais aprimorados, novo conteúdo adicional, modo fotografia e muito mais!',
       genres: ['8904dc7d-acc7-4106-9ff6-367090fe2e48'],
       name: 'The Witcher 3',
-      platforms: [
-        '8904dc7d-acc7-4106-9ff6-367090fe2e48',
-        '8904dc7d-acc7-4106-9ff6-367090fe2e48'
-      ],
+      platforms: ['8904dc7d-acc7-4106-9ff6-367090fe2e48', '8904dc7d-acc7-4106-9ff6-367090fe2e48'],
       price: 100,
       releaseDate: '2020-05-14'
     }
@@ -432,9 +385,7 @@ describe('PUT /api/v1/games/:id 2', () => {
 
 describe('DELETE /api/v1/games/:id', () => {
   it('should return bad request when id is not valid', async () => {
-    const response = await chai
-      .request(app)
-      .delete(apiRoutes.games.deleteById.replace(':id', '123'))
+    const response = await chai.request(app).delete(apiRoutes.games.deleteById.replace(':id', '123'))
 
     chai.expect(response).to.have.status(400)
   })
@@ -442,12 +393,7 @@ describe('DELETE /api/v1/games/:id', () => {
   it('should return not found when game not exists', async () => {
     const response = await chai
       .request(app)
-      .delete(
-        apiRoutes.games.deleteById.replace(
-          ':id',
-          '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d'
-        )
-      )
+      .delete(apiRoutes.games.deleteById.replace(':id', '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d'))
 
     chai.expect(response).to.have.status(404)
   })
@@ -460,10 +406,7 @@ describe('DELETE /api/v1/games/:id 2', () => {
     const platformRepository = new PlatformRepository()
     const gameRepository = new GameRepository()
 
-    const age = new AgeRating(
-      allAges.body.data[0].age as string,
-      allAges.body.data[0].description as string
-    )
+    const age = new AgeRating(allAges.body.data[0].age as string, allAges.body.data[0].description as string)
     age.id = allAges.body.data[0].id
 
     const genre1 = new Genre('action 4')
@@ -536,9 +479,7 @@ describe('GET /api/v1/games', () => {
   })
 
   it('should return the first page when page provided is greater than max pages', async () => {
-    const response = await chai
-      .request(app)
-      .get(apiRoutes.games.getAll + '?page=10')
+    const response = await chai.request(app).get(apiRoutes.games.getAll + '?page=10')
 
     chai.expect(response).to.have.status(200)
     chai.expect(response.body.data[0].currentPage).to.be.equal(1)
@@ -552,10 +493,7 @@ describe('GET /api/v1/games 2', () => {
     const platformRepository = new PlatformRepository()
     const gameRepository = new GameRepository()
 
-    const age = new AgeRating(
-      allAges.body.data[0].age as string,
-      allAges.body.data[0].description as string
-    )
+    const age = new AgeRating(allAges.body.data[0].age as string, allAges.body.data[0].description as string)
     age.id = allAges.body.data[0].id
 
     const genre1 = new Genre('action 1')
@@ -639,9 +577,9 @@ describe('GET /api/v1/games 2', () => {
     const lastGame = games.at(games.length - 1)
 
     chai.expect(games).to.have.length(9)
-    chai.expect(new Date(firstGame.releaseDate as string).toISOString())
+    chai
+      .expect(new Date(firstGame.releaseDate as string).toISOString())
       .to.be.equal(new Date(2020, 5, 26).toISOString())
-    chai.expect(new Date(lastGame.releaseDate as string).toISOString())
-      .to.be.equal(new Date(2020, 5, 18).toISOString())
+    chai.expect(new Date(lastGame.releaseDate as string).toISOString()).to.be.equal(new Date(2020, 5, 18).toISOString())
   })
 })

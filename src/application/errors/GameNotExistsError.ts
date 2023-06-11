@@ -1,5 +1,5 @@
 export class GameNotExistsError extends Error {
-  constructor () {
+  constructor() {
     super('O jogo não existe.')
   }
 }

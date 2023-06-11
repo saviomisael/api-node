@@ -29,27 +29,16 @@ describe('POST /api/v1/platforms', () => {
     await clearData()
   })
 
-  it(
-    'should return bad request when platform name have less then 3 characters.',
-    async () => {
-      const response = await chai
-        .request(app)
-        .post(apiRoutes.platforms.create)
-        .send({ name: 'ab' })
+  it('should return bad request when platform name have less then 3 characters.', async () => {
+    const response = await chai.request(app).post(apiRoutes.platforms.create).send({ name: 'ab' })
 
-      chai.expect(response).to.have.status(400)
-      chai.expect(response.body.errors).to.have.length(1)
-      chai.expect(response.body.errors[0]).to
-        .be
-        .equal('O nome da plataforma deve ter no mínimo 3 caracteres.')
-    }
-  )
+    chai.expect(response).to.have.status(400)
+    chai.expect(response.body.errors).to.have.length(1)
+    chai.expect(response.body.errors[0]).to.be.equal('O nome da plataforma deve ter no mínimo 3 caracteres.')
+  })
 
   it('should create a platform', async () => {
-    const response = await chai
-      .request(app)
-      .post(apiRoutes.platforms.create)
-      .send({ name: 'Xbox Series S' })
+    const response = await chai.request(app).post(apiRoutes.platforms.create).send({ name: 'Xbox Series S' })
 
     chai.expect(response).to.have.status(201)
     chai.expect(response.body.errors).to.have.length(0)
@@ -57,23 +46,15 @@ describe('POST /api/v1/platforms', () => {
     chai.expect(response.body.data[0]).to.be.not.null
   })
 
-  it(
-    'should return a bad request when platform is already created',
-    async () => {
-      await chai
-        .request(app)
-        .post(apiRoutes.platforms.create)
-        .send({ name: 'Xbox Series S' })
+  it('should return a bad request when platform is already created', async () => {
+    await chai.request(app).post(apiRoutes.platforms.create).send({ name: 'Xbox Series S' })
 
-      const response = await chai
-        .request(app)
-        .post(apiRoutes.platforms.create)
-        .send({ name: 'Xbox Series S' })
+    const response = await chai.request(app).post(apiRoutes.platforms.create).send({ name: 'Xbox Series S' })
 
-      chai.expect(response).to.have.status(400)
-      chai.expect(response.body.success).to.be.false
-      chai.expect(response.body.errors).to.have.length(1)
-    })
+    chai.expect(response).to.have.status(400)
+    chai.expect(response.body.success).to.be.false
+    chai.expect(response.body.errors).to.have.length(1)
+  })
 })
 
 describe('DELETE /api/v1/platforms/:id', () => {
@@ -81,23 +62,19 @@ describe('DELETE /api/v1/platforms/:id', () => {
     await clearData()
   })
 
-  it('should not delete platform when id is less then 36 characters',
-    async () => {
-      const response = await chai
-        .request(app)
-        .delete(apiRoutes.platforms.delete.replace(':id', 'abc'))
+  it('should not delete platform when id is less then 36 characters', async () => {
+    const response = await chai.request(app).delete(apiRoutes.platforms.delete.replace(':id', 'abc'))
 
-      chai.expect(response).to.have.status(400)
-      chai.expect(response.body.errors).to.have.length(1)
-      chai.expect(response.body.data).to.have.length(0)
-      chai.expect(response.body.success).to.be.false
-    })
+    chai.expect(response).to.have.status(400)
+    chai.expect(response.body.errors).to.have.length(1)
+    chai.expect(response.body.data).to.have.length(0)
+    chai.expect(response.body.success).to.be.false
+  })
 
   it('should return a bad request when platform not exists', async () => {
     const response = await chai
       .request(app)
-      .delete(apiRoutes.platforms.delete.replace(':id',
-        '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d'))
+      .delete(apiRoutes.platforms.delete.replace(':id', '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d'))
 
     chai.expect(response).to.have.status(404)
     chai.expect(response.body.errors).to.have.length(1)
@@ -110,19 +87,18 @@ describe('DELETE /api/v1/platforms/:id', () => {
       .request(app)
       .post(apiRoutes.platforms.create)
       .send({ name: 'Xbox Series S' })
-      .then(async response => {
-        const deleteRoute = apiRoutes.platforms.delete
-          .replace(':id', response.body.data[0].id as string)
+      .then(async (response) => {
+        const deleteRoute = apiRoutes.platforms.delete.replace(':id', response.body.data[0].id as string)
 
-        return await chai
-          .request(app)
-          .delete(deleteRoute)
+        return await chai.request(app).delete(deleteRoute)
       })
-      .then(deleteResponse => {
+      .then((deleteResponse) => {
         chai.expect(deleteResponse).to.have.status(204)
         done()
       })
-      .catch(error => { throw error })
+      .catch((error) => {
+        throw error
+      })
   })
 })
 
@@ -160,7 +136,8 @@ describe('DELETE /api/v1/platforms/:id 2', () => {
 
     const gameRequestData = {
       ageRatingId: age,
-      description: 'O jogo mais premiado de uma geração agora aprimorado para a atual! Experimente The Witcher 3: Wild Hunt e suas expansões nesta coleção definitiva, com melhor desempenho, visuais aprimorados, novo conteúdo adicional, modo fotografia e muito mais!',
+      description:
+        'O jogo mais premiado de uma geração agora aprimorado para a atual! Experimente The Witcher 3: Wild Hunt e suas expansões nesta coleção definitiva, com melhor desempenho, visuais aprimorados, novo conteúdo adicional, modo fotografia e muito mais!',
       genres: [genre1, genre2],
       platforms: [platform1, platform2],
       name: 'The Witcher 3: Wild Hunt - Complete Edition',
@@ -189,15 +166,10 @@ describe('GET /api/v1/platforms/', () => {
 
   it('should return a list of platforms', async () => {
     for (const platform of ['Xbox', 'PS5', 'Switch']) {
-      await chai
-        .request(app)
-        .post(apiRoutes.platforms.create)
-        .send({ name: platform })
+      await chai.request(app).post(apiRoutes.platforms.create).send({ name: platform })
     }
 
-    const response = await chai
-      .request(app)
-      .get(apiRoutes.platforms.getAll)
+    const response = await chai.request(app).get(apiRoutes.platforms.getAll)
 
     chai.expect(response).to.have.status(200)
     chai.expect(response.body.errors).to.have.length(0)

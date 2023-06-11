@@ -3,11 +3,10 @@ import { type IGenreRepository } from '$/domain/repositories'
 import { HasRelatedGamesError } from '../errors/HasRelatedGamesError'
 
 export class GenreService {
-  constructor (private readonly repository: IGenreRepository) {}
+  constructor(private readonly repository: IGenreRepository) {}
 
-  async createGenre (genreName: string): Promise<Genre | null> {
-    const isAlreadyCreated =
-        (await this.repository.getGenreByName(genreName)) != null
+  async createGenre(genreName: string): Promise<Genre | null> {
+    const isAlreadyCreated = (await this.repository.getGenreByName(genreName)) != null
 
     if (isAlreadyCreated) {
       return null
@@ -22,13 +21,13 @@ export class GenreService {
     return genreRecorded
   }
 
-  async getAllGenres (): Promise<Genre[]> {
+  async getAllGenres(): Promise<Genre[]> {
     const genres = await this.repository.getAll()
 
     return genres
   }
 
-  async deleteGenre (id: string): Promise<boolean> {
+  async deleteGenre(id: string): Promise<boolean> {
     const genreToDelete = await this.repository.getGenreById(id)
 
     if (genreToDelete == null) return false

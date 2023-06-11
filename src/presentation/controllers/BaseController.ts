@@ -22,7 +22,7 @@ export abstract class BaseController {
     return ok(res, body)
   }
 
-  protected noContent (res: Response): Response {
+  protected noContent(res: Response): Response {
     return noContent(res)
   }
 
