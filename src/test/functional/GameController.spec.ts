@@ -460,4 +460,11 @@ describe('GET /api/v1/games', () => {
     chai.expect(response).to.have.status(200)
     chai.expect(response.body.data[0].currentPage).to.be.equal(1)
   })
+
+  it('should return the first page when page provided is greater than max pages', async () => {
+    const response = await chai.request(app).get(apiRoutes.games.getAll + '?page=10')
+
+    chai.expect(response).to.have.status(200)
+    chai.expect(response.body.data[0].currentPage).to.be.equal(1)
+  })
 })
