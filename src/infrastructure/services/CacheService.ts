@@ -1,7 +1,7 @@
 import { RedisClient } from '../RedisClient'
 
 export class CacheService<T> {
-  constructor(private readonly key: string) {}
+  constructor(private key: string) {}
 
   /**
    * If your key has dynamic keys you must use replaceKeys method before
@@ -37,9 +37,13 @@ export class CacheService<T> {
     for (const key in replacements) {
       const value = replacements[key]
 
-      this.key.replace(key, value)
+      this.key = this.key.replace(key, value)
     }
 
     return this
+  }
+
+  getKey(): string {
+    return this.key
   }
 }
