@@ -594,4 +594,10 @@ describe('GET /api/v1/games 2', () => {
     chai.expect(new Date(firstGame.releaseDate as string).toISOString()).to.be.equal(new Date(2020, 5, 1).toISOString())
     chai.expect(new Date(lastGame.releaseDate as string).toISOString()).to.be.equal(new Date(2020, 5, 9).toISOString())
   })
+
+  it('should return nextPage value different than null', async () => {
+    const response = await chai.request(app).get(apiRoutes.games.getAll)
+
+    chai.expect(response.body.data[0].nextPage).to.be.equal(2)
+  })
 })
