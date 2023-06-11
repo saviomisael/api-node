@@ -600,4 +600,18 @@ describe('GET /api/v1/games 2', () => {
 
     chai.expect(response.body.data[0].nextPage).to.be.equal(2)
   })
+
+  it('should return previousPage value different than null', async () => {
+    const response = await chai.request(app).get(apiRoutes.games.getAll + '?page=2')
+
+    const games = response.body.data[0].games
+    const firstGame = games.at(0)
+    const lastGame = games.at(games.length - 1)
+
+    chai.expect(response.body.data[0].previousPage).to.be.equal(1)
+    chai
+      .expect(new Date(firstGame.releaseDate as string).toISOString())
+      .to.be.equal(new Date(2020, 5, 17).toISOString())
+    chai.expect(new Date(lastGame.releaseDate as string).toISOString()).to.be.equal(new Date(2020, 5, 9).toISOString())
+  })
 })
