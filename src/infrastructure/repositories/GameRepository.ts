@@ -130,7 +130,7 @@ export class GameRepository implements IGameRepository {
     this.connection = await DBConnection.getConnection()
 
     const orders = {
-      releaseDate: 'g.releaseDate'
+      releaseDate: 'DATE(g.releaseDate)'
     }
 
     const query = `
@@ -154,7 +154,7 @@ export class GameRepository implements IGameRepository {
       JOIN platforms AS p ON gp.fk_platform = p.id
       GROUP BY g.id
       ORDER BY ${orders[sortType]} ${sortOrder}
-      LIMIT 9 OFFSET ${page * maxGamesPerPage}
+      LIMIT ${page < 2 ? 0 : (page - 1) * maxGamesPerPage},${maxGamesPerPage}
     `
 
     const result = await this.connection.execute(query)
