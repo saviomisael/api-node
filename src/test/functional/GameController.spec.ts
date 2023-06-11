@@ -446,4 +446,11 @@ describe('GET /api/v1/games', () => {
     chai.expect(response).to.have.status(200)
     chai.expect(response.body.data[0].previousPage).to.be.null
   })
+
+  it('should return nextPage null', async () => {
+    const response = await chai.request(app).get(apiRoutes.games.getAll)
+
+    chai.expect(response).to.have.status(200)
+    chai.expect(response.body.data[0].nextPage).to.be.null
+  })
 })
