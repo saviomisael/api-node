@@ -582,4 +582,16 @@ describe('GET /api/v1/games 2', () => {
       .to.be.equal(new Date(2020, 5, 26).toISOString())
     chai.expect(new Date(lastGame.releaseDate as string).toISOString()).to.be.equal(new Date(2020, 5, 18).toISOString())
   })
+
+  it('should return games sorted by releaseDate in ascending order', async () => {
+    const response = await chai.request(app).get(apiRoutes.games.getAll + '?sort=asc(releaseDate)')
+
+    const games = response.body.data[0].games
+    const firstGame = games.at(0)
+    const lastGame = games.at(games.length - 1)
+
+    chai.expect(games).to.have.length(9)
+    chai.expect(new Date(firstGame.releaseDate as string).toISOString()).to.be.equal(new Date(2020, 5, 1).toISOString())
+    chai.expect(new Date(lastGame.releaseDate as string).toISOString()).to.be.equal(new Date(2020, 5, 9).toISOString())
+  })
 })
