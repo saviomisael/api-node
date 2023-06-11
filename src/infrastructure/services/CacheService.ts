@@ -3,6 +3,9 @@ import { RedisClient } from '../RedisClient'
 export class CacheService<T> {
   constructor(private readonly key: string) {}
 
+  /**
+   * If your key has dynamic keys you must use replaceKeys method before
+   */
   async getData(): Promise<T | null> {
     if (!RedisClient.isOpen) await RedisClient.connect()
 
@@ -13,21 +16,20 @@ export class CacheService<T> {
     return this.deserialize(rawData)
   }
 
+  /**
+   * If your key has dynamic keys you must use replaceKeys method before
+   */
   async setData(data: T): Promise<void> {
     if (!RedisClient.isOpen) await RedisClient.connect()
-
-    if (this.key.includes(':')) {
-      throw new Error('replaceKeys should call before this method.')
-    }
 
     await RedisClient.set(this.key, this.serialize(data), { EX: 180, NX: true })
   }
 
-  protected serialize(data: T): string {
+  private serialize(data: T): string {
     return JSON.stringify(data)
   }
 
-  protected deserialize(rawData: string): T {
+  private deserialize(rawData: string): T {
     return JSON.parse(rawData) as T
   }
 
