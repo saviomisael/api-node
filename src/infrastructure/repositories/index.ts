@@ -1,3 +1,4 @@
-export { AgeRatingRepository } from '$/infrastructure/repositories/AgeRatingRepository'
-export { GenreRepository } from '$/infrastructure/repositories/GenreRepository'
-export { PlatformRepository } from '$/infrastructure/repositories/PlatformRepository'
+export { AgeRatingRepository } from './AgeRatingRepository'
+export { GameRepository } from './GameRepository'
+export { GenreRepository } from './GenreRepository'
+export { PlatformRepository } from './PlatformRepository'

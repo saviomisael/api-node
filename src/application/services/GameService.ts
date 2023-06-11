@@ -5,8 +5,7 @@ import {
   type IGenreRepository,
   type IPlatformRepository
 } from '$/domain/repositories'
-import { AgeRatingRepository, GenreRepository, PlatformRepository } from '$/infrastructure/repositories'
-import { GameRepository } from '$/infrastructure/repositories/GameRepository'
+import { AgeRatingRepository, GameRepository, GenreRepository, PlatformRepository } from '$/infrastructure/repositories'
 import { AgeNotExistsError } from '../errors/AgeNotExistsError'
 import { GameNotExistsError } from '../errors/GameNotExistsError'
 import { GenreNotExistsError } from '../errors/GenreNotExistsError'
