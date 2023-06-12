@@ -1,11 +1,13 @@
 import { AgeRating, Game, Genre, Platform } from '$/domain/entities'
 import { DBConnection } from '$/infrastructure/DBConnection'
+import { RedisClient } from '$/infrastructure/RedisClient'
 import { GenreRepository, PlatformRepository } from '$/infrastructure/repositories'
 import { GameRepository } from '$/infrastructure/repositories/GameRepository'
 import { apiRoutes } from '$/infrastructure/routes/apiRoutes'
 import app from '$/infrastructure/server'
 import chai from 'chai'
 import chaiHttp from 'chai-http'
+import { performance } from 'perf_hooks'
 
 chai.use(chaiHttp)
 
@@ -19,6 +21,9 @@ const clearData = async (): Promise<void> => {
     conn.execute('DELETE FROM genres'),
     conn.execute('DELETE FROM platforms')
   ])
+
+  const redisClient = await RedisClient.getClient()
+  await redisClient.del('games:1:releaseDate:DESC')
 }
 
 describe('POST /api/v1/games', () => {
@@ -570,6 +575,9 @@ describe('GET /api/v1/games 2', () => {
   })
 
   it('should return games sorted by default values', async () => {
+    const redisClient = await RedisClient.getClient()
+    await redisClient.del('games:1:releaseDate:DESC')
+
     const response = await chai.request(app).get(apiRoutes.games.getAll)
 
     const games = response.body.data[0].games
@@ -613,5 +621,30 @@ describe('GET /api/v1/games 2', () => {
       .expect(new Date(firstGame.releaseDate as string).toISOString())
       .to.be.equal(new Date(2020, 5, 17).toISOString())
     chai.expect(new Date(lastGame.releaseDate as string).toISOString()).to.be.equal(new Date(2020, 5, 9).toISOString())
+  })
+
+  it('should return games from cache in less time', async () => {
+    const redisClient = await RedisClient.getClient()
+    await redisClient.del('games:1:releaseDate:DESC')
+    const requester = chai.request(app).keepOpen()
+
+    const firstResponseStartTime = performance.now()
+    await requester.get(apiRoutes.games.getAll)
+    const firstResponseEndTime = performance.now()
+
+    const secondResponseStartTime = performance.now()
+    const secondRequest = await requester.get(apiRoutes.games.getAll)
+    const secondResponseEndTime = performance.now()
+
+    const firstDiff = firstResponseEndTime - firstResponseStartTime
+    const secondDiff = secondResponseEndTime - secondResponseStartTime
+
+    const games = secondRequest.body.data[0].games
+    const firstGame = games.at(0)
+
+    chai.expect(firstDiff > secondDiff).to.be.true
+    chai.expect(games).to.have.length(9)
+    chai.expect(firstGame.platforms.length > 0).to.be.true
+    chai.expect(firstGame.genres.length > 0).to.be.true
   })
 })

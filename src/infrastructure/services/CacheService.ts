@@ -1,15 +1,16 @@
-import { RedisClient } from '../RedisClient'
+import { RedisClient, type Client } from '../RedisClient'
 
 export class CacheService<T> {
+  private redisClient!: Client
   constructor(private key: string) {}
 
   /**
    * If your key has dynamic keys you must use replaceKeys method before
    */
   async getData(): Promise<T | null> {
-    if (!RedisClient.isOpen) await RedisClient.connect()
+    this.redisClient = await RedisClient.getClient()
 
-    const rawData = await RedisClient.get(this.key)
+    const rawData = await this.redisClient.get(this.key)
 
     if (rawData == null) return null
 
@@ -20,9 +21,9 @@ export class CacheService<T> {
    * If your key has dynamic keys you must use replaceKeys method before
    */
   async setData(data: T): Promise<void> {
-    if (!RedisClient.isOpen) await RedisClient.connect()
+    this.redisClient = await RedisClient.getClient()
 
-    await RedisClient.set(this.key, this.serialize(data), { EX: 180, NX: true })
+    await this.redisClient.set(this.key, this.serialize(data), { EX: 180, NX: true })
   }
 
   private serialize(data: T): string {

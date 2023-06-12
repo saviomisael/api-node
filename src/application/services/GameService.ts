@@ -1,3 +1,4 @@
+import { type GameResponseDTO } from '$/application/dto/GameResponseDTO'
 import { type Game } from '$/domain/entities'
 import {
   type IAgeRatingRepository,
@@ -12,13 +13,14 @@ import { AgeNotExistsError } from '../errors/AgeNotExistsError'
 import { GameNotExistsError } from '../errors/GameNotExistsError'
 import { GenreNotExistsError } from '../errors/GenreNotExistsError'
 import { PlatformNotExistsError } from '../errors/PlatformNotExistsError'
+import { GameMapper } from '../mapper/GameMapper'
 
 export class GameService {
   private readonly gameRepository: IGameRepository = new GameRepository()
   private readonly ageRepository: IAgeRatingRepository = new AgeRatingRepository()
   private readonly platformRepository: IPlatformRepository = new PlatformRepository()
   private readonly genreRepository: IGenreRepository = new GenreRepository()
-  private cacheService!: CacheService<Game[]>
+  private cacheService!: CacheService<GameResponseDTO[]>
 
   async createGame(game: Game): Promise<Game | null> {
     const ageIdExists = await this.ageRepository.ageIdExists(game.getAgeRating().id)
@@ -94,7 +96,7 @@ export class GameService {
     await this.gameRepository.deleteGameById(gameId)
   }
 
-  async getAll(page: number, sortType: 'releaseDate', sortOrder: 'ASC' | 'DESC'): Promise<Game[]> {
+  async getAll(page: number, sortType: 'releaseDate', sortOrder: 'ASC' | 'DESC'): Promise<GameResponseDTO[]> {
     this.cacheService = CacheServiceFactory.getGamesCacheService()
 
     const replacements = { page: String(page), sortType, sortOrder }
@@ -102,7 +104,8 @@ export class GameService {
 
     if (games != null) return games
 
-    games = await this.gameRepository.getAll(page, sortType, sortOrder)
+    const gamesFromDB = await this.gameRepository.getAll(page, sortType, sortOrder)
+    games = gamesFromDB.map((x) => GameMapper.fromEntityToGameResponse(x))
     await this.cacheService.replaceKeys(replacements).setData(games)
 
     return games

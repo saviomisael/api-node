@@ -19,9 +19,9 @@ const clearData = async (): Promise<void> => {
     connection.execute('DELETE FROM games')
   ])
 
-  if (!RedisClient.isOpen) await RedisClient.connect()
+  const redisClient = await RedisClient.getClient()
 
-  await RedisClient.del('platforms')
+  await redisClient.del('platforms')
 }
 
 describe('POST /api/v1/platforms', () => {

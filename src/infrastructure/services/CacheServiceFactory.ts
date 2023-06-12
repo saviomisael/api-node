@@ -1,4 +1,5 @@
-import { type AgeRating, type Game, type Genre, type Platform } from '$/domain/entities'
+import { type GameResponseDTO } from '$/application/dto/GameResponseDTO'
+import { type AgeRating, type Genre, type Platform } from '$/domain/entities'
 import { CacheService } from './CacheService'
 
 export class CacheServiceFactory {
@@ -16,7 +17,7 @@ export class CacheServiceFactory {
     return new CacheService<AgeRating[]>('age-ratings')
   }
 
-  static getGamesCacheService(): CacheService<Game[]> {
-    return new CacheService<Game[]>('games:page:sortType:sortOrder')
+  static getGamesCacheService(): CacheService<GameResponseDTO[]> {
+    return new CacheService<GameResponseDTO[]>('games:page:sortType:sortOrder')
   }
 }

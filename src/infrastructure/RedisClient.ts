@@ -1,11 +1,24 @@
 import { createClient } from 'redis'
 
-const RedisClient = createClient({
-  url: `redis://default:${process.env.REDIS_PASSWORD ?? ''}@redis:6379`
-})
+export type Client = ReturnType<typeof createClient>
 
-RedisClient.on('error', (error) => {
-  throw error
-})
+export class RedisClient {
+  private static client: Client
+  private constructor() {}
 
-export { RedisClient }
+  static async getClient(): Promise<Client> {
+    if (RedisClient.client == null || RedisClient.client === undefined) {
+      RedisClient.client = createClient({
+        url: `redis://default:${process.env.REDIS_PASSWORD ?? ''}@redis:6379`
+      })
+
+      RedisClient.client.on('error', (error: any) => {
+        console.error(error)
+        throw error
+      })
+
+      if (!RedisClient.client.isOpen) await RedisClient.client.connect()
+    }
+    return this.client
+  }
+}

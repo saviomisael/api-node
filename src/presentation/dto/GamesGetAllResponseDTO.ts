@@ -1,4 +1,4 @@
-import { type GameResponseDTO } from './GameResponseDTO'
+import { type GameResponseDTO } from '$/application/dto/GameResponseDTO'
 
 export class GamesGetAllResponseDTO {
   games!: GameResponseDTO[]

@@ -9,9 +9,9 @@ import { performance } from 'perf_hooks'
 chai.use(chaiHttp)
 
 const clearData = async (): Promise<void> => {
-  if (!RedisClient.isOpen) await RedisClient.connect()
+  const redisClient = await RedisClient.getClient()
 
-  await RedisClient.del('age-ratings')
+  await redisClient.del('age-ratings')
 }
 
 describe('GET /api/v1/age-ratings', () => {

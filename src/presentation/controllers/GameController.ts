@@ -1,7 +1,9 @@
+import { type GameResponseDTO } from '$/application/dto/GameResponseDTO'
 import { AgeNotExistsError } from '$/application/errors/AgeNotExistsError'
 import { GameNotExistsError } from '$/application/errors/GameNotExistsError'
 import { GenreNotExistsError } from '$/application/errors/GenreNotExistsError'
 import { PlatformNotExistsError } from '$/application/errors/PlatformNotExistsError'
+import { GameMapper as GameMapperApp } from '$/application/mapper/GameMapper'
 import { GameService } from '$/application/services/GameService'
 import { type IGameRepository } from '$/domain/repositories'
 import { GameRepository } from '$/infrastructure/repositories/GameRepository'
@@ -13,7 +15,6 @@ import {
   DeleteGameDTO,
   GetGameDTO,
   UpdateGameDTO,
-  type GameResponseDTO,
   type GamesGetAllResponseDTO,
   type ResponseDTO
 } from '../dto'
@@ -87,7 +88,7 @@ export class GameController extends BaseController {
       }
 
       response = {
-        data: [GameMapper.fromEntityToGameResponse(newGame)],
+        data: [GameMapperApp.fromEntityToGameResponse(newGame)],
         success: true,
         errors: []
       }
@@ -142,7 +143,7 @@ export class GameController extends BaseController {
     }
 
     response = {
-      data: [GameMapper.fromEntityToGameResponse(game)],
+      data: [GameMapperApp.fromEntityToGameResponse(game)],
       success: true,
       errors: []
     }
@@ -224,7 +225,7 @@ export class GameController extends BaseController {
       }
 
       response = {
-        data: [GameMapper.fromEntityToGameResponse(updatedGame)],
+        data: [GameMapperApp.fromEntityToGameResponse(updatedGame)],
         success: true,
         errors: []
       }
@@ -305,7 +306,7 @@ export class GameController extends BaseController {
     const games = await this.gameService.getAll(page, sortType, sortOrder)
 
     const gamesResponse: GamesGetAllResponseDTO = {
-      games: games.map((x) => GameMapper.fromEntityToGameResponse(x)),
+      games,
       currentPage: page,
       lastPage: maxPages,
       nextPage: page < maxPages ? page + 1 : null,
