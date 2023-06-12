@@ -1,8 +1,10 @@
 import { type GameResponseDTO } from '$/application/dto/GameResponseDTO'
-import { AgeNotExistsError } from '$/application/errors/AgeNotExistsError'
-import { GameNotExistsError } from '$/application/errors/GameNotExistsError'
-import { GenreNotExistsError } from '$/application/errors/GenreNotExistsError'
-import { PlatformNotExistsError } from '$/application/errors/PlatformNotExistsError'
+import {
+  AgeNotExistsError,
+  GameNotExistsError,
+  GenreNotExistsError,
+  PlatformNotExistsError
+} from '$/application/errors'
 import { GameMapper as GameMapperApp } from '$/application/mapper/GameMapper'
 import { GameService } from '$/application/services/GameService'
 import { type IGameRepository } from '$/domain/repositories'
