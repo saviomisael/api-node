@@ -20,6 +20,7 @@ import {
   type GamesGetAllResponseDTO,
   type ResponseDTO
 } from '../dto'
+import { GamesQueryStringDTO } from '../dto/GamesQueryStringDTO'
 import { GameMapper } from '../mapper/GameMapper'
 import { BaseController } from './BaseController'
 
@@ -290,29 +291,22 @@ export class GameController extends BaseController {
   }
 
   async getAll(req: Request, res: Response): Promise<Response> {
-    let page = req.query.page !== undefined || Number(req.query.page) > 0 ? Number(req.query.page) : minPages
-    const sort =
-      req.query.sort !== undefined && ['asc(releaseDate)', 'desc(releaseDate)'].includes(String(req.query.sort))
-        ? String(req.query.sort)
-        : 'desc(releaseDate)'
-
-    const sortType = 'releaseDate'
-    const sortOrder = sort.includes('asc') ? 'ASC' : 'DESC'
+    const dto = new GamesQueryStringDTO(req.query.page as string | undefined, req.query.sort as string | undefined)
 
     const maxPages = await this.gameRepository.getMaxPages()
 
-    if (page > maxPages) {
-      page = minPages
+    if (dto.getPage() > maxPages) {
+      dto.setPage(minPages)
     }
 
-    const games = await this.gameService.getAll(page, sortType, sortOrder)
+    const games = await this.gameService.getAll(dto.getPage(), dto.getSortType(), dto.getSortOrder())
 
     const gamesResponse: GamesGetAllResponseDTO = {
       games,
-      currentPage: page,
+      currentPage: dto.getPage(),
       lastPage: maxPages,
-      nextPage: page < maxPages ? page + 1 : null,
-      previousPage: page > minPages ? page - 1 : null
+      nextPage: dto.getPage() < maxPages ? dto.getPage() + 1 : null,
+      previousPage: dto.getPage() > minPages ? dto.getPage() - 1 : null
     }
 
     const response: ResponseDTO<GamesGetAllResponseDTO> = {
