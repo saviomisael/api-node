@@ -1,0 +1,5 @@
+export { AgeNotExistsError } from './AgeNotExistsError'
+export { GameNotExistsError } from './GameNotExistsError'
+export { GenreNotExistsError } from './GenreNotExistsError'
+export { HasRelatedGamesError } from './HasRelatedGamesError'
+export { PlatformNotExistsError } from './PlatformNotExistsError'

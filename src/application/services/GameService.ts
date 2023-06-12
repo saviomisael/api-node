@@ -9,10 +9,8 @@ import {
 import { AgeRatingRepository, GameRepository, GenreRepository, PlatformRepository } from '$/infrastructure/repositories'
 import { type CacheService } from '$/infrastructure/services/CacheService'
 import { CacheServiceFactory } from '$/infrastructure/services/CacheServiceFactory'
-import { AgeNotExistsError } from '../errors/AgeNotExistsError'
-import { GameNotExistsError } from '../errors/GameNotExistsError'
-import { GenreNotExistsError } from '../errors/GenreNotExistsError'
-import { PlatformNotExistsError } from '../errors/PlatformNotExistsError'
+import { AgeNotExistsError, GameNotExistsError, GenreNotExistsError, PlatformNotExistsError } from '../errors'
+
 import { GameMapper } from '../mapper/GameMapper'
 
 export class GameService {
