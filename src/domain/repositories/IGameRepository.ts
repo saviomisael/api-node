@@ -7,4 +7,6 @@ export interface IGameRepository {
   deleteGameById: (gameId: string) => Promise<void>
   getAll: (page: number, sortType: 'releaseDate', sortOrder: 'ASC' | 'DESC') => Promise<Game[]>
   getMaxPages: () => Promise<number>
+  searchByTerm: (term: string, page: number, sortType: 'releaseDate', sortOrder: 'ASC' | 'DESC') => Promise<Game[]>
+  getMaxPagesBySearch: (term: string) => Promise<number>
 }
