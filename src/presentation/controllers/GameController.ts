@@ -297,15 +297,46 @@ export class GameController extends BaseController {
       req.query.term as string | undefined
     )
 
-    const maxPages = await this.gameRepository.getMaxPages()
+    let gamesResponse: GamesGetAllResponseDTO
+    let maxPages: number
+    let games: GameResponseDTO[]
+    let response: ResponseDTO<GamesGetAllResponseDTO>
+
+    if (dto.getTerm().length > 0) {
+      maxPages = await this.gameRepository.getMaxPagesBySearch(dto.getTerm())
+
+      if (dto.getPage() > maxPages) {
+        dto.setPage(minPages)
+      }
+
+      games = await this.gameService.searchByTerm(dto.getTerm(), dto.getPage(), dto.getSortType(), dto.getSortOrder())
+
+      gamesResponse = {
+        games,
+        currentPage: dto.getPage(),
+        lastPage: maxPages,
+        nextPage: dto.getPage() < maxPages ? dto.getPage() + 1 : null,
+        previousPage: dto.getPage() > minPages ? dto.getPage() - 1 : null
+      }
+
+      response = {
+        data: [gamesResponse],
+        errors: [],
+        success: true
+      }
+
+      return this.ok(res, response)
+    }
+
+    maxPages = await this.gameRepository.getMaxPages()
 
     if (dto.getPage() > maxPages) {
       dto.setPage(minPages)
     }
 
-    const games = await this.gameService.getAll(dto.getPage(), dto.getSortType(), dto.getSortOrder())
+    games = await this.gameService.getAll(dto.getPage(), dto.getSortType(), dto.getSortOrder())
 
-    const gamesResponse: GamesGetAllResponseDTO = {
+    gamesResponse = {
       games,
       currentPage: dto.getPage(),
       lastPage: maxPages,
@@ -313,7 +344,7 @@ export class GameController extends BaseController {
       previousPage: dto.getPage() > minPages ? dto.getPage() - 1 : null
     }
 
-    const response: ResponseDTO<GamesGetAllResponseDTO> = {
+    response = {
       data: [gamesResponse],
       success: true,
       errors: []
