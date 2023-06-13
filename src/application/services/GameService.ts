@@ -108,4 +108,15 @@ export class GameService {
 
     return games
   }
+
+  async searchByTerm(
+    term: string,
+    page: number,
+    sortType: 'releaseDate',
+    sortOrder: 'ASC' | 'DESC'
+  ): Promise<GameResponseDTO[]> {
+    const gamesFromDB = await this.gameRepository.searchByTerm(term, page, sortType, sortOrder)
+
+    return gamesFromDB.map((x) => GameMapper.fromEntityToGameResponse(x))
+  }
 }
