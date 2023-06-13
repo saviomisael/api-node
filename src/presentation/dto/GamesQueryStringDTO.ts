@@ -5,8 +5,9 @@ export class GamesQueryStringDTO {
   private readonly sort: string
   private readonly sortType: 'releaseDate'
   private readonly sortOrder: 'ASC' | 'DESC'
+  private readonly term: string
 
-  constructor(page: string | undefined, sort: string | undefined) {
+  constructor(page: string | undefined, sort: string | undefined, term: string | undefined) {
     this.page = page !== undefined && Number(page) > 0 ? Number(page) : minPages
     this.sort =
       sort !== undefined && ['asc(releaseDate)', 'desc(releaseDate)'].includes(String(sort))
@@ -14,6 +15,11 @@ export class GamesQueryStringDTO {
         : 'desc(releaseDate)'
     this.sortType = 'releaseDate'
     this.sortOrder = this.sort.includes('asc') ? 'ASC' : 'DESC'
+    this.term = term !== undefined && term.trim().length > 0 ? term.trim() : ''
+  }
+
+  getTerm(): string {
+    return this.term
   }
 
   getPage(): number {

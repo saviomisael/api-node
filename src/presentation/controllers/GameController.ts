@@ -291,7 +291,11 @@ export class GameController extends BaseController {
   }
 
   async getAll(req: Request, res: Response): Promise<Response> {
-    const dto = new GamesQueryStringDTO(req.query.page as string | undefined, req.query.sort as string | undefined)
+    const dto = new GamesQueryStringDTO(
+      req.query.page as string | undefined,
+      req.query.sort as string | undefined,
+      req.query.term as string | undefined
+    )
 
     const maxPages = await this.gameRepository.getMaxPages()
 
