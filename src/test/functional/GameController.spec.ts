@@ -697,4 +697,11 @@ describe('GET /api/v1/games 2', () => {
     chai.expect(page1.body.data[0].games).to.have.length(9)
     chai.expect(page2.body.data[0].games).to.have.length(4)
   })
+
+  it('should return all games that the name match Witcher', async () => {
+    const response = await chai.request(app).get(apiRoutes.games.getAll + '?term=Witcher')
+
+    chai.expect(response).to.have.status(200)
+    chai.expect(response.body.data[0].games).to.have.length(3)
+  })
 })
