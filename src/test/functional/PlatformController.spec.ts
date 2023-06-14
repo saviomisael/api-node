@@ -1,5 +1,7 @@
+import { Platform } from '$/domain/entities'
 import { DBConnection } from '$/infrastructure/DBConnection'
 import { RedisClient } from '$/infrastructure/RedisClient'
+import { PlatformRepository } from '$/infrastructure/repositories'
 import { apiRoutes } from '$/infrastructure/routes/apiRoutes'
 import app from '$/infrastructure/server'
 import chai from 'chai'
@@ -160,31 +162,28 @@ describe('DELETE /api/v1/platforms/:id 2', () => {
 })
 
 describe('GET /api/v1/platforms/', () => {
+  beforeEach(async () => {
+    const platformRepository = new PlatformRepository()
+
+    for (let index = 1; index <= 10; index++) {
+      await platformRepository.create(new Platform(`platform ${index}`))
+    }
+  })
+
   afterEach(async () => {
     await clearData()
   })
 
   it('should return a list of platforms', async () => {
-    for (const platform of ['Xbox', 'PS5', 'Switch']) {
-      await chai.request(app).post(apiRoutes.platforms.create).send({ name: platform })
-    }
-
     const response = await chai.request(app).get(apiRoutes.platforms.getAll)
 
     chai.expect(response).to.have.status(200)
     chai.expect(response.body.errors).to.have.length(0)
-    chai.expect(response.body.data).to.have.length(3)
+    chai.expect(response.body.data).to.have.length(10)
     chai.expect(response.body.success).to.be.true
   })
 
   it('should return a list of platforms from cache in less time', async () => {
-    for (let index = 0; index < 10; index++) {
-      await chai
-        .request(app)
-        .post(apiRoutes.platforms.create)
-        .send({ name: `platform${index}` })
-    }
-
     const firstRequestStartTime = performance.now()
 
     await chai.request(app).get(apiRoutes.platforms.getAll)
