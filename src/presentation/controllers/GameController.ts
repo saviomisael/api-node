@@ -1,13 +1,9 @@
 import { type GameResponseDTO } from '$/application/dto/GameResponseDTO'
-import {
-  AgeNotExistsError,
-  GameNotExistsError,
-  GenreNotExistsError,
-  PlatformNotExistsError
-} from '$/application/errors'
+import { AgeNotExistsError, GenreNotExistsError, PlatformNotExistsError } from '$/application/errors'
 import { GameMapper as GameMapperApp } from '$/application/mapper/GameMapper'
 import { GameService } from '$/application/services/GameService'
 import { type IGameRepository } from '$/domain/repositories'
+import { GameNotExistsError } from '$/infrastructure/errors/GameNotExistsError'
 import { GameRepository } from '$/infrastructure/repositories/GameRepository'
 import { validate } from 'class-validator'
 import { type Request, type Response } from 'express'
@@ -283,6 +279,7 @@ export class GameController extends BaseController {
           errors: [error.message]
         }
 
+        console.log(error)
         return this.notFound(res, response)
       }
 
@@ -311,22 +308,13 @@ export class GameController extends BaseController {
         ? await this.gameService.searchByTerm(dto.getTerm(), dto.getPage(), dto.getSortType(), dto.getSortOrder())
         : await this.gameService.getAll(dto.getPage(), dto.getSortType(), dto.getSortOrder())
 
-    const gamesResponse: GamesGetAllResponseDTO =
-      dto.getTerm().length > 0
-        ? {
-            games,
-            currentPage: dto.getPage(),
-            lastPage: maxPages,
-            nextPage: dto.getPage() < maxPages ? dto.getPage() + 1 : null,
-            previousPage: dto.getPage() > minPages ? dto.getPage() - 1 : null
-          }
-        : {
-            games,
-            currentPage: dto.getPage(),
-            lastPage: maxPages,
-            nextPage: dto.getPage() < maxPages ? dto.getPage() + 1 : null,
-            previousPage: dto.getPage() > minPages ? dto.getPage() - 1 : null
-          }
+    const gamesResponse: GamesGetAllResponseDTO = {
+      games,
+      currentPage: dto.getPage(),
+      lastPage: maxPages,
+      nextPage: dto.getPage() < maxPages ? dto.getPage() + 1 : null,
+      previousPage: dto.getPage() > minPages ? dto.getPage() - 1 : null
+    }
 
     const response = {
       data: [gamesResponse],

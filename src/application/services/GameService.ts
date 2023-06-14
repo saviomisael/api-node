@@ -6,10 +6,11 @@ import {
   type IGenreRepository,
   type IPlatformRepository
 } from '$/domain/repositories'
+import { GameNotExistsError } from '$/infrastructure/errors/GameNotExistsError'
 import { AgeRatingRepository, GameRepository, GenreRepository, PlatformRepository } from '$/infrastructure/repositories'
 import { type CacheService } from '$/infrastructure/services/CacheService'
 import { CacheServiceFactory } from '$/infrastructure/services/CacheServiceFactory'
-import { AgeNotExistsError, GameNotExistsError, GenreNotExistsError, PlatformNotExistsError } from '../errors'
+import { AgeNotExistsError, GenreNotExistsError, PlatformNotExistsError } from '../errors'
 
 import { GameMapper } from '../mapper/GameMapper'
 

@@ -3,6 +3,7 @@ import { type IGameRepository } from '$/domain/repositories'
 import { type Connection } from 'mysql2/promise'
 import { DBConnection } from '../DBConnection'
 import { maxGamesPerPage } from '../constants'
+import { GameNotExistsError } from '../errors/GameNotExistsError'
 import { GameRowDataMapper } from '../mapper/GameRowDataMapper'
 import { type GameRowData } from '../row-data/GameRowData'
 
@@ -176,63 +177,79 @@ export class GameRepository implements IGameRepository {
   async searchByTerm(term: string, page: number, sortType: 'releaseDate', sortOrder: 'ASC' | 'DESC'): Promise<Game[]> {
     this.connection = await DBConnection.getConnection()
 
+    term = `+${term}`
+
     const orders = {
       releaseDate: 'DATE(g.releaseDate)'
     }
 
     const query = `
-      SELECT g.id AS game_id,
-      g.name AS game_name,
-      g.description AS game_description,
-      g.price AS game_price,
-      g.releaseDate,
-      ar.id AS age_rating_id,
-      ar.age,
-      ar.description AS age_rating_description,
-      GROUP_CONCAT(DISTINCT gr.id) AS genre_ids,
-      GROUP_CONCAT(DISTINCT gr.name) AS genre_names,
-      GROUP_CONCAT(DISTINCT p.id) AS platform_ids,
-      GROUP_CONCAT(DISTINCT p.name) AS platform_names
+      SELECT g.id
       FROM games AS g
       JOIN ageRatings AS ar ON g.fkAgeRating = ar.id
       JOIN games_genres AS gg ON gg.fk_game = g.id
       JOIN genres AS gr ON gg.fk_genre = gr.id
       JOIN games_platforms AS gp ON gp.fk_game = g.id
       JOIN platforms AS p ON gp.fk_platform = p.id
+      WHERE MATCH(gr.name) AGAINST (? IN BOOLEAN MODE)
+      OR MATCH(g.name) AGAINST (? IN BOOLEAN MODE)
+      OR MATCH(p.name) AGAINST (? IN BOOLEAN MODE)
       GROUP BY g.id
-      WHERE MATCH(g.name, gr.name, p.name)
-      AGAINST (?)
       ORDER BY ${orders[sortType]} ${sortOrder}
       LIMIT ${page < 2 ? 0 : (page - 1) * maxGamesPerPage},${maxGamesPerPage}
     `
 
-    const result = await this.connection.execute(query, [term])
+    const result = await this.connection.execute(query, [term, term, term])
 
-    const rows = result[0] as GameRowData[]
+    const rows = result[0] as any[]
 
-    return rows.map((x) => GameRowDataMapper.toEntity(x))
+    const pipeline: Array<Promise<Game | null>> = []
+
+    for (const row of rows) {
+      pipeline.push(this.getById(row.id as string))
+    }
+
+    const gamesPromise = await Promise.all([...pipeline])
+
+    const games: Game[] = []
+
+    for (const game of gamesPromise) {
+      if (game !== null) games.push(game)
+    }
+
+    const hasNull = gamesPromise.length !== games.length
+
+    if (hasNull) {
+      throw new GameNotExistsError()
+    }
+
+    return games
   }
 
   async getMaxPagesBySearch(term: string): Promise<number> {
     this.connection = await DBConnection.getConnection()
 
+    term = `+${term}`
+
     const result = await this.connection.execute(
       `
-        SELECT COUNT(*) AS numPages FROM games AS g
+        SELECT COUNT(DISTINCT g.id) AS numGames
+        FROM games AS g
         JOIN ageRatings AS ar ON g.fkAgeRating = ar.id
         JOIN games_genres AS gg ON gg.fk_game = g.id
         JOIN genres AS gr ON gg.fk_genre = gr.id
         JOIN games_platforms AS gp ON gp.fk_game = g.id
         JOIN platforms AS p ON gp.fk_platform = p.id
-        GROUP BY g.id
-        WHERE MATCH(g.name, gr.name, p.name) AGAINST(?)
+        WHERE MATCH(gr.name) AGAINST (? IN BOOLEAN MODE)
+        OR MATCH(g.name) AGAINST (? IN BOOLEAN MODE)
+        OR MATCH(p.name) AGAINST (? IN BOOLEAN MODE)
       `,
-      [term]
+      [term, term, term]
     )
 
     const rows = result[0] as any[]
 
-    return Math.ceil((rows[0].numPages as number) / maxGamesPerPage)
+    return Math.ceil((rows[0].numGames as number) / maxGamesPerPage)
   }
 
   async getMaxPages(): Promise<number> {

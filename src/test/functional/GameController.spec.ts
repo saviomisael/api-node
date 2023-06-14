@@ -398,7 +398,7 @@ describe('DELETE /api/v1/games/:id', () => {
   it('should return not found when game not exists', async () => {
     const response = await chai
       .request(app)
-      .delete(apiRoutes.games.deleteById.replace(':id', '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d'))
+      .delete(apiRoutes.games.deleteById.replace(':id', '9b1deb4d-aaaa-aaaa-9bdd-2b0d7b3dcb6d'))
 
     chai.expect(response).to.have.status(404)
   })
@@ -501,9 +501,9 @@ describe('GET /api/v1/games 2', () => {
     const age = new AgeRating(allAges.body.data[0].age as string, allAges.body.data[0].description as string)
     age.id = allAges.body.data[0].id
 
-    const genre1 = new Genre('action 1')
+    const genre1 = new Genre('multiplayer')
     genre1.id = '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6a'
-    const genre2 = new Genre('action 2')
+    const genre2 = new Genre('Mundo Aberto')
     genre2.id = '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6b'
 
     const platform1 = new Platform('playstation 1')
@@ -547,11 +547,40 @@ describe('GET /api/v1/games 2', () => {
       'z'
     ]
 
+    const gamesNames = [
+      'The Witcher',
+      'The Witcher 2',
+      'The Witcher 3',
+      'FIFA',
+      'It Takes Two',
+      'Stardew Valley',
+      'Flock of Dogs',
+      'The Escapists',
+      'ABC Audioreactive Beat Circle',
+      'Mortal Kombat 11',
+      'Cuphead',
+      'Rekt: Crash Test',
+      'Street Fighter V',
+      'Glim',
+      'Rocket League',
+      'Knight Squad 2',
+      'Hamster Playground',
+      'Super Bomberman R',
+      'Overcooked 2',
+      'Portal 2',
+      'Tekken 7',
+      'Never Alone',
+      'Child of Light',
+      'Relic Hunters Zero: Remix',
+      'Lara Croft and the Temple of Osiris',
+      'How to Survive 2'
+    ]
+
     for (let index = 0; index < lastCharacters.length; index++) {
       const letter = lastCharacters[index]
 
       const game = new Game(
-        'The Witcher 3',
+        gamesNames[index],
         100,
         'O jogo mais premiado de uma geração agora aprimorado para a atual! Experimente The Witcher 3: Wild Hunt e suas expansões nesta coleção definitiva, com melhor desempenho, visuais aprimorados, novo conteúdo adicional, modo fotografia e muito mais!',
         new Date(2020, 5, index + 1),
@@ -559,10 +588,10 @@ describe('GET /api/v1/games 2', () => {
       )
 
       const genre = index % 2 === 0 ? genre1 : genre2
+      const platform = index % 2 === 0 ? platform1 : platform2
 
       game.addGenre(genre)
-      game.addPlatform(platform1)
-      game.addPlatform(platform2)
+      game.addPlatform(platform)
       game.id = `9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6${letter}`
       pipeline.push(gameRepository.create(game))
     }
@@ -646,5 +675,12 @@ describe('GET /api/v1/games 2', () => {
     chai.expect(games).to.have.length(9)
     chai.expect(firstGame.platforms.length > 0).to.be.true
     chai.expect(firstGame.genres.length > 0).to.be.true
+  })
+
+  it('should return lastPage equal 2 when search multiplayer games', async () => {
+    const response = await chai.request(app).get(apiRoutes.games.getAll + '?term=multiplayer')
+
+    chai.expect(response).to.have.status(200)
+    chai.expect(response.body.data[0].lastPage).to.be.equal(2)
   })
 })
