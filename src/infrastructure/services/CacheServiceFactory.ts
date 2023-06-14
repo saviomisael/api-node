@@ -20,4 +20,8 @@ export class CacheServiceFactory {
   static getGamesCacheService(): CacheService<GameResponseDTO[]> {
     return new CacheService<GameResponseDTO[]>('games:page:sortType:sortOrder')
   }
+
+  static getGamesSearchCacheService(): CacheService<GameResponseDTO[]> {
+    return new CacheService<GameResponseDTO[]>('games:page:sortType:sortOrder:term')
+  }
 }
