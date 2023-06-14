@@ -704,4 +704,18 @@ describe('GET /api/v1/games 2', () => {
     chai.expect(response).to.have.status(200)
     chai.expect(response.body.data[0].games).to.have.length(3)
   })
+
+  it('should return all games that have xbox in platforms when term provided is uppercase', async () => {
+    const requester = chai.request(app).keepOpen()
+    const [page1, page2] = await Promise.all([
+      requester.get(apiRoutes.games.getAll + '?term=XBOX'),
+      requester.get(apiRoutes.games.getAll + '?term=XBOX&page=2')
+    ])
+
+    chai.expect(page1).to.have.status(200)
+    chai.expect(page2).to.have.status(200)
+    chai.expect(page1.body.data[0].lastPage).to.be.equal(2)
+    chai.expect(page1.body.data[0].games).to.have.length(9)
+    chai.expect(page2.body.data[0].games).to.have.length(4)
+  })
 })
