@@ -506,9 +506,9 @@ describe('GET /api/v1/games 2', () => {
     const genre2 = new Genre('Mundo Aberto')
     genre2.id = '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6b'
 
-    const platform1 = new Platform('playstation 1')
+    const platform1 = new Platform('playstation')
     platform1.id = '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6a'
-    const platform2 = new Platform('playstation 2')
+    const platform2 = new Platform('xbox')
     platform2.id = '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6b'
 
     const pipeline = [
@@ -682,5 +682,19 @@ describe('GET /api/v1/games 2', () => {
 
     chai.expect(response).to.have.status(200)
     chai.expect(response.body.data[0].lastPage).to.be.equal(2)
+  })
+
+  it('should return all games that the platform is equal to playstation', async () => {
+    const requester = chai.request(app).keepOpen()
+    const [page1, page2] = await Promise.all([
+      requester.get(apiRoutes.games.getAll + '?term=playstation'),
+      requester.get(apiRoutes.games.getAll + '?term=playstation&page=2')
+    ])
+
+    chai.expect(page1).to.have.status(200)
+    chai.expect(page2).to.have.status(200)
+    chai.expect(page1.body.data[0].lastPage).to.be.equal(2)
+    chai.expect(page1.body.data[0].games).to.have.length(9)
+    chai.expect(page2.body.data[0].games).to.have.length(4)
   })
 })
