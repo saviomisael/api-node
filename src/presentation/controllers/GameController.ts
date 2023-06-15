@@ -5,8 +5,10 @@ import { GameService } from '$/application/services/GameService'
 import { type IGameRepository } from '$/domain/repositories'
 import { GameNotExistsError } from '$/infrastructure/errors/GameNotExistsError'
 import { GameRepository } from '$/infrastructure/repositories/GameRepository'
+import { apiRoutes } from '$/infrastructure/routes/apiRoutes'
 import { validate } from 'class-validator'
 import { type Request, type Response } from 'express'
+import { HalWrapper } from '../HalWrapper'
 import { minPages } from '../constants'
 import {
   CreateGameDTO,
@@ -86,8 +88,16 @@ export class GameController extends BaseController {
         return this.internalServerError(res, response)
       }
 
+      const resource = new HalWrapper(
+        GameMapperApp.fromEntityToGameResponse(newGame),
+        apiRoutes.games.getById.replace(':id', newGame.id)
+      )
+        .addLink('PUT_update_game', apiRoutes.games.updateGameById.replace(':id', newGame.id))
+        .addLink('DELETE_delete_game', apiRoutes.games.deleteById.replace(':id', newGame.id))
+        .getResource()
+
       response = {
-        data: [GameMapperApp.fromEntityToGameResponse(newGame)],
+        data: [resource],
         success: true,
         errors: []
       }

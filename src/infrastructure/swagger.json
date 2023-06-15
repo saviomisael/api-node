@@ -441,7 +441,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/GameResponse"
+                  "$ref": "#/components/schemas/GameResourceResponse"
                 }
               }
             }
@@ -528,6 +528,79 @@
           }
         }
       },
+      "GameResource": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "131db526-4599-4485-803d-cca8573693d5"
+          },
+          "name": {
+            "type": "string",
+            "example": "The Witcher 3"
+          },
+          "description": {
+            "type": "string",
+            "example": "O jogo mais premiado de uma geração agora aprimorado para a atual! Experimente The Witcher 3: Wild Hunt e suas expansões nesta coleção definitiva, com melhor desempenho, visuais aprimorados, novo conteúdo adicional, modo fotografia e muito mais!"
+          },
+          "price": {
+            "type": "number",
+            "example": 100
+          },
+          "releaseDate": {
+            "type": "string",
+            "example": "2020-05-14T00:00:00.000Z"
+          },
+          "ageRating": {
+            "type": "object",
+            "$ref": "#/components/schemas/AgeRating"
+          },
+          "platforms": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Platform"
+            }
+          },
+          "genres": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Genre"
+            }
+          },
+          "_links": {
+            "type": "object",
+            "properties": {
+              "self": {
+                "type": "object",
+                "properties": {
+                  "href": {
+                    "type": "string",
+                    "example": "/api/v1/games/:id"
+                  }
+                }
+              },
+              "PUT_update_game": {
+                "type": "object",
+                "properties": {
+                  "href": {
+                    "type": "string",
+                    "example": "/api/v1/genres/:id"
+                  }
+                }
+              },
+              "DELETE_delete_game": {
+                "type": "object",
+                "properties": {
+                  "href": {
+                    "type": "string",
+                    "example": "/api/v1/genres/:id"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
       "GameResponse": {
         "type": "object",
         "properties": {
@@ -535,6 +608,27 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/Game"
+            }
+          },
+          "success": {
+            "type": "boolean"
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "example": "Você enviou gêneros duplicados."
+            }
+          }
+        }
+      },
+      "GameResourceResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GameResource"
             }
           },
           "success": {
