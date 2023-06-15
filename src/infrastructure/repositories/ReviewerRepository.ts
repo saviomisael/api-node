@@ -36,4 +36,14 @@ export class ReviewerRepository implements IReviewerRepository {
 
     return rows.length > 0
   }
+
+  async checkEmailAlreadyExists(email: string): Promise<boolean> {
+    this.connection = await DBConnection.getConnection()
+
+    const result = await this.connection.execute('SELECT email FROM reviewers WHERE email = ?', [email])
+
+    const rows = result[0] as any[]
+
+    return rows.length > 0
+  }
 }
