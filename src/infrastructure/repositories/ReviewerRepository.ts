@@ -8,13 +8,10 @@ export class ReviewerRepository implements IReviewerRepository {
   async createReviewer(reviewer: Reviewer): Promise<void> {
     this.connection = await DBConnection.getConnection()
 
-    await this.connection.execute('INSERT INTO reviewers (id, createdAtUtcTime, username, password, email)', [
-      reviewer.id,
-      reviewer.getCreatedAtUtcTime(),
-      reviewer.getUsername(),
-      reviewer.getPassword(),
-      reviewer.getEmail()
-    ])
+    await this.connection.execute(
+      'INSERT INTO reviewers (id, createdAtUtcTime, username, password, email) VALUES (?, ?, ?, ?, ?)',
+      [reviewer.id, reviewer.getCreatedAtUtcTime(), reviewer.getUsername(), reviewer.getPassword(), reviewer.getEmail()]
+    )
   }
 
   async getReviewerById(reviewerId: string): Promise<Reviewer> {
