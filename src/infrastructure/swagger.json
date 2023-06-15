@@ -280,7 +280,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/GameResponse"
+                  "$ref": "#/components/schemas/GameResourceResponse"
                 }
               }
             }
