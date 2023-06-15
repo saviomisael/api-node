@@ -65,4 +65,17 @@ describe('POST /api/v1/reviewers', () => {
       )
     ).to.be.true
   })
+
+  it('should return bad request when email already in use', async () => {
+    const response = await chai.request(app).post(apiRoutes.reviewers.create).send({
+      password: '123aBc#@',
+      confirmPassword: '123aBc#@',
+      email: 'savio@email.com',
+      username: 'saviao'
+    })
+
+    chai.expect(response).to.have.status(400)
+    chai.expect(response.body.errors.some((x: string) => x === 'O email savio@email.com já está sendo usado.')).to.be
+      .true
+  })
 })
