@@ -37,4 +37,15 @@ describe('POST /api/v1/reviewers', () => {
     chai.expect(response).to.have.status(400)
     chai.expect(response.body.errors[0]).to.be.equal('A senha e a confirmação de senha devem ser iguais.')
   })
+
+  it('should return bad request when email is not valid', async () => {
+    const response = await chai.request(app).post(apiRoutes.reviewers.create).send({
+      password: '123aBc#@',
+      confirmPassword: '123aBc#@',
+      email: 'saviomail.com'
+    })
+
+    chai.expect(response).to.have.status(400)
+    chai.expect(response.body.errors.some((x: string) => x === 'Você deve enviar um email válido.')).to.be.true
+  })
 })
