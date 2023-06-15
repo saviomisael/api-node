@@ -279,7 +279,6 @@ export class GameController extends BaseController {
           errors: [error.message]
         }
 
-        console.log(error)
         return this.notFound(res, response)
       }
 

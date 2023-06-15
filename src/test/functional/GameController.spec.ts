@@ -11,6 +11,21 @@ import { performance } from 'perf_hooks'
 
 chai.use(chaiHttp)
 
+const clearCache = async (): Promise<void> => {
+  const redisClient = await RedisClient.getClient()
+  await Promise.all([
+    redisClient.del('games:1:releaseDate:DESC'),
+    redisClient.del('games:2:releaseDate:DESC'),
+    redisClient.del('games:1:releaseDate:ASC'),
+    redisClient.del('games:1:releaseDate:DESC:multiplayer'),
+    redisClient.del('games:1:releaseDate:DESC:Witcher'),
+    redisClient.del('games:1:releaseDate:DESC:XBOX'),
+    redisClient.del('games:2:releaseDate:DESC:XBOX'),
+    redisClient.del('games:1:releaseDate:DESC:playstation'),
+    redisClient.del('games:2:releaseDate:DESC:playstation')
+  ])
+}
+
 const clearData = async (): Promise<void> => {
   const conn = await DBConnection.getConnection()
 
@@ -22,8 +37,7 @@ const clearData = async (): Promise<void> => {
     conn.execute('DELETE FROM platforms')
   ])
 
-  const redisClient = await RedisClient.getClient()
-  await redisClient.del('games:1:releaseDate:DESC')
+  await clearCache()
 }
 
 describe('POST /api/v1/games', () => {
@@ -597,6 +611,8 @@ describe('GET /api/v1/games 2', () => {
     }
 
     await Promise.all([...pipeline])
+
+    await clearCache()
   })
 
   afterEach(async () => {
@@ -717,5 +733,20 @@ describe('GET /api/v1/games 2', () => {
     chai.expect(page1.body.data[0].lastPage).to.be.equal(2)
     chai.expect(page1.body.data[0].games).to.have.length(9)
     chai.expect(page2.body.data[0].games).to.have.length(4)
+  })
+
+  it('should return games from cache in less time when a term is search', async () => {
+    const firstRequestStartTime = performance.now()
+    await chai.request(app).get(apiRoutes.games.getAll + '?term=XBOX')
+    const firstRequestEndTime = performance.now()
+
+    const secondRequestStartTime = performance.now()
+    await chai.request(app).get(apiRoutes.games.getAll + '?term=XBOX')
+    const secondRequestEndTime = performance.now()
+
+    const firstDiff = firstRequestEndTime - firstRequestStartTime
+    const secondDiff = secondRequestEndTime - secondRequestStartTime
+
+    chai.expect(firstDiff > secondDiff).to.be.true
   })
 })

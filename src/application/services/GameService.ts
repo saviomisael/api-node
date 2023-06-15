@@ -116,8 +116,18 @@ export class GameService {
     sortType: 'releaseDate',
     sortOrder: 'ASC' | 'DESC'
   ): Promise<GameResponseDTO[]> {
+    this.cacheService = CacheServiceFactory.getGamesSearchCacheService()
+
+    const replacements = { page: String(page), sortType, sortOrder, term }
+    let games = await this.cacheService.replaceKeys(replacements).getData()
+
+    if (games !== null) return games
+
     const gamesFromDB = await this.gameRepository.searchByTerm(term, page, sortType, sortOrder)
 
-    return gamesFromDB.map((x) => GameMapper.fromEntityToGameResponse(x))
+    games = gamesFromDB.map((x) => GameMapper.fromEntityToGameResponse(x))
+    await this.cacheService.replaceKeys(replacements).setData(games)
+
+    return games
   }
 }
