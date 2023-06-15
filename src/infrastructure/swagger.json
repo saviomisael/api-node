@@ -259,6 +259,51 @@
       }
     },
     "/api/v1/games": {
+      "get": {
+        "tags": [
+          "games"
+        ],
+        "summary": "Returns all games paginated or searchable games.",
+        "description": "Returns all games paginated or searchable games.",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "description": "page",
+            "type": "number",
+            "example": "2"
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "required": false,
+            "description": "how the games should be sorted.",
+            "type": "string",
+            "example": "asc(releaseDate) or desc(releaseDate)"
+          },
+          {
+            "name": "term",
+            "in": "query",
+            "required": false,
+            "description": "The term to be search. It should be a game name, a genre name, or a platform name.",
+            "type": "string",
+            "example": "Witcher"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns all games by page or the searchable games.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GameResourceGetAllResponse"
+                }
+              }
+            }
+          }
+        }
+      },
       "post": {
         "tags": [
           "games"
@@ -601,6 +646,33 @@
           }
         }
       },
+      "GameResourcePaginated": {
+        "type": "object",
+        "properties": {
+          "games": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GameResource"
+            }
+          },
+          "currentPage": {
+            "type": "number",
+            "example": 1
+          },
+          "lastPage": {
+            "type": "string",
+            "example": "2 or null"
+          },
+          "previousPage": {
+            "type": "string",
+            "example": "1 or null"
+          },
+          "nextPage": {
+            "type": "string",
+            "example": "2 or null"
+          }
+        }
+      },
       "GameResponse": {
         "type": "object",
         "properties": {
@@ -629,6 +701,27 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/GameResource"
+            }
+          },
+          "success": {
+            "type": "boolean"
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "example": "Você enviou gêneros duplicados."
+            }
+          }
+        }
+      },
+      "GameResourceGetAllResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GameResourcePaginated"
             }
           },
           "success": {

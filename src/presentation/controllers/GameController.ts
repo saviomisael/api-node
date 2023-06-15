@@ -328,10 +328,17 @@ export class GameController extends BaseController {
       dto.setPage(minPages)
     }
 
-    const games: GameResponseDTO[] =
+    let games: GameResponseDTO[] =
       dto.getTerm().length > 0
         ? await this.gameService.searchByTerm(dto.getTerm(), dto.getPage(), dto.getSortType(), dto.getSortOrder())
         : await this.gameService.getAll(dto.getPage(), dto.getSortType(), dto.getSortOrder())
+
+    games = games.map((x) => {
+      return new HalWrapper(x, apiRoutes.games.getById.replace(':id', x.id))
+        .addLink('PUT_update_game', apiRoutes.games.updateGameById.replace(':id', x.id))
+        .addLink('DELETE_delete_game', apiRoutes.games.deleteById.replace(':id', x.id))
+        .getResource()
+    })
 
     const gamesResponse: GamesGetAllResponseDTO = {
       games,
