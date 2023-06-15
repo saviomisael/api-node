@@ -34,4 +34,12 @@ export class PasswordCrypter {
       })
     })
   }
+
+  static async comparePasswords(password1: string, password2: string): Promise<boolean> {
+    const hash = await PasswordCrypter.encrypt(password2)
+
+    const result = await bcrypt.compare(password1, hash)
+
+    return Boolean(result)
+  }
 }
