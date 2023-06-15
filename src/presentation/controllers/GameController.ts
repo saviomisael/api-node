@@ -151,8 +151,16 @@ export class GameController extends BaseController {
       return this.notFound(res, response)
     }
 
+    const resource = new HalWrapper(
+      GameMapperApp.fromEntityToGameResponse(game),
+      apiRoutes.games.getById.replace(':id', game.id)
+    )
+      .addLink('PUT_update_game', apiRoutes.games.updateGameById.replace(':id', game.id))
+      .addLink('DELETE_delete_game', apiRoutes.games.deleteById.replace(':id', game.id))
+      .getResource()
+
     response = {
-      data: [GameMapperApp.fromEntityToGameResponse(game)],
+      data: [resource],
       success: true,
       errors: []
     }
