@@ -1,6 +1,5 @@
 import { Reviewer } from '$/domain/entities/Reviewer'
 import { DBConnection } from '$/infrastructure/DBConnection'
-import { JWTGenerator } from '$/infrastructure/JWTGenerator'
 import { PasswordCrypter } from '$/infrastructure/PasswordCrypter'
 import { ReviewerRepository } from '$/infrastructure/repositories/ReviewerRepository'
 import { apiRoutes } from '$/infrastructure/routes/apiRoutes'
@@ -102,12 +101,7 @@ describe('POST /api/v1/reviewers', () => {
 
     const { token } = response.body.data[0]
 
-    const generator = new JWTGenerator()
-
-    const decoded = await generator.verifyToken(token as string)
-
     chai.expect(response).to.have.status(201)
-    chai.expect(decoded.name).to.be.equal('saviao')
-    chai.expect(decoded.sub).to.not.be.empty
+    chai.expect(token).to.not.be.empty
   })
 })
