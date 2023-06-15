@@ -3,8 +3,7 @@ import { type IReviewerRepository } from '$/domain/repositories/IReviewerReposit
 import { JWTGenerator } from '$/infrastructure/JWTGenerator'
 import { ReviewerRepository } from '$/infrastructure/repositories/ReviewerRepository'
 import { type TokenDTO } from '../dto/TokenDTO'
-import { EmailInUseError } from '../errors/EmailInUseError'
-import { UsernameInUseError } from '../errors/UsernameInUseError'
+import { EmailInUseError, UsernameInUseError } from '../errors'
 
 export class ReviewerService {
   private readonly reviewerRepository: IReviewerRepository = new ReviewerRepository()
