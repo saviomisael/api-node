@@ -13,4 +13,10 @@ describe('PasswordCrypter', () => {
 
     chai.expect(result).to.be.true
   })
+
+  it('should return false when two passwords are not equal', async () => {
+    const result = await PasswordCrypter.comparePasswords('12345678', '123456789')
+
+    chai.expect(result).to.be.false
+  })
 })
