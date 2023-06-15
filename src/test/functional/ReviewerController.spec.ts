@@ -48,4 +48,21 @@ describe('POST /api/v1/reviewers', () => {
     chai.expect(response).to.have.status(400)
     chai.expect(response.body.errors.some((x: string) => x === 'Você deve enviar um email válido.')).to.be.true
   })
+
+  it('should return bad request when password is invalid', async () => {
+    const response = await chai.request(app).post(apiRoutes.reviewers.create).send({
+      password: 'teste123',
+      confirmPassword: 'teste123',
+      email: 'saviomail.com'
+    })
+
+    chai.expect(response).to.have.status(400)
+    chai.expect(
+      response.body.errors.some(
+        (x: string) =>
+          x ===
+          'A senha deve ter pelo menos 8 caracteres, uma letra maiúscula, uma letra minúscula, um número e um caractere especial.'
+      )
+    ).to.be.true
+  })
 })
