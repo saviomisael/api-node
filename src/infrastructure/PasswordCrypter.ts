@@ -17,7 +17,7 @@ export class PasswordCrypter {
           return
         }
 
-        resolve(hash as string)
+        resolve(hash)
       })
     })
   }
@@ -30,7 +30,7 @@ export class PasswordCrypter {
           return
         }
 
-        resolve(salt as string)
+        resolve(salt)
       })
     })
   }

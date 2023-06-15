@@ -34,4 +34,11 @@ describe('addHoursHelper', () => {
 
     chai.expect(date.getHours() - 1).to.be.equal(dateAfter1Hour.getHours())
   })
+
+  it('should return 11 p.m. when hour provided is -1 and date is 12 p.m.', () => {
+    const date = new Date(2020, 0, 1, 24, 30, 30)
+    const dateAfter1Hour = addHoursHelper(date, -1)
+
+    chai.expect(dateAfter1Hour.getHours()).to.be.equal(23)
+  })
 })
