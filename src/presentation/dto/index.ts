@@ -1,6 +1,7 @@
 export { CreateGameDTO } from './CreateGameDTO'
 export { CreateGenreDTO } from './CreateGenreDTO'
 export { CreatePlatformDTO } from './CreatePlatformDTO'
+export { CreateReviewerDTO } from './CreateReviewerDTO'
 export { DeleteGameDTO } from './DeleteGameDTO'
 export { DeleteGenreDTO } from './DeleteGenreDTO'
 export { DeletePlatformDTO } from './DeletePlatformDTO'
