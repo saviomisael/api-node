@@ -27,4 +27,11 @@ describe('addHoursHelper', () => {
     chai.expect(date.getSeconds()).to.be.equal(dateAfter1Hour.getSeconds())
     chai.expect(date.getMilliseconds()).to.be.equal(dateAfter1Hour.getMilliseconds())
   })
+
+  it('should subtracted 1 hour when hour provided is -1', () => {
+    const date = new Date(2020, 0, 1, 10, 30, 30)
+    const dateAfter1Hour = addHoursHelper(date, -1)
+
+    chai.expect(date.getHours() - 1).to.be.equal(dateAfter1Hour.getHours())
+  })
 })
