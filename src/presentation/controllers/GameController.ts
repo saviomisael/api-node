@@ -241,8 +241,16 @@ export class GameController extends BaseController {
         return this.internalServerError(res, response)
       }
 
+      const resource = new HalWrapper(
+        GameMapperApp.fromEntityToGameResponse(updatedGame),
+        apiRoutes.games.getById.replace(':id', updatedGame.id)
+      )
+        .addLink('PUT_update_game', apiRoutes.games.updateGameById.replace(':id', updatedGame.id))
+        .addLink('DELETE_delete_game', apiRoutes.games.deleteById.replace(':id', updatedGame.id))
+        .getResource()
+
       response = {
-        data: [GameMapperApp.fromEntityToGameResponse(updatedGame)],
+        data: [resource],
         success: true,
         errors: []
       }
