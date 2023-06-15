@@ -26,4 +26,14 @@ export class ReviewerRepository implements IReviewerRepository {
 
     return rows[0]
   }
+
+  async checkUsernameAlreadyExists(username: string): Promise<boolean> {
+    this.connection = await DBConnection.getConnection()
+
+    const result = await this.connection.execute('SELECT username FROM reviewers WHERE username = ?', [username])
+
+    const rows = result[0] as any[]
+
+    return rows.length > 0
+  }
 }
