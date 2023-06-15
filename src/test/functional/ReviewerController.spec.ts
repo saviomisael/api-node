@@ -1,5 +1,6 @@
 import { Reviewer } from '$/domain/entities/Reviewer'
 import { DBConnection } from '$/infrastructure/DBConnection'
+import { JWTGenerator } from '$/infrastructure/JWTGenerator'
 import { PasswordCrypter } from '$/infrastructure/PasswordCrypter'
 import { ReviewerRepository } from '$/infrastructure/repositories/ReviewerRepository'
 import { apiRoutes } from '$/infrastructure/routes/apiRoutes'
@@ -89,5 +90,24 @@ describe('POST /api/v1/reviewers', () => {
 
     chai.expect(response).to.have.status(400)
     chai.expect(response.body.errors.some((x: string) => x === 'O usuário saviomisael já existe.')).to.be.true
+  })
+
+  it('should return created when reviewer account is valid', async () => {
+    const response = await chai.request(app).post(apiRoutes.reviewers.create).send({
+      password: '123aBc#@',
+      confirmPassword: '123aBc#@',
+      email: 'saviao@email.com',
+      username: 'saviao'
+    })
+
+    const { token } = response.body.data[0]
+
+    const generator = new JWTGenerator()
+
+    const decoded = await generator.verifyToken(token as string)
+
+    chai.expect(response).to.have.status(201)
+    chai.expect(decoded.name).to.be.equal('saviao')
+    chai.expect(decoded.sub).to.not.be.empty
   })
 })

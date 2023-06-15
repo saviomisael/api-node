@@ -5,7 +5,7 @@ import { AggregateRoot } from './AggregateRoot'
 export class Reviewer extends AggregateRoot {
   private passwordTemporary!: string
   private passwordTempTime!: Date
-  private readonly createdAtUtcTime: Date
+  private createdAtUtcTime: Date
   constructor(private readonly username: string, private readonly password: string, private readonly email: string) {
     super()
     this.createdAtUtcTime = newDateUtcTime()
@@ -37,6 +37,10 @@ export class Reviewer extends AggregateRoot {
 
   getCreatedAtUtcTime(): Date {
     return this.createdAtUtcTime
+  }
+
+  setCreatedAtUtcTime(date: Date): void {
+    this.createdAtUtcTime = date
   }
 
   getEmail(): string {

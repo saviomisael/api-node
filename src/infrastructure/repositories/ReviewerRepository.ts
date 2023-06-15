@@ -1,4 +1,4 @@
-import { type Reviewer } from '$/domain/entities/Reviewer'
+import { Reviewer } from '$/domain/entities/Reviewer'
 import { type IReviewerRepository } from '$/domain/repositories/IReviewerRepository'
 import { type Connection } from 'mysql2/promise'
 import { DBConnection } from '../DBConnection'
@@ -17,11 +17,19 @@ export class ReviewerRepository implements IReviewerRepository {
   async getReviewerById(reviewerId: string): Promise<Reviewer> {
     this.connection = await DBConnection.getConnection()
 
-    const result = await this.connection.execute('SELECT * FROM reviewers WHERE id = ?', [reviewerId])
+    const result = await this.connection.execute(
+      'SELECT id, username, password, email, createdAtUtcTime FROM reviewers WHERE id = ?',
+      [reviewerId]
+    )
 
-    const rows = result[0] as Reviewer[]
+    const rows = result[0] as any[]
 
-    return rows[0]
+    return rows.map((x) => {
+      const reviewer = new Reviewer(x.username as string, x.password as string, x.email as string)
+      reviewer.id = x.id
+      reviewer.setCreatedAtUtcTime(new Date(x.createdAtUtcTime as string))
+      return reviewer
+    })[0]
   }
 
   async checkUsernameAlreadyExists(username: string): Promise<boolean> {
