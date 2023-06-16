@@ -1,4 +1,5 @@
 import { JWTGenerator } from '$/infrastructure/JWTGenerator'
+import { ReviewerRepository } from '$/infrastructure/repositories/ReviewerRepository'
 import { type NextFunction, type Response } from 'express'
 import { JsonWebTokenError, NotBeforeError, TokenExpiredError } from 'jsonwebtoken'
 import { HttpHandler } from '../HttpHandler'
@@ -6,6 +7,8 @@ import { type ResponseDTO } from '../dto'
 import { type JWTRequest } from '../requests/JWTRequest'
 
 export class AuthMiddleware extends HttpHandler {
+  private readonly reviewerRepository = new ReviewerRepository()
+
   async isAuthenticaded(req: JWTRequest, res: Response, next: NextFunction): Promise<Response | undefined> {
     const authorizationHeader = req.headers.authorization
 
@@ -25,6 +28,30 @@ export class AuthMiddleware extends HttpHandler {
 
     try {
       const payload = await generator.verifyToken(token)
+
+      const usernameExists = await this.reviewerRepository.checkUsernameAlreadyExists(payload.name)
+
+      if (!usernameExists) {
+        response = {
+          data: [],
+          errors: ['Usuário não existe.'],
+          success: false
+        }
+
+        return this.notFound(res, response)
+      }
+
+      const reviewer = await this.reviewerRepository.getReviewerByUsername(payload.name)
+
+      if (payload.sub !== reviewer.id) {
+        response = {
+          data: [],
+          success: false,
+          errors: ['O nome de usuário ou a senha estão incorretos.']
+        }
+
+        return this.notAuthorized(res, response)
+      }
 
       req.payload = payload
       next()
