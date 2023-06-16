@@ -531,10 +531,81 @@
           }
         }
       }
+    },
+    "/api/v1/reviewers/tokens": {
+      "post": {
+        "tags": [
+          "reviewers"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReviewerSignInRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "400": {
+            "description": "Returns errors in the request, like password is weak.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TokenResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Sign in successfully and return a jwt token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TokenResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Reviewer does not exist.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TokenResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Credentials are wrong.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TokenResponse"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
     "schemas": {
+      "ReviewerSignInRequest": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string",
+            "example": "noobmaster3000"
+          },
+          "password": {
+            "type": "string",
+            "example": "123aBc@#"
+          }
+        }
+      },
       "Token": {
         "type": "object",
         "properties": {
