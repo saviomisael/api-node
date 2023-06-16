@@ -70,4 +70,10 @@ export class ReviewerRepository implements IReviewerRepository {
       return reviewer
     })[0]
   }
+
+  async changePassword(username: string, newPassword: string): Promise<void> {
+    this.connection = await DBConnection.getConnection()
+
+    await this.connection.execute('UPDATE reviewers SET password = ? WHERE username = ?', [newPassword, username])
+  }
 }
