@@ -1,13 +1,16 @@
 import { type Reviewer } from '$/domain/entities/Reviewer'
 import { type IReviewerRepository } from '$/domain/repositories/IReviewerRepository'
+import { type ISendEmailService } from '$/domain/services/ISendEmailService'
 import { JWTGenerator } from '$/infrastructure/JWTGenerator'
 import { PasswordEncrypter } from '$/infrastructure/PasswordEncrypter'
 import { ReviewerRepository } from '$/infrastructure/repositories/ReviewerRepository'
+import { ChangePasswordEmailService } from '$/infrastructure/services/ChangePasswordEmailService'
 import { type TokenDTO } from '../dto/TokenDTO'
 import { CredentialsError, EmailInUseError, ReviewerNotFoundError, UsernameInUseError } from '../errors'
 
 export class ReviewerService {
   private readonly reviewerRepository: IReviewerRepository = new ReviewerRepository()
+  private emailService!: ISendEmailService
 
   async createReviewer(reviewer: Reviewer): Promise<TokenDTO> {
     const emailIsInUse = await this.reviewerRepository.checkEmailAlreadyExists(reviewer.getEmail())
@@ -64,5 +67,14 @@ export class ReviewerService {
     const passwordEncrypted = await PasswordEncrypter.encrypt(newPassword)
 
     await this.reviewerRepository.changePassword(username, passwordEncrypted)
+
+    const [, reviewer] = await Promise.all([
+      this.reviewerRepository.changePassword(username, passwordEncrypted),
+      this.reviewerRepository.getReviewerByUsername(username)
+    ])
+
+    this.emailService = new ChangePasswordEmailService()
+
+    await this.emailService.sendEmail(reviewer.getUsername(), reviewer.getEmail())
   }
 }
