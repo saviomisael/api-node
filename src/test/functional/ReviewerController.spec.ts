@@ -260,4 +260,21 @@ describe('PUT /api/v1/reviewers', async () => {
       response.body.errors.some((x: string) => x === 'A nova senha e a confirmação de senha devem ser iguais.')
     ).to.be.true
   })
+
+  it('should return bad request when newPassword is weak', async () => {
+    const generator = new JWTGenerator()
+
+    const token = generator.generateToken('0206a7f2-e912-4f85-8fb3-22547065a66b', 'saviomisael')
+
+    const response = await chai
+      .request(app)
+      .put(apiRoutes.reviewers.changePassword)
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        newPassword: 'teste123',
+        confirmNewPassword: 'teste123'
+      })
+
+    chai.expect(response).to.have.status(400)
+  })
 })
