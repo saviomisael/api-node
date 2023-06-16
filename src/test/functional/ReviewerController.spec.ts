@@ -102,7 +102,7 @@ describe('POST /api/v1/reviewers', () => {
     const { token } = response.body.data[0]
 
     chai.expect(response).to.have.status(201)
-    chai.expect(token).to.not.be.empty
+    chai.expect(token).not.be.empty
   })
 })
 
@@ -154,5 +154,15 @@ describe('POST /api/v1/reviewers/tokens', () => {
     })
 
     chai.expect(response).to.have.status(401)
+  })
+
+  it('should sign in successfully', async () => {
+    const response = await chai.request(app).post(apiRoutes.reviewers.signIn).send({
+      password: '123aBc#@',
+      username: 'saviomisael'
+    })
+
+    chai.expect(response).to.have.status(200)
+    chai.expect(response.body.data[0].token).not.be.empty
   })
 })
