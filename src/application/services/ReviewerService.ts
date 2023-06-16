@@ -59,4 +59,10 @@ export class ReviewerService {
       token
     }
   }
+
+  async changePassword(username: string, newPassword: string): Promise<void> {
+    const passwordEncrypted = await PasswordEncrypter.encrypt(newPassword)
+
+    await this.reviewerRepository.changePassword(username, passwordEncrypted)
+  }
 }
