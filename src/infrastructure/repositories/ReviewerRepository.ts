@@ -56,7 +56,7 @@ export class ReviewerRepository implements IReviewerRepository {
     this.connection = await DBConnection.getConnection()
 
     const result = await this.connection.execute(
-      'SELECT id, passwordTemporary, passwordTempTime, username, password FROM reviewers WHERE username = ?',
+      'SELECT id, passwordTemporary, passwordTempTime, username, password, email FROM reviewers WHERE username = ?',
       [username]
     )
 
