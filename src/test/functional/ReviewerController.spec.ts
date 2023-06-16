@@ -173,7 +173,7 @@ describe('AuthMiddleware', () => {
     const reviewerRepository = new ReviewerRepository()
 
     await reviewerRepository.createReviewer(
-      new Reviewer('saviomisael', await PasswordEncrypter.encrypt('123aBc#@'), 'savioth9@gmail.com')
+      new Reviewer('saviomisael', await PasswordEncrypter.encrypt('123aBc#@'), process.env.GMAIL_TEST as string)
     )
   })
 
@@ -231,7 +231,11 @@ describe('AuthMiddleware', () => {
 describe('PUT /api/v1/reviewers', async () => {
   beforeEach(async () => {
     const reviewerRepository = new ReviewerRepository()
-    const reviewer = new Reviewer('saviomisael', await PasswordEncrypter.encrypt('123aBc#@'), 'savioth9@gmail.com')
+    const reviewer = new Reviewer(
+      'saviomisael',
+      await PasswordEncrypter.encrypt('123aBc#@'),
+      process.env.GMAIL_TEST as string
+    )
     reviewer.id = '0206a7f2-e912-4f85-8fb3-22547065a66b'
 
     await reviewerRepository.createReviewer(reviewer)
@@ -276,5 +280,22 @@ describe('PUT /api/v1/reviewers', async () => {
       })
 
     chai.expect(response).to.have.status(400)
+  })
+
+  it('should return no content when password was changed successfully', async () => {
+    const generator = new JWTGenerator()
+
+    const token = generator.generateToken('0206a7f2-e912-4f85-8fb3-22547065a66b', 'saviomisael')
+
+    const response = await chai
+      .request(app)
+      .put(apiRoutes.reviewers.changePassword)
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        newPassword: '321aBc@#',
+        confirmNewPassword: '321aBc@#'
+      })
+
+    chai.expect(response).to.have.status(204)
   })
 })
