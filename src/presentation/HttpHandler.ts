@@ -10,7 +10,7 @@ import {
 } from '$/infrastructure/helpers/http-helper'
 import { type Response } from 'express'
 
-export abstract class BaseController {
+export abstract class HttpHandler {
   protected badRequest<T>(res: Response, body: T): Response {
     return badRequest(res, body)
   }

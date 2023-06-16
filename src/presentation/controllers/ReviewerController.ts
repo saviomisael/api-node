@@ -3,11 +3,11 @@ import { CredentialsError, EmailInUseError, ReviewerNotFoundError, UsernameInUse
 import { ReviewerService } from '$/application/services/ReviewerService'
 import { validate } from 'class-validator'
 import { type Request, type Response } from 'express'
+import { HttpHandler } from '../HttpHandler'
 import { CreateReviewerDTO, SignInDTO, type ResponseDTO } from '../dto'
 import { ReviewerMapper } from '../mapper/ReviewerMapper'
-import { BaseController } from './BaseController'
 
-export class ReviewerController extends BaseController {
+export class ReviewerController extends HttpHandler {
   private readonly service = new ReviewerService()
 
   async createReviewer(req: Request, res: Response): Promise<Response> {

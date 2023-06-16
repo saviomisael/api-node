@@ -2,11 +2,11 @@ import { ListAgeRatingService } from '$/application/services/ListAgeRatingServic
 import { type AgeRating } from '$/domain/entities'
 import { type CacheService } from '$/infrastructure/services/CacheService'
 import { CacheServiceFactory } from '$/infrastructure/services/CacheServiceFactory'
-import { BaseController } from '$/presentation/controllers/BaseController'
 import { type ResponseDTO } from '$/presentation/dto'
 import { type Request, type Response } from 'express'
+import { HttpHandler } from '../HttpHandler'
 
-export class AgeRatingController extends BaseController {
+export class AgeRatingController extends HttpHandler {
   private readonly listService = new ListAgeRatingService()
   private readonly cacheService: CacheService<AgeRating[]> = CacheServiceFactory.getAgeRatingCacheService()
 

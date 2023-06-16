@@ -9,6 +9,7 @@ import { apiRoutes } from '$/infrastructure/routes/apiRoutes'
 import { validate } from 'class-validator'
 import { type Request, type Response } from 'express'
 import { HalWrapper } from '../HalWrapper'
+import { HttpHandler } from '../HttpHandler'
 import { minPages } from '../constants'
 import {
   CreateGameDTO,
@@ -20,9 +21,8 @@ import {
   type ResponseDTO
 } from '../dto'
 import { GameMapper } from '../mapper/GameMapper'
-import { BaseController } from './BaseController'
 
-export class GameController extends BaseController {
+export class GameController extends HttpHandler {
   private readonly gameService: GameService = new GameService()
   private readonly gameRepository: IGameRepository = new GameRepository()
 

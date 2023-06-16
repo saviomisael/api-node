@@ -1,11 +1,11 @@
 import { JWTGenerator } from '$/infrastructure/JWTGenerator'
 import { type NextFunction, type Response } from 'express'
 import { JsonWebTokenError, NotBeforeError, TokenExpiredError } from 'jsonwebtoken'
-import { BaseController } from '../controllers/BaseController'
+import { HttpHandler } from '../HttpHandler'
 import { type ResponseDTO } from '../dto'
 import { type JWTRequest } from '../requests/JWTRequest'
 
-export class AuthMiddleware extends BaseController {
+export class AuthMiddleware extends HttpHandler {
   async isAuthenticaded(req: JWTRequest, res: Response, next: NextFunction): Promise<Response | undefined> {
     const authorizationHeader = req.headers.authorization
 

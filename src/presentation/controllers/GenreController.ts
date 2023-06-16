@@ -5,12 +5,12 @@ import { apiRoutes } from '$/infrastructure/routes/apiRoutes'
 import { type CacheService } from '$/infrastructure/services/CacheService'
 import { CacheServiceFactory } from '$/infrastructure/services/CacheServiceFactory'
 import { HalWrapper } from '$/presentation/HalWrapper'
-import { BaseController } from '$/presentation/controllers/BaseController'
 import { CreateGenreDTO, DeleteGenreDTO, type ResponseDTO } from '$/presentation/dto'
 import { validate } from 'class-validator'
 import { type Request, type Response } from 'express'
+import { HttpHandler } from '../HttpHandler'
 
-export class GenreController extends BaseController {
+export class GenreController extends HttpHandler {
   private readonly cacheService: CacheService<Genre[]> = CacheServiceFactory.getGenreCacheService()
 
   constructor(private readonly genreService: GenreService) {
