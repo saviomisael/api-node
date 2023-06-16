@@ -15,7 +15,7 @@
     "test:unit:docker": "docker compose -f docker-compose.yml run backend npm run test:unit",
     "coverage": "nyc npm run test",
     "coverage:docker": "docker compose -f docker-compose.yml run backend npm run coverage",
-    "install:dep:docker": "docker run backend npm i"
+    "install:dep:docker": "docker compose run backend npm i"
   },
   "keywords": [],
   "author": "",
