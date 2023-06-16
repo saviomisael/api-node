@@ -36,9 +36,7 @@ export class PasswordEncrypter {
   }
 
   static async comparePasswords(passwordEncrypted: string, passwordNotEncrypted: string): Promise<boolean> {
-    const hash = await PasswordEncrypter.encrypt(passwordNotEncrypted)
-
-    const result = await bcrypt.compare(passwordEncrypted, hash)
+    const result = await bcrypt.compare(passwordNotEncrypted, passwordEncrypted)
 
     return Boolean(result)
   }
