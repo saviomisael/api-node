@@ -1,6 +1,6 @@
 import { Reviewer } from '$/domain/entities/Reviewer'
 import { DBConnection } from '$/infrastructure/DBConnection'
-import { PasswordCrypter } from '$/infrastructure/PasswordCrypter'
+import { PasswordEncrypter } from '$/infrastructure/PasswordEncrypter'
 import { ReviewerRepository } from '$/infrastructure/repositories/ReviewerRepository'
 import { apiRoutes } from '$/infrastructure/routes/apiRoutes'
 import app from '$/infrastructure/server'
@@ -20,7 +20,7 @@ describe('POST /api/v1/reviewers', () => {
     const reviewerRepository = new ReviewerRepository()
 
     await reviewerRepository.createReviewer(
-      new Reviewer('saviomisael', await PasswordCrypter.encrypt('123aBc#@'), 'savio@email.com')
+      new Reviewer('saviomisael', await PasswordEncrypter.encrypt('123aBc#@'), 'savio@email.com')
     )
   })
 
