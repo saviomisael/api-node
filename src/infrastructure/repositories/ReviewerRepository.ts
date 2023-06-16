@@ -66,6 +66,7 @@ export class ReviewerRepository implements IReviewerRepository {
       const reviewer = new Reviewer(x.username as string, x.password as string, x.email as string)
       reviewer.setPasswordTemporary(x.passwordTemporary as string)
       reviewer.setPasswordTempTime(x.passwordTempTime === null ? null : new Date(x.passwordTempTime as string))
+      reviewer.id = x.id
 
       return reviewer
     })[0]

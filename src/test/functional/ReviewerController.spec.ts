@@ -227,3 +227,37 @@ describe('AuthMiddleware', () => {
     chai.expect(response.body.errors.some((x: string) => x === 'Token inválido.')).to.be.true
   })
 })
+
+describe('PUT /api/v1/reviewers', async () => {
+  beforeEach(async () => {
+    const reviewerRepository = new ReviewerRepository()
+    const reviewer = new Reviewer('saviomisael', await PasswordEncrypter.encrypt('123aBc#@'), 'savioth9@gmail.com')
+    reviewer.id = '0206a7f2-e912-4f85-8fb3-22547065a66b'
+
+    await reviewerRepository.createReviewer(reviewer)
+  })
+
+  afterEach(async () => {
+    await clearData()
+  })
+
+  it('should return bad request when newPassword and confirmNewPassword are not the same', async () => {
+    const generator = new JWTGenerator()
+
+    const token = generator.generateToken('0206a7f2-e912-4f85-8fb3-22547065a66b', 'saviomisael')
+
+    const response = await chai
+      .request(app)
+      .put(apiRoutes.reviewers.changePassword)
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        newPassword: '123aBc#@',
+        confirmNewPassword: '321aBc#@'
+      })
+
+    chai.expect(response).to.have.status(400)
+    chai.expect(
+      response.body.errors.some((x: string) => x === 'A nova senha e a confirmação de senha devem ser iguais.')
+    ).to.be.true
+  })
+})
