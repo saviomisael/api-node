@@ -63,6 +63,7 @@
     "hal": "^1.2.0",
     "jsonwebtoken": "^9.0.0",
     "mysql2": "^3.2.4",
+    "nodemailer": "^6.9.3",
     "redis": "^4.6.6",
     "swagger-ui-express": "^4.6.2",
     "uuid": "^9.0.0"
