@@ -4,7 +4,7 @@ import { AggregateRoot } from './AggregateRoot'
 
 export class Reviewer extends AggregateRoot {
   private passwordTemporary!: string
-  private passwordTempTime!: Date
+  private passwordTempTime!: Date | null
   private createdAtUtcTime: Date
   constructor(private readonly username: string, private readonly password: string, private readonly email: string) {
     super()
@@ -23,8 +23,12 @@ export class Reviewer extends AggregateRoot {
     this.passwordTempTime = addHoursHelper(newDateUtcTime(), 1)
   }
 
-  getPasswordTempTime(): Date {
+  getPasswordTempTime(): Date | null {
     return this.passwordTempTime
+  }
+
+  setPasswordTempTime(date: Date | null): void {
+    this.passwordTempTime = date
   }
 
   getUsername(): string {
