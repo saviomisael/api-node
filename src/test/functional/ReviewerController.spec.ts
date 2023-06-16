@@ -166,3 +166,27 @@ describe('POST /api/v1/reviewers/tokens', () => {
     chai.expect(response.body.data[0].token).not.be.empty
   })
 })
+
+describe('PUT /api/v1/reviewers', () => {
+  beforeEach(async () => {
+    const reviewerRepository = new ReviewerRepository()
+
+    await reviewerRepository.createReviewer(
+      new Reviewer('saviomisael', await PasswordEncrypter.encrypt('123aBc#@'), 'savioth9@gmail.com')
+    )
+  })
+
+  afterEach(async () => {
+    await clearData()
+  })
+
+  it('should return a not authorized when is Authorization header is not set', async () => {
+    const response = await chai.request(app).put(apiRoutes.reviewers.changePassword).send({
+      newPassword: '321aBc#@',
+      confirmNewPassword: '321aBc#@'
+    })
+
+    chai.expect(response).to.have.status(401)
+    chai.expect(response.body.errors.some((x: string) => x === 'Authorization header não enviado.')).to.be.true
+  })
+})

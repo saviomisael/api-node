@@ -19,7 +19,7 @@ export class AuthMiddleware extends HttpHandler {
     }
 
     if (authorizationHeader === undefined) {
-      return this.badRequest(res, response)
+      return this.notAuthorized(res, response)
     }
 
     const token = authorizationHeader.split(' ')[1]
