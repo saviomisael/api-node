@@ -1,5 +1,6 @@
 import { Reviewer } from '$/domain/entities/Reviewer'
 import { DBConnection } from '$/infrastructure/DBConnection'
+import { JWTGenerator } from '$/infrastructure/JWTGenerator'
 import { PasswordEncrypter } from '$/infrastructure/PasswordEncrypter'
 import { ReviewerRepository } from '$/infrastructure/repositories/ReviewerRepository'
 import { apiRoutes } from '$/infrastructure/routes/apiRoutes'
@@ -167,7 +168,7 @@ describe('POST /api/v1/reviewers/tokens', () => {
   })
 })
 
-describe('PUT /api/v1/reviewers', () => {
+describe('AuthMiddleware', () => {
   beforeEach(async () => {
     const reviewerRepository = new ReviewerRepository()
 
@@ -188,5 +189,23 @@ describe('PUT /api/v1/reviewers', () => {
 
     chai.expect(response).to.have.status(401)
     chai.expect(response.body.errors.some((x: string) => x === 'Authorization header não enviado.')).to.be.true
+  })
+
+  it('should return a not found when username does not exist', async () => {
+    const generator = new JWTGenerator()
+
+    const token = generator.generateToken('123', 'batata')
+
+    const response = await chai
+      .request(app)
+      .put(apiRoutes.reviewers.changePassword)
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        newPassword: '321aBc#@',
+        confirmNewPassword: '321aBc#@'
+      })
+
+    chai.expect(response).to.have.status(404)
+    chai.expect(response.body.errors.some((x: string) => x === 'Usuário não existe.')).to.be.true
   })
 })
