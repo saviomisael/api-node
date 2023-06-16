@@ -51,4 +51,25 @@ export class ReviewerRepository implements IReviewerRepository {
 
     return rows.length > 0
   }
+
+  async getReviewerByUsername(username: string): Promise<Reviewer | null> {
+    this.connection = await DBConnection.getConnection()
+
+    const result = await this.connection.execute(
+      'SELECT id, passwordTemporary, passwordTempTime, username, password FROM reviewers WHERE username = ?',
+      [username]
+    )
+
+    const rows = result[0] as any[]
+
+    if (rows.length === 0) return null
+
+    return rows.map((x: any) => {
+      const reviewer = new Reviewer(x.username as string, x.password as string, x.email as string)
+      reviewer.setPasswordTemporary(x.passwordTemporary as string)
+      reviewer.setPasswordTempTime(x.passwordTempTime === null ? null : new Date(x.passwordTempTime as string))
+
+      return reviewer
+    })[0]
+  }
 }

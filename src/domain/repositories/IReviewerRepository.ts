@@ -5,4 +5,5 @@ export interface IReviewerRepository {
   getReviewerById: (reviewerId: string) => Promise<Reviewer>
   checkUsernameAlreadyExists: (username: string) => Promise<boolean>
   checkEmailAlreadyExists: (email: string) => Promise<boolean>
+  getReviewerByUsername: (username: string) => Promise<Reviewer | null>
 }
