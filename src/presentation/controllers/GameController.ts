@@ -13,12 +13,12 @@ import { minPages } from '../constants'
 import {
   CreateGameDTO,
   DeleteGameDTO,
+  GamesQueryStringDTO,
   GetGameDTO,
   UpdateGameDTO,
   type GamesGetAllResponseDTO,
   type ResponseDTO
 } from '../dto'
-import { GamesQueryStringDTO } from '../dto/GamesQueryStringDTO'
 import { GameMapper } from '../mapper/GameMapper'
 import { BaseController } from './BaseController'
 
