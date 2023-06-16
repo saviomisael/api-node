@@ -20,6 +20,7 @@ export const apiRoutes = {
     getAll: '/api/v1/games'
   },
   reviewers: {
-    create: '/api/v1/reviewers'
+    create: '/api/v1/reviewers',
+    signIn: '/api/v1/reviewers/tokens'
   }
 }
