@@ -21,6 +21,7 @@ export const apiRoutes = {
   },
   reviewers: {
     create: '/api/v1/reviewers',
-    signIn: '/api/v1/reviewers/tokens'
+    signIn: '/api/v1/reviewers/tokens',
+    changePassword: '/api/v1/reviewers'
   }
 }
