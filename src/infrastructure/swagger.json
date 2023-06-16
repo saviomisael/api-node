@@ -750,15 +750,15 @@
           },
           "lastPage": {
             "type": "string",
-            "example": "2 or null"
+            "example": "a number or null"
           },
           "previousPage": {
             "type": "string",
-            "example": "1 or null"
+            "example": "a number or null"
           },
           "nextPage": {
             "type": "string",
-            "example": "2 or null"
+            "example": "a number or null"
           }
         }
       },
