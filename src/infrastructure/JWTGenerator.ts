@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken'
 
-interface Payload {
+export interface Payload {
   sub: string
   name: string
 }
