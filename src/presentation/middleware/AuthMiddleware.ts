@@ -47,7 +47,7 @@ export class AuthMiddleware extends HttpHandler {
         response = {
           data: [],
           success: false,
-          errors: ['O nome de usuário ou a senha estão incorretos.']
+          errors: ['Token inválido.']
         }
 
         return this.notAuthorized(res, response)

@@ -208,4 +208,22 @@ describe('AuthMiddleware', () => {
     chai.expect(response).to.have.status(404)
     chai.expect(response.body.errors.some((x: string) => x === 'Usuário não existe.')).to.be.true
   })
+
+  it('should return a not authorized when user id is different than payload.sub', async () => {
+    const generator = new JWTGenerator()
+
+    const token = generator.generateToken('123', 'saviomisael')
+
+    const response = await chai
+      .request(app)
+      .put(apiRoutes.reviewers.changePassword)
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        newPassword: '321aBc#@',
+        confirmNewPassword: '321aBc#@'
+      })
+
+    chai.expect(response).to.have.status(401)
+    chai.expect(response.body.errors.some((x: string) => x === 'Token inválido.')).to.be.true
+  })
 })
