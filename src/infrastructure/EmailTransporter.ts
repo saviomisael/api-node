@@ -3,7 +3,7 @@ import { createTransport, type Transporter } from 'nodemailer'
 export class EmailTransporter {
   private constructor() {}
 
-  getTransporter(): Transporter {
+  static getTransporter(): Transporter {
     return createTransport({
       service: 'gmail',
       auth: {
