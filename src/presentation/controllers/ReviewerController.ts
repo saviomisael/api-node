@@ -4,8 +4,9 @@ import { ReviewerService } from '$/application/services/ReviewerService'
 import { validate } from 'class-validator'
 import { type Request, type Response } from 'express'
 import { HttpHandler } from '../HttpHandler'
-import { CreateReviewerDTO, SignInDTO, type ResponseDTO } from '../dto'
+import { ChangePasswordDTO, CreateReviewerDTO, SignInDTO, type ResponseDTO } from '../dto'
 import { ReviewerMapper } from '../mapper/ReviewerMapper'
+import { type JWTRequest } from '../requests/JWTRequest'
 
 export class ReviewerController extends HttpHandler {
   private readonly service = new ReviewerService()
@@ -111,5 +112,40 @@ export class ReviewerController extends HttpHandler {
 
       throw error
     }
+  }
+
+  async changePassword(req: JWTRequest, res: Response): Promise<Response> {
+    const dto = new ChangePasswordDTO()
+    dto.newPassword = req.body.newPassword
+    dto.confirmNewPassword = req.body.confirmNewPassword
+    let response: ResponseDTO<any>
+
+    if (dto.confirmNewPassword !== dto.newPassword) {
+      response = {
+        data: [],
+        success: false,
+        errors: ['A nova senha e a confirmação de senha devem ser iguais.']
+      }
+
+      return this.badRequest(res, response)
+    }
+
+    const errors = await validate(dto)
+
+    if (errors.length > 0) {
+      response = {
+        data: [],
+        success: false,
+        errors: errors.flatMap((x) => Object.values(x.constraints as Record<string, string>))
+      }
+
+      return this.badRequest(res, response)
+    }
+
+    const { payload } = req
+
+    await this.service.changePassword(payload.name, dto.newPassword)
+
+    return this.noContent(res)
   }
 }
