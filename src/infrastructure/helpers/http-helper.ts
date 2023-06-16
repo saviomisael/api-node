@@ -13,3 +13,5 @@ export const notFound = <T>(res: Response, body: T): Response => res.status(404)
 export const internalServerError = <T>(res: Response, body: T): Response => res.status(500).json(body)
 
 export const conflict = <T>(res: Response, body: T): Response => res.status(409).json(body)
+
+export const notAuthorized = <T>(res: Response, body: T): Response => res.status(401).json(body)

@@ -4,6 +4,7 @@ import {
   created,
   internalServerError,
   noContent,
+  notAuthorized,
   notFound,
   ok
 } from '$/infrastructure/helpers/http-helper'
@@ -36,5 +37,9 @@ export abstract class BaseController {
 
   protected conflict<T>(res: Response, body: T): Response {
     return conflict(res, body)
+  }
+
+  protected notAuthorized<T>(res: Response, body: T): Response {
+    return notAuthorized(res, body)
   }
 }
