@@ -105,3 +105,26 @@ describe('POST /api/v1/reviewers', () => {
     chai.expect(token).to.not.be.empty
   })
 })
+
+describe('POST /api/v1/reviewers/tokens', () => {
+  beforeEach(async () => {
+    const reviewerRepository = new ReviewerRepository()
+
+    await reviewerRepository.createReviewer(
+      new Reviewer('saviomisael', await PasswordEncrypter.encrypt('123aBc#@'), 'savio@email.com')
+    )
+  })
+
+  afterEach(async () => {
+    await clearData()
+  })
+
+  it('should return bad request when password is weak', async () => {
+    const response = await chai.request(app).post(apiRoutes.reviewers.create).send({
+      password: 'teste123',
+      username: 'saviomisael'
+    })
+
+    chai.expect(response).to.have.status(400)
+  })
+})
