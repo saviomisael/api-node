@@ -146,4 +146,13 @@ describe('POST /api/v1/reviewers/tokens', () => {
 
     chai.expect(response).to.have.status(404)
   })
+
+  it('should return not authorized when credentials are wrong', async () => {
+    const response = await chai.request(app).post(apiRoutes.reviewers.signIn).send({
+      password: '123aBc#@1',
+      username: 'saviomisael'
+    })
+
+    chai.expect(response).to.have.status(401)
+  })
 })
