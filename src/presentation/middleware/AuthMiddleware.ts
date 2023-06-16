@@ -9,7 +9,7 @@ import { type JWTRequest } from '../requests/JWTRequest'
 export class AuthMiddleware extends HttpHandler {
   private readonly reviewerRepository = new ReviewerRepository()
 
-  async isAuthenticaded(req: JWTRequest, res: Response, next: NextFunction): Promise<Response | undefined> {
+  async isAuthenticated(req: JWTRequest, res: Response, next: NextFunction): Promise<Response | undefined> {
     const authorizationHeader = req.headers.authorization
 
     let response: ResponseDTO<any> = {
