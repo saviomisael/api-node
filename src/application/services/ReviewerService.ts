@@ -1,9 +1,10 @@
 import { type Reviewer } from '$/domain/entities/Reviewer'
 import { type IReviewerRepository } from '$/domain/repositories/IReviewerRepository'
 import { JWTGenerator } from '$/infrastructure/JWTGenerator'
+import { PasswordEncrypter } from '$/infrastructure/PasswordEncrypter'
 import { ReviewerRepository } from '$/infrastructure/repositories/ReviewerRepository'
 import { type TokenDTO } from '../dto/TokenDTO'
-import { EmailInUseError, UsernameInUseError } from '../errors'
+import { CredentialsError, EmailInUseError, ReviewerNotFoundError, UsernameInUseError } from '../errors'
 
 export class ReviewerService {
   private readonly reviewerRepository: IReviewerRepository = new ReviewerRepository()
@@ -29,6 +30,30 @@ export class ReviewerService {
     const generator = new JWTGenerator()
 
     const token = generator.generateToken(newReviewer.id, newReviewer.getUsername())
+
+    return {
+      token
+    }
+  }
+
+  async signIn(username: string, password: string): Promise<TokenDTO> {
+    const usernameAlreadyExists = await this.reviewerRepository.checkUsernameAlreadyExists(username)
+
+    if (!usernameAlreadyExists) {
+      throw new ReviewerNotFoundError(username)
+    }
+
+    const reviewer = await this.reviewerRepository.getReviewerByUsername(username)
+
+    const passwordsAreEqual = await PasswordEncrypter.comparePasswords(reviewer.getPassword(), password)
+
+    if (!passwordsAreEqual) {
+      throw new CredentialsError()
+    }
+
+    const generator = new JWTGenerator()
+
+    const token = generator.generateToken(reviewer.id, reviewer.getUsername())
 
     return {
       token
