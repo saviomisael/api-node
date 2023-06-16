@@ -1,3 +1,4 @@
+export { ChangePasswordDTO } from './ChangePasswordDTO'
 export { CreateGameDTO } from './CreateGameDTO'
 export { CreateGenreDTO } from './CreateGenreDTO'
 export { CreatePlatformDTO } from './CreatePlatformDTO'
