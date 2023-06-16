@@ -35,10 +35,10 @@ export class PasswordCrypter {
     })
   }
 
-  static async comparePasswords(password1: string, password2: string): Promise<boolean> {
-    const hash = await PasswordCrypter.encrypt(password2)
+  static async comparePasswords(passwordEncrypted: string, passwordNotEncrypted: string): Promise<boolean> {
+    const hash = await PasswordCrypter.encrypt(passwordNotEncrypted)
 
-    const result = await bcrypt.compare(password1, hash)
+    const result = await bcrypt.compare(passwordEncrypted, hash)
 
     return Boolean(result)
   }
