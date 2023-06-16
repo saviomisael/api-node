@@ -52,7 +52,7 @@ export class ReviewerRepository implements IReviewerRepository {
     return rows.length > 0
   }
 
-  async getReviewerByUsername(username: string): Promise<Reviewer | null> {
+  async getReviewerByUsername(username: string): Promise<Reviewer> {
     this.connection = await DBConnection.getConnection()
 
     const result = await this.connection.execute(
@@ -61,8 +61,6 @@ export class ReviewerRepository implements IReviewerRepository {
     )
 
     const rows = result[0] as any[]
-
-    if (rows.length === 0) return null
 
     return rows.map((x: any) => {
       const reviewer = new Reviewer(x.username as string, x.password as string, x.email as string)
