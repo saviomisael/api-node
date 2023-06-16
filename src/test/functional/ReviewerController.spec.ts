@@ -137,4 +137,13 @@ describe('POST /api/v1/reviewers/tokens', () => {
 
     chai.expect(response).to.have.status(400)
   })
+
+  it('should return not found when username does not exist', async () => {
+    const response = await chai.request(app).post(apiRoutes.reviewers.create).send({
+      password: '123aBc#@',
+      username: 'saviao'
+    })
+
+    chai.expect(response).to.have.status(400)
+  })
 })
