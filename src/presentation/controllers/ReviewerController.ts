@@ -1,9 +1,9 @@
 import { type TokenDTO } from '$/application/dto/TokenDTO'
-import { EmailInUseError, UsernameInUseError } from '$/application/errors'
+import { CredentialsError, EmailInUseError, ReviewerNotFoundError, UsernameInUseError } from '$/application/errors'
 import { ReviewerService } from '$/application/services/ReviewerService'
 import { validate } from 'class-validator'
 import { type Request, type Response } from 'express'
-import { CreateReviewerDTO, type ResponseDTO } from '../dto'
+import { CreateReviewerDTO, SignInDTO, type ResponseDTO } from '../dto'
 import { ReviewerMapper } from '../mapper/ReviewerMapper'
 import { BaseController } from './BaseController'
 
@@ -60,6 +60,53 @@ export class ReviewerController extends BaseController {
         }
 
         return this.badRequest(res, response)
+      }
+
+      throw error
+    }
+  }
+
+  async signIn(req: Request, res: Response): Promise<Response> {
+    const dto = new SignInDTO()
+    dto.password = req.body.password
+    dto.username = req.body.username
+
+    let response: ResponseDTO<TokenDTO>
+
+    const errors = await validate(dto)
+
+    if (errors.length > 0) {
+      response = {
+        data: [],
+        success: false,
+        errors: errors.flatMap((x) => Object.values(x.constraints as Record<string, string>))
+      }
+
+      return this.badRequest(res, response)
+    }
+
+    try {
+      const token = await this.service.signIn(dto.username, dto.password)
+
+      response = {
+        data: [token],
+        success: true,
+        errors: []
+      }
+
+      return this.ok(res, response)
+    } catch (error: any) {
+      response = {
+        data: [],
+        success: false,
+        errors: [error.message]
+      }
+      if (error instanceof ReviewerNotFoundError) {
+        return this.notFound(res, response)
+      }
+
+      if (error instanceof CredentialsError) {
+        return this.notAuthorized(res, response)
       }
 
       throw error
