@@ -1,6 +1,8 @@
 export { AgeNotExistsError } from './AgeNotExistsError'
+export { CredentialsError } from './CredentialsError'
 export { EmailInUseError } from './EmailInUseError'
 export { GenreNotExistsError } from './GenreNotExistsError'
 export { HasRelatedGamesError } from './HasRelatedGamesError'
 export { PlatformNotExistsError } from './PlatformNotExistsError'
+export { ReviewerNotFoundError } from './ReviewerNotFoundError'
 export { UsernameInUseError } from './UsernameInUseError'
