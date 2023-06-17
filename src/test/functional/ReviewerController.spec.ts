@@ -282,20 +282,23 @@ describe('PUT /api/v1/reviewers', async () => {
     chai.expect(response).to.have.status(400)
   })
 
-  it('should return no content when password was changed successfully', async () => {
-    const generator = new JWTGenerator()
+  /***
+   * It's works but it sends email every time this is executed
+   *  */
+  // it('should return no content when password was changed successfully', async () => {
+  //   const generator = new JWTGenerator()
 
-    const token = generator.generateToken('0206a7f2-e912-4f85-8fb3-22547065a66b', 'saviomisael')
+  //   const token = generator.generateToken('0206a7f2-e912-4f85-8fb3-22547065a66b', 'saviomisael')
 
-    const response = await chai
-      .request(app)
-      .put(apiRoutes.reviewers.changePassword)
-      .set('Authorization', `Bearer ${token}`)
-      .send({
-        newPassword: '321aBc@#',
-        confirmNewPassword: '321aBc@#'
-      })
+  //   const response = await chai
+  //     .request(app)
+  //     .put(apiRoutes.reviewers.changePassword)
+  //     .set('Authorization', `Bearer ${token}`)
+  //     .send({
+  //       newPassword: '321aBc@#',
+  //       confirmNewPassword: '321aBc@#'
+  //     })
 
-    chai.expect(response).to.have.status(204)
-  })
+  //   chai.expect(response).to.have.status(204)
+  // })
 })
