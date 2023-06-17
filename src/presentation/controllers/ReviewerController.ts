@@ -196,4 +196,12 @@ export class ReviewerController extends HttpHandler {
       success: true
     })
   }
+
+  async deleteReviewer(req: JWTRequest, res: Response): Promise<Response> {
+    const { payload } = req
+
+    await this.service.deleteReviewerByUsername(payload.name)
+
+    return this.noContent(res)
+  }
 }
