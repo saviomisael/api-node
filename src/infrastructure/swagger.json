@@ -100,7 +100,7 @@
             }
           },
           "404": {
-            "description": "The genre not exists.",
+            "description": "The genre does not exist.",
             "content": {
               "application/json": {
                 "schema": {
@@ -212,7 +212,7 @@
             }
           },
           "404": {
-            "description": "Platform not exists.",
+            "description": "Platform does not exist.",
             "content": {
               "application/json": {
                 "schema": {
@@ -382,7 +382,7 @@
         ],
         "responses": {
           "404": {
-            "description": "Game not exists.",
+            "description": "Game does not exist.",
             "content": {
               "application/json": {
                 "schema": {
@@ -421,7 +421,7 @@
         ],
         "responses": {
           "404": {
-            "description": "Game not exists.",
+            "description": "Game does not exist.",
             "content": {
               "application/json": {
                 "schema": {
@@ -1287,7 +1287,7 @@
             "type": "array",
             "items": {
               "type": "string",
-              "example": "This genre not exists./Id must have 36 characters."
+              "example": "This genre does not exist./Id must have 36 characters."
             }
           },
           "data": {

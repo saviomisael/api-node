@@ -73,7 +73,7 @@ describe('DELETE /api/v1/platforms/:id', () => {
     chai.expect(response.body.success).to.be.false
   })
 
-  it('should return a bad request when platform not exists', async () => {
+  it('should return a bad request when platform does not exist', async () => {
     const response = await chai
       .request(app)
       .delete(apiRoutes.platforms.delete.replace(':id', '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d'))

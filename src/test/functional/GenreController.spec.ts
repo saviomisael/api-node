@@ -141,7 +141,7 @@ describe('DELETE /api/v1/genres/:id', () => {
     chai.expect(response.body.success).to.be.false
   })
 
-  it('should not delete genre when genre not exists.', async () => {
+  it('should not delete genre when genre does not exist.', async () => {
     const response = await chai
       .request(app)
       .delete(apiRoutes.genres.deleteById.replace(':id', '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d'))

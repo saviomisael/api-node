@@ -179,7 +179,7 @@ describe('GET /api/v1/games/:id', () => {
     chai.expect(response).to.have.status(400)
   })
 
-  it('should return not found when game not exists', async () => {
+  it('should return not found when game does not exist', async () => {
     const response = await chai
       .request(app)
       .get(apiRoutes.games.getById.replace(':id', '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d'))
@@ -262,7 +262,7 @@ describe('PUT /api/v1/games/:id', () => {
     chai.expect(response.body.errors.length > 0).to.be.true
   })
 
-  it('should return not found when age rating not exists', async () => {
+  it('should return not found when age rating does not exist', async () => {
     const gameMock = {
       ageRatingId: '8904dc7d-acc7-4106-9ff6-367090fe2e48',
       description:
@@ -409,7 +409,7 @@ describe('DELETE /api/v1/games/:id', () => {
     chai.expect(response).to.have.status(400)
   })
 
-  it('should return not found when game not exists', async () => {
+  it('should return not found when game does not exist', async () => {
     const response = await chai
       .request(app)
       .delete(apiRoutes.games.deleteById.replace(':id', '9b1deb4d-aaaa-aaaa-9bdd-2b0d7b3dcb6d'))
