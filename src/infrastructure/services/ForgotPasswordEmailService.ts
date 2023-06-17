@@ -1,26 +1,16 @@
 import { type ISendEmailService } from '$/domain/services/ISendEmailService'
-import { readFile } from 'fs/promises'
-import handlebars from 'handlebars'
-import { type Transporter } from 'nodemailer'
-import path from 'path'
-import { EmailTransporter } from '../EmailTransporter'
+import { SendEmailService } from './SendEmailService'
 
 export class ForgotPasswordEmailService implements ISendEmailService {
-  transporter: Transporter = EmailTransporter.getTransporter()
+  private readonly sendEmailService = new SendEmailService()
   async sendEmail(username: string, randomPassword: string, email: string): Promise<void> {
-    const html = await readFile(path.resolve(__dirname, '../templates/forgotPasswordTemplate.html'), {
-      encoding: 'utf8'
-    })
-
-    const template = handlebars.compile(html)
-
-    const htmlToSend = template({ username, date: new Date().getTime(), password: randomPassword })
-
-    await this.transporter.sendMail({
-      from: 'api-node',
-      to: email,
-      subject: `Esqueceu a senha / ${new Date().toUTCString()}`,
-      html: htmlToSend
-    })
+    await Promise.all([
+      this.sendEmailService.setTemplate('forgotPassword', {
+        username,
+        password: randomPassword,
+        date: `${new Date(new Date().toUTCString()).getTime()}`
+      }),
+      this.sendEmailService.sendEmail(email, `Alteração de Senha ${new Date().toUTCString()}`)
+    ])
   }
 }
