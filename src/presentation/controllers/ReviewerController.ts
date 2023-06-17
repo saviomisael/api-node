@@ -4,7 +4,7 @@ import { ReviewerService } from '$/application/services/ReviewerService'
 import { validate } from 'class-validator'
 import { type Request, type Response } from 'express'
 import { HttpHandler } from '../HttpHandler'
-import { ChangePasswordDTO, CreateReviewerDTO, SignInDTO, type ResponseDTO } from '../dto'
+import { ChangePasswordDTO, CreateReviewerDTO, ForgotPasswordDTO, SignInDTO, type ResponseDTO } from '../dto'
 import { ReviewerMapper } from '../mapper/ReviewerMapper'
 import { type JWTRequest } from '../requests/JWTRequest'
 
@@ -147,5 +147,41 @@ export class ReviewerController extends HttpHandler {
     await this.service.changePassword(payload.name, dto.newPassword)
 
     return this.noContent(res)
+  }
+
+  async forgotPassword(req: Request, res: Response): Promise<Response> {
+    const dto = new ForgotPasswordDTO()
+    dto.username = req.params.username
+    let response: ResponseDTO<any>
+
+    const errors = await validate(dto)
+
+    if (errors.length > 0) {
+      response = {
+        data: [],
+        success: false,
+        errors: errors.flatMap((x) => Object.values(x.constraints as Record<string, string>))
+      }
+
+      return this.badRequest(res, response)
+    }
+
+    try {
+      await this.service.forgotPassword(dto.username)
+
+      return this.noContent(res)
+    } catch (error) {
+      if (error instanceof ReviewerNotFoundError) {
+        response = {
+          data: [],
+          success: false,
+          errors: [error.message]
+        }
+
+        return this.notFound(res, response)
+      }
+
+      throw error
+    }
   }
 }
