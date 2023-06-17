@@ -13,12 +13,12 @@ export class ChangePasswordEmailService implements ISendEmailService {
 
     const template = handlebars.compile(html)
 
-    const htmlToSend = template({ username })
+    const htmlToSend = template({ username, date: new Date().getTime() })
 
     await this.transporter.sendMail({
       from: 'api-node',
       to: email,
-      subject: 'Alteração de Senha',
+      subject: `Alteração de Senha ${new Date().toUTCString()}`,
       html: htmlToSend
     })
   }
