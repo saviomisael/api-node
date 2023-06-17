@@ -184,4 +184,16 @@ export class ReviewerController extends HttpHandler {
       throw error
     }
   }
+
+  refreshToken(req: JWTRequest, res: Response): Response {
+    const { payload } = req
+
+    const dto = this.service.refreshToken(payload)
+
+    return this.created(res, {
+      data: [dto],
+      errors: [],
+      success: true
+    })
+  }
 }
