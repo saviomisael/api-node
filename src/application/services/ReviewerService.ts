@@ -102,7 +102,7 @@ export class ReviewerService {
     ])
   }
 
-  async refreshToken(payload: Payload): Promise<TokenDTO> {
+  refreshToken(payload: Payload): TokenDTO {
     const generator = new JWTGenerator()
 
     const token = generator.generateToken(payload.sub, payload.name)
