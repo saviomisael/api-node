@@ -5,6 +5,9 @@ import { JWTGenerator } from '$/infrastructure/JWTGenerator'
 import { PasswordEncrypter } from '$/infrastructure/PasswordEncrypter'
 import { ReviewerRepository } from '$/infrastructure/repositories/ReviewerRepository'
 import { ChangePasswordEmailService } from '$/infrastructure/services/ChangePasswordEmailService'
+import { ForgotPasswordEmailService } from '$/infrastructure/services/ForgotPasswordEmailService'
+import { passwordRegex } from '$/presentation/constants'
+import RandExp from 'randexp'
 import { type TokenDTO } from '../dto/TokenDTO'
 import { CredentialsError, EmailInUseError, ReviewerNotFoundError, UsernameInUseError } from '../errors'
 
@@ -76,5 +79,27 @@ export class ReviewerService {
     this.emailService = new ChangePasswordEmailService()
 
     await this.emailService.sendEmail(reviewer.getUsername(), reviewer.getEmail())
+  }
+
+  async forgotPassword(username: string): Promise<void> {
+    const usernameExists = await this.reviewerRepository.checkUsernameAlreadyExists(username)
+
+    if (!usernameExists) {
+      throw new ReviewerNotFoundError(username)
+    }
+
+    this.emailService = new ForgotPasswordEmailService()
+
+    const randomPassword = new RandExp(passwordRegex).gen()
+    const randomPasswordHash = await PasswordEncrypter.encrypt(randomPassword)
+
+    const reviewer = await this.reviewerRepository.getReviewerByUsername(username)
+    reviewer.generatePasswordTempTime()
+    reviewer.setPasswordTemporary(randomPasswordHash)
+
+    await Promise.all([
+      this.reviewerRepository.setTemporaryPassword(reviewer),
+      this.emailService.sendEmail(reviewer.getUsername(), randomPassword, reviewer.getEmail())
+    ])
   }
 }
