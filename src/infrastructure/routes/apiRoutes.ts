@@ -23,6 +23,6 @@ export const apiRoutes = {
     create: '/api/v1/reviewers',
     signIn: '/api/v1/reviewers/tokens',
     changePassword: '/api/v1/reviewers',
-    forgotPassword: '/api/v1/reviewers/passwords'
+    forgotPassword: '/api/v1/reviewers/passwords/:username'
   }
 }
