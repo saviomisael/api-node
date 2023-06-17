@@ -21,5 +21,14 @@ router.put(
   }
 )
 router.post(apiRoutes.reviewers.forgotPassword, controller.forgotPassword.bind(controller))
+router.post(
+  apiRoutes.reviewers.refreshToken,
+  async (req, res, next) => {
+    await authMiddleware.isAuthenticated(req as JWTRequest, res, next)
+  },
+  (req, res) => {
+    controller.refreshToken(req as JWTRequest, res)
+  }
+)
 
 export default router
