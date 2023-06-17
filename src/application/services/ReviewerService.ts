@@ -111,4 +111,8 @@ export class ReviewerService {
       token
     }
   }
+
+  async deleteReviewerByUsername(username: string): Promise<void> {
+    await this.reviewerRepository.deleteReviewerByUsername(username)
+  }
 }
