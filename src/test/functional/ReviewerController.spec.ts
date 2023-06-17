@@ -332,11 +332,14 @@ describe('POST /api/v1/reviewers/passwords', () => {
     chai.expect(response).to.have.status(404)
   })
 
-  it('should return no content when randomPassword is sent', async () => {
-    const response = await chai
-      .request(app)
-      .post(apiRoutes.reviewers.forgotPassword.replace(':username', 'saviomisael'))
+  /***
+   * It's works but it sends email every time this is executed
+   *  */
+  // it('should return no content when randomPassword is sent', async () => {
+  //   const response = await chai
+  //     .request(app)
+  //     .post(apiRoutes.reviewers.forgotPassword.replace(':username', 'saviomisael'))
 
-    chai.expect(response).to.have.status(204)
-  })
+  //   chai.expect(response).to.have.status(204)
+  // })
 })
