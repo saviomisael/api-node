@@ -302,3 +302,27 @@ describe('PUT /api/v1/reviewers', async () => {
   //   chai.expect(response).to.have.status(204)
   // })
 })
+
+describe('POST /api/v1/reviewers/passwords', () => {
+  beforeEach(async () => {
+    const reviewerRepository = new ReviewerRepository()
+    const reviewer = new Reviewer(
+      'saviomisael',
+      await PasswordEncrypter.encrypt('123aBc#@'),
+      process.env.GMAIL_TEST as string
+    )
+    reviewer.id = '0206a7f2-e912-4f85-8fb3-22547065a66b'
+
+    await reviewerRepository.createReviewer(reviewer)
+  })
+
+  afterEach(async () => {
+    await clearData()
+  })
+
+  it('should return bad request when username is invalid', async () => {
+    const response = await chai.request(app).post(apiRoutes.reviewers.forgotPassword.replace(':username', 'ba'))
+
+    chai.expect(response).to.have.status(400)
+  })
+})
