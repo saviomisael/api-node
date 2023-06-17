@@ -7,4 +7,5 @@ export interface IReviewerRepository {
   checkEmailAlreadyExists: (email: string) => Promise<boolean>
   getReviewerByUsername: (username: string) => Promise<Reviewer>
   changePassword: (username: string, newPassword: string) => Promise<void>
+  setTemporaryPassword: (reviewer: Reviewer) => Promise<void>
 }

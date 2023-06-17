@@ -77,4 +77,13 @@ export class ReviewerRepository implements IReviewerRepository {
 
     await this.connection.execute('UPDATE reviewers SET password = ? WHERE username = ?', [newPassword, username])
   }
+
+  async setTemporaryPassword(reviewer: Reviewer): Promise<void> {
+    this.connection = await DBConnection.getConnection()
+
+    await this.connection.execute(
+      'UPDATE reviewers SET passwordTemporary = ?, passwordTempTime = ? WHERE username = ?',
+      [reviewer.getPasswordTemporary(), reviewer.getPasswordTempTime(), reviewer.getUsername()]
+    )
+  }
 }
