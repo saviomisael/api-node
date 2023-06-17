@@ -553,7 +553,7 @@
         },
         "responses": {
           "204": {
-            "description": "A senha foi trocada com sucesso.",
+            "description": "The password was successfully changed.",
             "content": {
               "application/json": {
                 "schema": {
@@ -563,7 +563,7 @@
             }
           },
           "400": {
-            "description": "O token expirou ou está inválido / A nova senha e a confirmação de senha devem ser iguais.",
+            "description": "Token expired /  The new password and the confirm new password must be the same.",
             "content": {
               "application/json": {
                 "schema": {
@@ -689,6 +689,50 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/GenericResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/reviewers/tokens/refresh": {
+      "post": {
+        "tags": [
+          "reviewers"
+        ],
+        "summary": "Generates a new token with an old token.",
+        "description": "Generates a new token with an old token.",
+        "security": {
+          "bearerAuth": []
+        },
+        "responses": {
+          "201": {
+            "description": "A new token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TokenResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "The token was not sent.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TokenResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Reviewer does not exist.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TokenResponse"
                 }
               }
             }
