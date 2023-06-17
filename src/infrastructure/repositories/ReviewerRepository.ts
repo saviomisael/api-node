@@ -86,4 +86,10 @@ export class ReviewerRepository implements IReviewerRepository {
       [reviewer.getPasswordTemporary(), reviewer.getPasswordTempTime(), reviewer.getUsername()]
     )
   }
+
+  async deleteReviewerByUsername(username: string): Promise<void> {
+    this.connection = await DBConnection.getConnection()
+
+    await this.connection.execute('DELETE FROM reviewers WHERE username = ?', [username])
+  }
 }
