@@ -55,7 +55,7 @@ CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 CREATE TABLE reviewers (
   id VARCHAR(36) PRIMARY KEY NOT NULL,
-  passwordTemporary VARCHAR(8) DEFAULT '',
+  passwordTemporary VARCHAR(60) DEFAULT '',
   passwordTempTime DATETIME DEFAULT NULL,
   createdAtUtcTime DATETIME NOT NULL,
   username VARCHAR(255) UNIQUE NOT NULL,
