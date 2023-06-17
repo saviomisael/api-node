@@ -20,5 +20,6 @@ router.put(
     await controller.changePassword(req as JWTRequest, res)
   }
 )
+router.post(apiRoutes.reviewers.forgotPassword, controller.forgotPassword.bind(controller))
 
 export default router
