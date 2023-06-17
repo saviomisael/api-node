@@ -654,6 +654,47 @@
           }
         }
       }
+    },
+    "/api/v1/reviewers/passwords/{username}": {
+      "post": {
+        "tags": [
+          "reviewers"
+        ],
+        "summary": "Send a random password for a reviewer when forgot password.",
+        "description": "Send a random password for a reviewer when forgot password.",
+        "responses": {
+          "204": {
+            "description": "Random password was successfully sent.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GenericResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Username is not valid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GenericResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Username does not exist.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GenericResponse"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -665,6 +706,26 @@
       }
     },
     "schemas": {
+      "GenericResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
       "ChangePasswordRequest": {
         "type": "object",
         "properties": {
