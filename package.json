@@ -66,6 +66,7 @@
     "jsonwebtoken": "^9.0.0",
     "mysql2": "^3.2.4",
     "nodemailer": "^6.9.3",
+    "randexp": "^0.5.3",
     "redis": "^4.6.6",
     "swagger-ui-express": "^4.6.2",
     "uuid": "^9.0.0"
