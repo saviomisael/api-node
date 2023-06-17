@@ -1,7 +1,7 @@
 import { type Reviewer } from '$/domain/entities/Reviewer'
 import { type IReviewerRepository } from '$/domain/repositories/IReviewerRepository'
 import { type ISendEmailService } from '$/domain/services/ISendEmailService'
-import { JWTGenerator } from '$/infrastructure/JWTGenerator'
+import { JWTGenerator, type Payload } from '$/infrastructure/JWTGenerator'
 import { PasswordEncrypter } from '$/infrastructure/PasswordEncrypter'
 import { ReviewerRepository } from '$/infrastructure/repositories/ReviewerRepository'
 import { ChangePasswordEmailService } from '$/infrastructure/services/ChangePasswordEmailService'
@@ -100,5 +100,15 @@ export class ReviewerService {
       this.reviewerRepository.setTemporaryPassword(reviewer),
       this.emailService.sendEmail(reviewer.getUsername(), randomPassword, reviewer.getEmail())
     ])
+  }
+
+  async refreshToken(payload: Payload): Promise<TokenDTO> {
+    const generator = new JWTGenerator()
+
+    const token = generator.generateToken(payload.sub, payload.name)
+
+    return {
+      token
+    }
   }
 }
