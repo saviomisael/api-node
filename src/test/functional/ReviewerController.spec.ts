@@ -325,4 +325,10 @@ describe('POST /api/v1/reviewers/passwords', () => {
 
     chai.expect(response).to.have.status(400)
   })
+
+  it('should return not found when username does not exist', async () => {
+    const response = await chai.request(app).post(apiRoutes.reviewers.forgotPassword.replace(':username', 'krypto'))
+
+    chai.expect(response).to.have.status(404)
+  })
 })
