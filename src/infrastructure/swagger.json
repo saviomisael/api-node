@@ -573,7 +573,7 @@
             }
           },
           "401": {
-            "description": "O token não foi enviado.",
+            "description": "Th token was not sent.",
             "content": {
               "application/json": {
                 "schema": {
@@ -583,7 +583,7 @@
             }
           },
           "404": {
-            "description": "Usuário não existe.",
+            "description": "Reviewer does not exist.",
             "content": {
               "application/json": {
                 "schema": {
