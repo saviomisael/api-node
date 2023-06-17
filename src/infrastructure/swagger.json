@@ -499,6 +499,8 @@
         "tags": [
           "reviewers"
         ],
+        "summary": "Sign up route.",
+        "description": "Sign up route.",
         "requestBody": {
           "content": {
             "application/json": {
@@ -530,6 +532,67 @@
             }
           }
         }
+      },
+      "put": {
+        "tags": [
+          "reviewers"
+        ],
+        "security": {
+          "bearerAuth": []
+        },
+        "summary": "Change password route.",
+        "description": "Change password route.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChangePasswordRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "A senha foi trocada com sucesso.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TokenResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "O token expirou ou está inválido / A nova senha e a confirmação de senha devem ser iguais.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TokenResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "O token não foi enviado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TokenResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Usuário não existe.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TokenResponse"
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/api/v1/reviewers/tokens": {
@@ -537,6 +600,8 @@
         "tags": [
           "reviewers"
         ],
+        "summary": "Sign in route.",
+        "description": "Sign in route.",
         "requestBody": {
           "content": {
             "application/json": {
@@ -592,7 +657,27 @@
     }
   },
   "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
     "schemas": {
+      "ChangePasswordRequest": {
+        "type": "object",
+        "properties": {
+          "confirmNewPassword": {
+            "type": "string",
+            "example": "123aBc@#"
+          },
+          "newPassword": {
+            "type": "string",
+            "example": "123aBc@#"
+          }
+        }
+      },
       "ReviewerSignInRequest": {
         "type": "object",
         "properties": {
