@@ -22,6 +22,10 @@ export class Game extends AggregateRoot {
     this.reviews.push(review)
   }
 
+  getReviews(): Review[] {
+    return [...this.reviews]
+  }
+
   addPlatform(platform: Platform): void {
     this.platforms.add(platform)
   }
