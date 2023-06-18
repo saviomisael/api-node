@@ -1,5 +1,6 @@
 import { type GameResponseDTO } from '$/application/dto/GameResponseDTO'
 import { type Game } from '$/domain/entities'
+import { type Review } from '$/domain/entities/Review'
 import {
   type IAgeRatingRepository,
   type IGameRepository,
@@ -129,5 +130,15 @@ export class GameService {
     await this.cacheService.replaceKeys(replacements).setData(games)
 
     return games
+  }
+
+  async createReview(review: Review): Promise<void> {
+    const gameExists = await this.gameRepository.verifyGameAlreadyExists(review.getGameId())
+
+    if (!gameExists) {
+      throw new GameNotExistsError()
+    }
+
+    await this.gameRepository.createReview(review)
   }
 }
