@@ -24,6 +24,7 @@ export const apiRoutes = {
     signIn: '/api/v1/reviewers/tokens',
     refreshToken: '/api/v1/reviewers/tokens/refresh',
     changePassword: '/api/v1/reviewers',
-    forgotPassword: '/api/v1/reviewers/passwords/:username'
+    forgotPassword: '/api/v1/reviewers/passwords/:username',
+    deleteReviewer: '/api/v1/reviewers'
   }
 }

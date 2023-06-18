@@ -30,5 +30,14 @@ router.post(
     controller.refreshToken(req as JWTRequest, res)
   }
 )
+router.delete(
+  apiRoutes.reviewers.deleteReviewer,
+  async (req, res, next) => {
+    await authMiddleware.isAuthenticated(req as JWTRequest, res, next)
+  },
+  async (req, res) => {
+    await controller.deleteReviewer(req as JWTRequest, res)
+  }
+)
 
 export default router
