@@ -1,5 +1,7 @@
 import { type Game } from '$/domain/entities'
 import { GameResponseDTO } from '../dto/GameResponseDTO'
+import { type SingleGameResponseDTO } from '../dto/SingleGameResponseDTO'
+import { ReviewMapper } from './ReviewMapper'
 
 export class GameMapper {
   private constructor() {}
@@ -16,5 +18,14 @@ export class GameMapper {
     gameDTO.releaseDate = game.getReleaseDate().toISOString()
 
     return gameDTO
+  }
+
+  static fromEntityToSingleGame(game: Game): SingleGameResponseDTO {
+    const response = GameMapper.fromEntityToGameResponse(game)
+
+    return {
+      ...response,
+      reviews: game.getReviews().map((x) => ReviewMapper.fromDomainToReviewResponse(x))
+    }
   }
 }
