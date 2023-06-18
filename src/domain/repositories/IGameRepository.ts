@@ -12,4 +12,5 @@ export interface IGameRepository {
   getMaxPagesBySearch: (term: string) => Promise<number>
   createReview: (review: Review) => Promise<void>
   verifyGameAlreadyExists: (gameId: string) => Promise<boolean>
+  updateReview: (review: Review) => Promise<void>
 }

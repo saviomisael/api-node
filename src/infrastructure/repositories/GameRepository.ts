@@ -281,4 +281,14 @@ export class GameRepository implements IGameRepository {
 
     return rows.length > 0
   }
+
+  async updateReview(review: Review): Promise<void> {
+    this.connection = await DBConnection.getConnection()
+
+    await this.connection.execute('UPDATE reviews SET description = ?, stars = ? WHERE id = ?', [
+      review.getDescription(),
+      review.getStars(),
+      review.getId()
+    ])
+  }
 }
