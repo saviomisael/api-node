@@ -1,12 +1,14 @@
 import { type Game } from '$/domain/entities'
-import { type Review } from '$/domain/entities/Review'
+import { Review } from '$/domain/entities/Review'
 import { type IGameRepository } from '$/domain/repositories'
+import { Owner } from '$/domain/value-objects/Owner'
 import { type Connection } from 'mysql2/promise'
 import { DBConnection } from '../DBConnection'
 import { maxGamesPerPage } from '../constants'
 import { GameNotExistsError } from '../errors/GameNotExistsError'
 import { GameRowDataMapper } from '../mapper/GameRowDataMapper'
 import { type GameRowData } from '../row-data/GameRowData'
+import { type ReviewRowData } from '../row-data/ReviewRowData'
 
 export class GameRepository implements IGameRepository {
   private connection!: Connection
@@ -45,6 +47,12 @@ export class GameRepository implements IGameRepository {
     if (rows.length === 0) return null
 
     const game = GameRowDataMapper.toEntity(rows[0] as GameRowData)
+
+    const reviews = await this.getReviewsByGame(gameId)
+
+    for (const review of reviews) {
+      game.addReview(review)
+    }
 
     return game
   }
@@ -325,5 +333,38 @@ export class GameRepository implements IGameRepository {
     const rows = result[0] as any[]
 
     return rows.length > 0
+  }
+
+  async getReviewsByGame(gameId: string): Promise<Review[]> {
+    this.connection = await DBConnection.getConnection()
+
+    const result = await this.connection.execute(
+      `
+      SELECT
+      r.id,
+      r.description,
+      r.stars, r.fk_game,
+      r.fk_reviewer,
+      rv.id AS owner_id,
+      rv.username
+      FROM reviews AS r
+      JOIN reviewers AS rv ON r.fk_reviewer = rv.id
+      WHERE r.fk_game = ?`,
+      [gameId]
+    )
+
+    const rows = result[0] as ReviewRowData[]
+
+    return rows.map((x) => {
+      const owner = new Owner()
+      owner.id = x.owner_id
+      owner.username = x.username
+
+      const review = new Review(x.description, x.stars, x.fk_game, x.fk_reviewer)
+      review.setOwner(owner)
+      review.setId(x.id)
+
+      return review
+    })
   }
 }
