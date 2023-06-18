@@ -1,4 +1,4 @@
-import { AgeRating, Game, Genre, Platform } from '$/domain/entities'
+import { AgeRating, Game, Genre, Platform, Review } from '$/domain/entities'
 import { Reviewer } from '$/domain/entities/Reviewer'
 import { DBConnection } from '$/infrastructure/DBConnection'
 import { JWTGenerator } from '$/infrastructure/JWTGenerator'
@@ -852,5 +852,76 @@ describe('POST /api/v1/games/:gameId/reviews', () => {
       })
 
     chai.expect(response).to.have.status(204)
+  })
+})
+
+describe('PUT /api/v1/games/reviews/:reviewId', () => {
+  beforeEach(async () => {
+    const allAges = await chai.request(app).get(apiRoutes.ageRatings.getAll)
+    const genreRepository = new GenreRepository()
+    const platformRepository = new PlatformRepository()
+    const gameRepository = new GameRepository()
+
+    const age = new AgeRating(allAges.body.data[0].age as string, allAges.body.data[0].description as string)
+    age.id = allAges.body.data[0].id
+
+    const genre = new Genre('multiplayer')
+    genre.id = 'genreb4d-3b7d-4bad-9bdd-2b0d7b3dcb6a'
+
+    const platform = new Platform('playstation')
+    platform.id = 'platform-3b7d-4bad-9bdd-2b0d7b3dcb6a'
+
+    const pipeline = [genreRepository.createGenre(genre), platformRepository.create(platform)]
+
+    const reviewerRepository = new ReviewerRepository()
+    const reviewer = new Reviewer('saviomisael', await PasswordEncrypter.encrypt('123aBc#@'), 'savio@email.com')
+    reviewer.id = 'reviewer-3b7d-4bad-9bdd-2b0d7b3dcb6a'
+
+    pipeline.push(reviewerRepository.createReviewer(reviewer))
+
+    const game = new Game(
+      'The Witcher 3',
+      100,
+      'O jogo mais premiado de uma geração agora aprimorado para a atual! Experimente The Witcher 3: Wild Hunt e suas expansões nesta coleção definitiva, com melhor desempenho, visuais aprimorados, novo conteúdo adicional, modo fotografia e muito mais!',
+      new Date(2020, 5, 1),
+      age
+    )
+
+    game.addGenre(genre)
+    game.addPlatform(platform)
+    game.id = `gameeb4d-3b7d-4bad-9bdd-2b0d7b3dcb6a`
+    pipeline.push(gameRepository.create(game))
+
+    const review = new Review(
+      'O jogo é bem legal, mas o cavalo é meio atrapalhado.',
+      4,
+      'gameeb4d-3b7d-4bad-9bdd-2b0d7b3dcb6a',
+      'reviewer-3b7d-4bad-9bdd-2b0d7b3dcb6a'
+    )
+    review.setId('review4d-3b7d-4bad-9bdd-2b0d7b3dcb6a')
+    pipeline.push(gameRepository.createReview(review))
+
+    await Promise.all([...pipeline])
+  })
+
+  afterEach(async () => {
+    await clearData()
+  })
+
+  it('should return bad request when review data is invalid', async () => {
+    const generator = new JWTGenerator()
+
+    const token = generator.generateToken('reviewer-3b7d-4bad-9bdd-2b0d7b3dcb6a', 'saviomisael')
+
+    const response = await chai
+      .request(app)
+      .put(apiRoutes.games.updateReview.replace(':reviewId', 'review4d-3b7d-4bad-9bdd-2b0d7b3dcb6a'))
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        description: 'legal',
+        stars: 10
+      })
+
+    chai.expect(response).to.have.status(400)
   })
 })
