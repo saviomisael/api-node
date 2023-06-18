@@ -1,15 +1,18 @@
 import { AggregateRoot } from '$/domain/entities/AggregateRoot'
+import { Column, Entity } from 'typeorm'
 
+@Entity('ageRatings')
 export class AgeRating extends AggregateRoot {
-  constructor(private readonly age: string, private readonly description: string) {
-    super()
-  }
+  @Column({
+    nullable: false,
+    unique: true,
+    length: 3
+  })
+  age!: string
 
-  getAge(): string {
-    return this.age
-  }
-
-  getDescription(): string {
-    return this.description
-  }
+  @Column({
+    nullable: false,
+    length: 256
+  })
+  description!: string
 }
