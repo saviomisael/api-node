@@ -70,6 +70,7 @@
     "randexp": "^0.5.3",
     "redis": "^4.6.6",
     "swagger-ui-express": "^4.6.2",
+    "typeorm": "^0.3.16",
     "uuid": "^9.0.0"
   },
   "lint-staged": {
