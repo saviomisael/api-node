@@ -301,4 +301,14 @@ export class GameRepository implements IGameRepository {
 
     return rows.length > 0
   }
+
+  async getUserForReview(reviewId: string): Promise<string> {
+    this.connection = await DBConnection.getConnection()
+
+    const result = await this.connection.execute('SELECT fk_reviewer FROM reviews WHERE id = ?', [reviewId])
+
+    const rows = result[0] as any[]
+
+    return rows[0].fk_reviewer
+  }
 }
