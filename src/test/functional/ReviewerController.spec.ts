@@ -522,6 +522,7 @@ describe('GET /api/v1/reviewers/:username', () => {
     pipeline.push(gameRepository.create(game2))
 
     const reviewer1 = new Reviewer('saviomisael', await PasswordEncrypter.encrypt('321aBc@#'), 'savioth9@gmail.com')
+    reviewer1.setCreatedAtUtcTime(new Date(2020, 5, 3))
 
     pipeline.push(reviewerRepository.createReviewer(reviewer1))
 
@@ -542,5 +543,15 @@ describe('GET /api/v1/reviewers/:username', () => {
     const response = await chai.request(app).get(apiRoutes.reviewers.getDetails.replace(':username', 'batata'))
 
     chai.expect(response).to.have.status(404)
+  })
+
+  it('should return reviewer details when username exists', async () => {
+    const response = await chai.request(app).get(apiRoutes.reviewers.getDetails.replace(':username', 'saviomisael'))
+    const details = response.body.data[0]
+
+    chai.expect(response).to.have.status(200)
+    chai.expect(details.username).to.be.equal('saviomisael')
+    chai.expect(new Date(details.createdAt as string).toISOString()).to.be.equal(new Date(2020, 5, 3).toISOString())
+    chai.expect(details.reviewsCount).to.be.equal(2)
   })
 })

@@ -1,6 +1,6 @@
 import { Reviewer } from '$/domain/entities/Reviewer'
 import { type IReviewerRepository } from '$/domain/repositories/IReviewerRepository'
-import { type ReviewerDetails } from '$/domain/value-objects/ReviewerDetails'
+import { ReviewerDetails } from '$/domain/value-objects/ReviewerDetails'
 import { type Connection } from 'mysql2/promise'
 import { DBConnection } from '../DBConnection'
 
@@ -116,15 +116,24 @@ export class ReviewerRepository implements IReviewerRepository {
       SELECT
       r.createdAtUtcTime AS createdAt,
       r.username,
-      COUNT(DISTINCT rv.id) AS reviewsCount
+      GROUP_CONCAT(rv.id) AS reviews_ids
       FROM reviewers AS r
       JOIN reviews AS rv ON rv.fk_reviewer = r.id
-      WHERE r.username = ?`,
+      WHERE r.username = ?
+      GROUP BY r.id
+      `,
       [username]
     )
 
-    const rows = result[0] as ReviewerDetails[]
+    const rows = result[0] as any[]
 
-    return rows[0]
+    return rows.map((x: any) => {
+      const details = new ReviewerDetails()
+      details.createdAt = new Date(x.createdAt as string)
+      details.username = x.username
+      details.reviewsCount = x.reviews_ids.split(',').length
+
+      return details
+    })[0]
   }
 }
