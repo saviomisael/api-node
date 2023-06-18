@@ -1,4 +1,5 @@
 import { type Game } from '$/domain/entities'
+import { type Review } from '$/domain/entities/Review'
 import { type IGameRepository } from '$/domain/repositories'
 import { type Connection } from 'mysql2/promise'
 import { DBConnection } from '../DBConnection'
@@ -260,5 +261,14 @@ export class GameRepository implements IGameRepository {
     const rows = result[0] as any[]
 
     return Math.ceil((rows[0].numGames as number) / maxGamesPerPage)
+  }
+
+  async createReview(review: Review): Promise<void> {
+    this.connection = await DBConnection.getConnection()
+
+    await this.connection.execute(
+      'INSERT INTO reviews (id, description, stars, fk_game, fk_reviewer) VALUES (?, ?, ?, ?, ?)',
+      [review.getId(), review.getDescription(), review.getStars(), review.getGameId(), review.getReviewerId()]
+    )
   }
 }
