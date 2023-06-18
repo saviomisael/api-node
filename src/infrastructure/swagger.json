@@ -588,14 +588,7 @@
         },
         "responses": {
           "204": {
-            "description": "The password was successfully changed.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/TokenResponse"
-                }
-              }
-            }
+            "description": "The password was successfully changed."
           },
           "400": {
             "description": "Token expired /  The new password and the confirm new password must be the same.",
@@ -699,14 +692,7 @@
         "description": "Send a random password for a reviewer when forgot password.",
         "responses": {
           "204": {
-            "description": "Random password was successfully sent.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/GenericResponse"
-                }
-              }
-            }
+            "description": "Random password was successfully sent."
           },
           "400": {
             "description": "Username is not valid.",
