@@ -15,7 +15,8 @@ import {
   GenreNotExistsError,
   PlatformNotExistsError,
   ReviewNotFoundError,
-  ReviewOwnerError
+  ReviewOwnerError,
+  ReviewerAlreadyHasReviewError
 } from '../errors'
 import { GameMapper } from '../mapper/GameMapper'
 
@@ -141,6 +142,15 @@ export class GameService {
 
     if (!gameExists) {
       throw new GameNotExistsError()
+    }
+
+    const reviewerAlreadyHasReview = await this.gameRepository.checkReviewerHasReviewByGame(
+      review.getReviewerId(),
+      review.getGameId()
+    )
+
+    if (reviewerAlreadyHasReview) {
+      throw new ReviewerAlreadyHasReviewError()
     }
 
     await this.gameRepository.createReview(review)
