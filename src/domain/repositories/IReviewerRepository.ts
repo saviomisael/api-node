@@ -9,4 +9,5 @@ export interface IReviewerRepository {
   changePassword: (username: string, newPassword: string) => Promise<void>
   setTemporaryPassword: (reviewer: Reviewer) => Promise<void>
   deleteReviewerByUsername: (username: string) => Promise<void>
+  removeTemporaryPassword: (username: string) => Promise<void>
 }

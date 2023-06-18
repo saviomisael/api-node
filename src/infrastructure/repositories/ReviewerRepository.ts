@@ -92,4 +92,13 @@ export class ReviewerRepository implements IReviewerRepository {
 
     await this.connection.execute('DELETE FROM reviewers WHERE username = ?', [username])
   }
+
+  async removeTemporaryPassword(username: string): Promise<void> {
+    this.connection = await DBConnection.getConnection()
+
+    await this.connection.execute(
+      `UPDATE reviewers SET temporaryPassword = '', tempPasswordTime = NULL WHERE username = ?`,
+      [username]
+    )
+  }
 }
