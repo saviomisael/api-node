@@ -818,4 +818,22 @@ describe('POST /api/v1/games/:gameId/reviews', () => {
     chai.expect(response).to.have.status(400)
     chai.expect(response.body.errors.length > 0).to.be.true
   })
+
+  it('should return not found when gameId does not exist', async () => {
+    const generator = new JWTGenerator()
+
+    const token = generator.generateToken('9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6a', 'saviomisael')
+
+    const response = await chai
+      .request(app)
+      .post(apiRoutes.games.createReview.replace(':gameId', '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6b'))
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        description: 'O jogo é bem legal, mas o cavalo é meio atrapalhado.',
+        stars: 4
+      })
+
+    chai.expect(response).to.have.status(404)
+    chai.expect(response.body.errors.length > 0).to.be.true
+  })
 })
