@@ -271,4 +271,14 @@ export class GameRepository implements IGameRepository {
       [review.getId(), review.getDescription(), review.getStars(), review.getGameId(), review.getReviewerId()]
     )
   }
+
+  async verifyGameAlreadyExists(gameId: string): Promise<boolean> {
+    this.connection = await DBConnection.getConnection()
+
+    const result = await this.connection.execute('SELECT id FROM games WHERE id = ?', [gameId])
+
+    const rows = result[0] as any[]
+
+    return rows.length > 0
+  }
 }
