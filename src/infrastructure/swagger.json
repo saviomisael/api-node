@@ -852,6 +852,46 @@
           }
         }
       }
+    },
+    "/api/v1/reviewers/{username}": {
+      "get": {
+        "tags": [
+          "reviewers"
+        ],
+        "summary": "Returns details about a single reviewer.",
+        "description": "Returns details about a single reviewer.",
+        "parameters": [
+          {
+            "name": "username",
+            "in": "path",
+            "required": true,
+            "description": "Username to get details about it.",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Details about a reviewer.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DetailsResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Username not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DetailsResponse"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -863,6 +903,43 @@
       }
     },
     "schemas": {
+      "DetailsResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ReviewerDetails"
+            }
+          }
+        }
+      },
+      "ReviewerDetails": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string",
+            "example": "noobmaster3000"
+          },
+          "createdAt": {
+            "type": "date",
+            "example": "2020-06-03T00:00:00.000Z"
+          },
+          "reviewsCount": {
+            "type": "number",
+            "example": 20
+          }
+        }
+      },
       "GenericResponse": {
         "type": "object",
         "properties": {
