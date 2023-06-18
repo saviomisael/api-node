@@ -10,8 +10,7 @@ import { GameNotExistsError } from '$/infrastructure/errors/GameNotExistsError'
 import { AgeRatingRepository, GameRepository, GenreRepository, PlatformRepository } from '$/infrastructure/repositories'
 import { type CacheService } from '$/infrastructure/services/CacheService'
 import { CacheServiceFactory } from '$/infrastructure/services/CacheServiceFactory'
-import { ReviewResponseDTO } from '../dto/ReviewResponseDTO'
-import { SingleGameResponseDTO } from '../dto/SingleGameResponseDTO'
+import { type SingleGameResponseDTO } from '../dto/SingleGameResponseDTO'
 import {
   AgeNotExistsError,
   GenreNotExistsError,
@@ -62,29 +61,7 @@ export class GameService {
 
     if (game == null) return game
 
-    return [game].map((x) => {
-      const reviewResponses = x.getReviews().map((x) => {
-        const reviewResponse = new ReviewResponseDTO()
-        reviewResponse.description = x.getDescription()
-        reviewResponse.id = x.getId()
-        reviewResponse.owner = x.getOwner()
-        reviewResponse.star = x.getStars()
-        return reviewResponse
-      })
-
-      const singleGame = new SingleGameResponseDTO()
-      singleGame.ageRating = x.getAgeRating()
-      singleGame.description = x.getDescription()
-      singleGame.genres = [...x.getGenres()]
-      singleGame.id = x.id
-      singleGame.name = x.getName()
-      singleGame.platforms = [...x.getPlatforms()]
-      singleGame.price = x.getPrice()
-      singleGame.releaseDate = x.getReleaseDate().toISOString()
-      singleGame.reviews = reviewResponses
-
-      return singleGame
-    })[0]
+    return [game].map((x) => GameMapper.fromEntityToSingleGame(x))[0]
   }
 
   async updateGameById(game: Game): Promise<Game | null> {
