@@ -4,7 +4,8 @@ import {
   GenreNotExistsError,
   PlatformNotExistsError,
   ReviewNotFoundError,
-  ReviewOwnerError
+  ReviewOwnerError,
+  ReviewerAlreadyHasReviewError
 } from '$/application/errors'
 import { GameMapper as GameMapperApp } from '$/application/mapper/GameMapper'
 import { GameService } from '$/application/services/GameService'
@@ -394,17 +395,20 @@ export class GameController extends HttpHandler {
       await this.gameService.createReview(review)
 
       return this.noContent(res)
-    } catch (error) {
-      if (error instanceof GameNotExistsError) {
-        response = {
-          data: [],
-          success: false,
-          errors: [error.message]
-        }
+    } catch (error: any) {
+      response = {
+        data: [],
+        success: false,
+        errors: [error.message]
+      }
 
+      if (error instanceof GameNotExistsError) {
         return this.notFound(res, response)
       }
 
+      if (error instanceof ReviewerAlreadyHasReviewError) {
+        return this.methodNotAllowed(res, response)
+      }
       throw error
     }
   }
