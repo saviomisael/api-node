@@ -1,9 +1,9 @@
 import { v4 } from 'uuid'
-import { type Reviewer } from './Reviewer'
+import { type Owner } from '../value-objects/Owner'
 
 export class Review {
   private id: string
-  private owner!: Reviewer
+  private owner!: Owner
   constructor(
     private readonly description: string,
     private readonly stars: number,
@@ -13,11 +13,11 @@ export class Review {
     this.id = v4()
   }
 
-  setOwner(reviewer: Reviewer): void {
-    this.owner = reviewer
+  setOwner(owner: Owner): void {
+    this.owner = owner
   }
 
-  getOwner(): Reviewer {
+  getOwner(): Owner {
     return this.owner
   }
 
