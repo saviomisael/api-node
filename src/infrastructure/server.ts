@@ -1,3 +1,5 @@
+import 'reflect-metadata'
+
 import 'express-async-errors'
 
 import { internalServerError } from '$/infrastructure/helpers/http-helper'
