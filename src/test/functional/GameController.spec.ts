@@ -1,8 +1,12 @@
 import { AgeRating, Game, Genre, Platform } from '$/domain/entities'
+import { Reviewer } from '$/domain/entities/Reviewer'
 import { DBConnection } from '$/infrastructure/DBConnection'
+import { JWTGenerator } from '$/infrastructure/JWTGenerator'
+import { PasswordEncrypter } from '$/infrastructure/PasswordEncrypter'
 import { RedisClient } from '$/infrastructure/RedisClient'
 import { GenreRepository, PlatformRepository } from '$/infrastructure/repositories'
 import { GameRepository } from '$/infrastructure/repositories/GameRepository'
+import { ReviewerRepository } from '$/infrastructure/repositories/ReviewerRepository'
 import { apiRoutes } from '$/infrastructure/routes/apiRoutes'
 import app from '$/infrastructure/server'
 import chai from 'chai'
@@ -32,9 +36,11 @@ const clearData = async (): Promise<void> => {
   await Promise.all([
     conn.execute('DELETE FROM games_genres'),
     conn.execute('DELETE FROM games_platforms'),
+    conn.execute('DELETE FROM reviews'),
     conn.execute('DELETE FROM games'),
     conn.execute('DELETE FROM genres'),
-    conn.execute('DELETE FROM platforms')
+    conn.execute('DELETE FROM platforms'),
+    conn.execute('DELETE FROM reviewers')
   ])
 
   await clearCache()
@@ -748,5 +754,68 @@ describe('GET /api/v1/games 2', () => {
     const secondDiff = secondRequestEndTime - secondRequestStartTime
 
     chai.expect(firstDiff > secondDiff).to.be.true
+  })
+})
+
+describe('POST /api/v1/games/:gameId/reviews', () => {
+  beforeEach(async () => {
+    const allAges = await chai.request(app).get(apiRoutes.ageRatings.getAll)
+    const genreRepository = new GenreRepository()
+    const platformRepository = new PlatformRepository()
+    const gameRepository = new GameRepository()
+
+    const age = new AgeRating(allAges.body.data[0].age as string, allAges.body.data[0].description as string)
+    age.id = allAges.body.data[0].id
+
+    const genre1 = new Genre('multiplayer')
+    genre1.id = '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6a'
+
+    const platform1 = new Platform('playstation')
+    platform1.id = '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6a'
+
+    const pipeline = [genreRepository.createGenre(genre1), platformRepository.create(platform1)]
+
+    const reviewerRepository = new ReviewerRepository()
+    const reviewer = new Reviewer('saviomisael', await PasswordEncrypter.encrypt('123aBc#@'), 'savio@email.com')
+    reviewer.id = '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6a'
+
+    pipeline.push(reviewerRepository.createReviewer(reviewer))
+
+    const game = new Game(
+      'The Witcher 3',
+      100,
+      'O jogo mais premiado de uma geração agora aprimorado para a atual! Experimente The Witcher 3: Wild Hunt e suas expansões nesta coleção definitiva, com melhor desempenho, visuais aprimorados, novo conteúdo adicional, modo fotografia e muito mais!',
+      new Date(2020, 5, 1),
+      age
+    )
+
+    game.addGenre(genre1)
+    game.addPlatform(platform1)
+    game.id = `9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6a`
+    pipeline.push(gameRepository.create(game))
+
+    await Promise.all([...pipeline])
+  })
+
+  afterEach(async () => {
+    await clearData()
+  })
+
+  it('should return bad request when review data is invalid', async () => {
+    const generator = new JWTGenerator()
+
+    const token = generator.generateToken('9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6a', 'saviomisael')
+
+    const response = await chai
+      .request(app)
+      .post(apiRoutes.games.createReview.replace(':gameId', '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6a'))
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        description: 'legal',
+        stars: 10
+      })
+
+    chai.expect(response).to.have.status(400)
+    chai.expect(response.body.errors.length > 0).to.be.true
   })
 })
