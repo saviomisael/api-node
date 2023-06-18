@@ -56,8 +56,7 @@ export class GameService {
   }
 
   async getGameById(gameId: string): Promise<Game | null> {
-    const game = await this.gameRepository.getById(gameId)
-    return game
+    return await this.gameRepository.getById(gameId)
   }
 
   async updateGameById(game: Game): Promise<Game | null> {
