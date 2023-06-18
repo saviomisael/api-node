@@ -134,6 +134,8 @@ export class GameRepository implements IGameRepository {
 
     pipeline.push(this.connection.execute('DELETE FROM games WHERE id = ?', [gameId]))
 
+    pipeline.push(this.connection.execute('DELETE FROM reviews WHERE fk_game = ?', [gameId]))
+
     await Promise.all([...pipeline])
   }
 
