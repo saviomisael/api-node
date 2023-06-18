@@ -853,6 +853,31 @@ describe('POST /api/v1/games/:gameId/reviews', () => {
 
     chai.expect(response).to.have.status(204)
   })
+
+  it('should return method not allowed when reviewer already has a review in that game', async () => {
+    const requester = chai.request(app).keepOpen()
+    const generator = new JWTGenerator()
+
+    const token = generator.generateToken('9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6a', 'saviomisael')
+
+    await requester
+      .post(apiRoutes.games.createReview.replace(':gameId', '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6a'))
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        description: 'O jogo é bem legal, mas o cavalo é meio atrapalhado.',
+        stars: 4
+      })
+
+    const secondResponse = await requester
+      .post(apiRoutes.games.createReview.replace(':gameId', '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6a'))
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        description: 'O jogo é bem legal, mas o cavalo é meio atrapalhado.',
+        stars: 4
+      })
+
+    chai.expect(secondResponse).to.have.status(405)
+  })
 })
 
 describe('PUT /api/v1/games/reviews/:reviewId', () => {
