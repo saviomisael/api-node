@@ -192,6 +192,21 @@ describe('POST /api/v1/reviewers/tokens 2', () => {
 
     chai.expect(response).to.have.status(401)
   })
+
+  it('should sign in with temporary password', async () => {
+    const reviewerRepository = new ReviewerRepository()
+
+    const response = await chai.request(app).post(apiRoutes.reviewers.signIn).send({
+      password: '321WaBc#@',
+      username: 'saviomisael'
+    })
+
+    const reviewer = await reviewerRepository.getReviewerByUsername('saviomisael')
+
+    chai.expect(response).to.have.status(200)
+    chai.expect(reviewer.getTempPasswordTime()).to.be.null
+    chai.expect(reviewer.getTemporaryPassword()).to.be.empty
+  })
 })
 
 describe('AuthMiddleware', () => {
