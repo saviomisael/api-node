@@ -21,8 +21,7 @@ app.use(bodyParser.json())
 
 app.use(cors())
 
-AppDataSource.getDataSource()
-  .initialize()
+AppDataSource.initialize()
   .then(() => {
     console.log('Data Source has been initialized!')
   })

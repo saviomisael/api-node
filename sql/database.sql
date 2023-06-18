@@ -16,13 +16,6 @@ CREATE TABLE platforms (
 )
 CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
-CREATE TABLE ageRatings (
-  id VARCHAR(36) PRIMARY KEY NOT NULL,
-  age VARCHAR(3) UNIQUE NOT NULL,
-  description VARCHAR(256) NOT NULL
-)
-CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-
 CREATE TABLE games (
   id VARCHAR(36) PRIMARY KEY NOT NULL,
   name VARCHAR(255) NOT NULL,

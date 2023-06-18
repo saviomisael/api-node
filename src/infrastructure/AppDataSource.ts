@@ -1,25 +1,20 @@
-import { AgeRating } from '$/domain/entities'
+import dotenv from 'dotenv'
 import { DataSource } from 'typeorm'
 
-export class AppDataSource {
-  private static dataSource: DataSource
-  private constructor() {}
+dotenv.config()
 
-  static getDataSource(): DataSource {
-    if (AppDataSource.dataSource === undefined) {
-      AppDataSource.dataSource = new DataSource({
-        type: 'mysql',
-        host: 'db',
-        port: 3306,
-        username: process.env.MYSQL_USER,
-        password: process.env.MYSQL_PASSWORD,
-        database: 'gamesdb',
-        synchronize: true,
-        logging: false,
-        entities: [AgeRating]
-      })
-    }
-
-    return AppDataSource.dataSource
-  }
-}
+export const AppDataSource = new DataSource({
+  type: 'mysql',
+  host: 'db',
+  port: 3306,
+  username: process.env.MYSQL_USER,
+  password: process.env.MYSQL_PASSWORD,
+  database: 'gamesdb',
+  synchronize: true,
+  logging: false,
+  entities: ['./src/domain/entities/AgeRating.ts'],
+  extra: {
+    charset: 'utf8mb4_unicode_ci'
+  },
+  migrations: ['./src/migrations/*.ts']
+})
