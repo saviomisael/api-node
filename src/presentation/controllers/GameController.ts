@@ -2,6 +2,7 @@ import { type GameResponseDTO } from '$/application/dto/GameResponseDTO'
 import { AgeNotExistsError, GenreNotExistsError, PlatformNotExistsError } from '$/application/errors'
 import { GameMapper as GameMapperApp } from '$/application/mapper/GameMapper'
 import { GameService } from '$/application/services/GameService'
+import { Review } from '$/domain/entities/Review'
 import { type IGameRepository } from '$/domain/repositories'
 import { GameNotExistsError } from '$/infrastructure/errors/GameNotExistsError'
 import { GameRepository } from '$/infrastructure/repositories/GameRepository'
@@ -13,6 +14,7 @@ import { HttpHandler } from '../HttpHandler'
 import { minPages } from '../constants'
 import {
   CreateGameDTO,
+  CreateReviewDTO,
   DeleteGameDTO,
   GamesQueryStringDTO,
   GetGameDTO,
@@ -21,6 +23,7 @@ import {
   type ResponseDTO
 } from '../dto'
 import { GameMapper } from '../mapper/GameMapper'
+import { type JWTRequest } from '../requests/JWTRequest'
 
 export class GameController extends HttpHandler {
   private readonly gameService: GameService = new GameService()
@@ -355,5 +358,47 @@ export class GameController extends HttpHandler {
     }
 
     return this.ok(res, response)
+  }
+
+  async createReview(req: JWTRequest, res: Response): Promise<Response> {
+    const { payload } = req
+    const dto = new CreateReviewDTO()
+    dto.description = req.body.description
+    dto.stars = req.body.stars
+    dto.gameId = req.params.gameId
+    dto.reviewerId = payload.sub
+
+    let response: ResponseDTO<any>
+    const errors = await validate(dto)
+
+    if (errors.length > 0) {
+      response = {
+        data: [],
+        errors: errors.flatMap((x) => Object.values(x.constraints as Record<string, string>)),
+        success: false
+      }
+
+      return this.badRequest(res, response)
+    }
+
+    try {
+      const review = new Review(dto.description, dto.stars, dto.gameId, dto.reviewerId)
+
+      await this.gameService.createReview(review)
+
+      return this.noContent(res)
+    } catch (error) {
+      if (error instanceof GameNotExistsError) {
+        response = {
+          data: [],
+          success: false,
+          errors: [error.message]
+        }
+
+        return this.notFound(res, response)
+      }
+
+      throw error
+    }
   }
 }
