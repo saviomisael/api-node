@@ -20,7 +20,8 @@
     "typeorm:migration:c": "typeorm migration:create",
     "typeorm:migration:run:docker": "docker compose run backend npm run typeorm:migration:run",
     "typeorm:migration:run": "npm run typeorm migration:run -- -d ./src/infrastructure/AppDataSource.ts",
-    "typeorm:migration:revert": "npm run typeorm migration:revert -- -d ./src/infrastructure/AppDataSource.ts"
+    "typeorm:migration:revert": "npm run typeorm migration:revert -- -d ./src/infrastructure/AppDataSource.ts",
+    "typeorm:migration:revert:docker": "docker compose run backend npm run typeorm:migration:revert"
   },
   "keywords": [],
   "author": "",
