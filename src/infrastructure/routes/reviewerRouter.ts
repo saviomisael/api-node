@@ -39,5 +39,6 @@ router.delete(
     await controller.deleteReviewer(req as JWTRequest, res)
   }
 )
+router.get(apiRoutes.reviewers.getDetails, controller.getDetailsByUsername.bind(controller))
 
 export default router
