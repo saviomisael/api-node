@@ -806,6 +806,52 @@
           }
         }
       }
+    },
+    "/api/v1/games/reviews/{reviewId}": {
+      "put": {
+        "tags": [
+          "reviews"
+        ],
+        "summary": "Update a review.",
+        "description": "Update a review.",
+        "parameters": [
+          {
+            "name": "reviewId",
+            "in": "path",
+            "required": true,
+            "description": "The review id that will be updated.",
+            "type": "string"
+          }
+        ],
+        "security": {
+          "bearerAuth": []
+        },
+        "responses": {
+          "204": {
+            "description": "Successfully updated."
+          },
+          "401": {
+            "description": "The token was not sent / Reviewer is not the owner of review.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GenericResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Reviewer or review does not exist.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GenericResponse"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
