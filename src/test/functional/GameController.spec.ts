@@ -200,6 +200,7 @@ describe('GET /api/v1/games/:id 2', () => {
     const genreRepository = new GenreRepository()
     const platformRepository = new PlatformRepository()
     const gameRepository = new GameRepository()
+    const reviewerRepository = new ReviewerRepository()
 
     const age = new AgeRating(allAges.body.data[0].age as string, allAges.body.data[0].description as string)
     age.id = allAges.body.data[0].id
@@ -235,17 +236,23 @@ describe('GET /api/v1/games/:id 2', () => {
     game.id = '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6a'
     pipeline.push(gameRepository.create(game))
 
+    const reviewer1 = new Reviewer('saviomisael', await PasswordEncrypter.encrypt('321aBc@#'), 'savioth9@gmail.com')
+    const reviewer2 = new Reviewer('saviomisael2', await PasswordEncrypter.encrypt('321aBc@#'), 'savioth9@email.com')
+
+    pipeline.push(reviewerRepository.createReviewer(reviewer1))
+    pipeline.push(reviewerRepository.createReviewer(reviewer2))
+
+    const review1 = new Review('Jogo bem legal', 5, game.id, reviewer1.id)
+    const review2 = new Review('Jogo mais que legal', 5, game.id, reviewer2.id)
+
+    pipeline.push(gameRepository.createReview(review1))
+    pipeline.push(gameRepository.createReview(review2))
+
     await Promise.all([...pipeline])
   })
 
   afterEach(async () => {
-    const conn = await DBConnection.getConnection()
-
-    await Promise.all([
-      conn.execute('DELETE FROM games_genres'),
-      conn.execute('DELETE FROM games_platforms'),
-      conn.execute('DELETE FROM games')
-    ])
+    await clearData()
   })
 
   it('should return a game with an ok status code', async () => {
@@ -253,8 +260,13 @@ describe('GET /api/v1/games/:id 2', () => {
       .request(app)
       .get(apiRoutes.games.getById.replace(':id', '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6a'))
 
+    const firstGame = response.body.data[0]
+
     chai.expect(response).to.have.status(200)
     chai.expect(response.body.data).to.have.length(1)
+    chai.expect(firstGame.genres.length > 0).to.be.true
+    chai.expect(firstGame.platforms.length > 0).to.be.true
+    chai.expect(firstGame.reviews.length > 0).to.be.true
   })
 })
 
