@@ -22,5 +22,14 @@ router.post(
     await controller.createReview(req as JWTRequest, res)
   }
 )
+router.put(
+  apiRoutes.games.updateReview,
+  async (req, res, next) => {
+    await authMiddleware.isAuthenticated(req as JWTRequest, res, next)
+  },
+  async (req, res) => {
+    await controller.updateReview(req as JWTRequest, res)
+  }
+)
 
 export default router
