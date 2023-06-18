@@ -1,6 +1,7 @@
 import { type TokenDTO } from '$/application/dto/TokenDTO'
 import { CredentialsError, EmailInUseError, ReviewerNotFoundError, UsernameInUseError } from '$/application/errors'
 import { ReviewerService } from '$/application/services/ReviewerService'
+import { type ReviewerDetails } from '$/domain/value-objects/ReviewerDetails'
 import { validate } from 'class-validator'
 import { type Request, type Response } from 'express'
 import { HttpHandler } from '../HttpHandler'
@@ -203,5 +204,41 @@ export class ReviewerController extends HttpHandler {
     await this.service.deleteReviewerByUsername(payload.name)
 
     return this.noContent(res)
+  }
+
+  async getDetailsByUsername(req: Request, res: Response): Promise<Response> {
+    let response: ResponseDTO<ReviewerDetails> = {
+      data: [],
+      errors: ['Nome de usuário inválido.'],
+      success: false
+    }
+
+    if (req.params.username === undefined || req.params.username.length === 0) {
+      return this.badRequest(res, response)
+    }
+
+    try {
+      const details = await this.service.getDetailsByUsername(req.params.username)
+
+      response = {
+        data: [details],
+        errors: [],
+        success: false
+      }
+
+      return this.ok(res, response)
+    } catch (error) {
+      if (error instanceof ReviewerNotFoundError) {
+        response = {
+          data: [],
+          success: false,
+          errors: [error.message]
+        }
+
+        return this.notFound(res, response)
+      }
+
+      throw error
+    }
   }
 }
