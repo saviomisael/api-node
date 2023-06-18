@@ -90,7 +90,12 @@ export class ReviewerRepository implements IReviewerRepository {
   async deleteReviewerByUsername(username: string): Promise<void> {
     this.connection = await DBConnection.getConnection()
 
-    await this.connection.execute('DELETE FROM reviewers WHERE username = ?', [username])
+    const reviewer = await this.getReviewerByUsername(username)
+
+    await Promise.all([
+      this.connection.execute('DELETE FROM reviews WHERE fk_reviewer = ?', [reviewer.id]),
+      this.connection.execute('DELETE FROM reviewers WHERE username = ?', [username])
+    ])
   }
 
   async removeTemporaryPassword(username: string): Promise<void> {
