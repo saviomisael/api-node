@@ -3,6 +3,7 @@ import {
   conflict,
   created,
   internalServerError,
+  methodNotAllowed,
   noContent,
   notAuthorized,
   notFound,
@@ -41,5 +42,9 @@ export abstract class HttpHandler {
 
   protected notAuthorized<T>(res: Response, body: T): Response {
     return notAuthorized(res, body)
+  }
+
+  protected methodNotAllowed<T>(res: Response, body: T): Response {
+    return methodNotAllowed(res, body)
   }
 }
