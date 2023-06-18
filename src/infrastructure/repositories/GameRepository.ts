@@ -313,4 +313,17 @@ export class GameRepository implements IGameRepository {
 
     return rows[0].fk_reviewer
   }
+
+  async checkReviewerHasReviewByGame(reviewerId: string, gameId: string): Promise<boolean> {
+    this.connection = await DBConnection.getConnection()
+
+    const result = await this.connection.execute('SELECT id FROM reviews WHERE fk_game = ? AND fk_reviewer = ?', [
+      gameId,
+      reviewerId
+    ])
+
+    const rows = result[0] as any[]
+
+    return rows.length > 0
+  }
 }
