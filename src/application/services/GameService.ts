@@ -1,6 +1,5 @@
 import { type GameResponseDTO } from '$/application/dto/GameResponseDTO'
-import { type Game } from '$/domain/entities'
-import { type Review } from '$/domain/entities/Review'
+import { Review, type Game } from '$/domain/entities'
 import {
   type IAgeRatingRepository,
   type IGameRepository,
@@ -11,8 +10,7 @@ import { GameNotExistsError } from '$/infrastructure/errors/GameNotExistsError'
 import { AgeRatingRepository, GameRepository, GenreRepository, PlatformRepository } from '$/infrastructure/repositories'
 import { type CacheService } from '$/infrastructure/services/CacheService'
 import { CacheServiceFactory } from '$/infrastructure/services/CacheServiceFactory'
-import { AgeNotExistsError, GenreNotExistsError, PlatformNotExistsError } from '../errors'
-
+import { AgeNotExistsError, GenreNotExistsError, PlatformNotExistsError, ReviewNotFoundError } from '../errors'
 import { GameMapper } from '../mapper/GameMapper'
 
 export class GameService {
@@ -140,5 +138,18 @@ export class GameService {
     }
 
     await this.gameRepository.createReview(review)
+  }
+
+  async updateReview(reviewId: string, description: string, stars: number): Promise<void> {
+    const reviewExists = await this.gameRepository.checkReviewExists(reviewId)
+
+    if (!reviewExists) {
+      throw new ReviewNotFoundError()
+    }
+
+    const review = new Review(description, stars, '', '')
+    review.setId(reviewId)
+
+    await this.gameRepository.updateReview(review)
   }
 }
