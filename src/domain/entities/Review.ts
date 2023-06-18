@@ -1,7 +1,7 @@
 import { v4 } from 'uuid'
 
 export class Review {
-  private readonly id: string
+  private id: string
   constructor(
     private readonly description: string,
     private readonly stars: number,
@@ -9,6 +9,10 @@ export class Review {
     private readonly reviewerId: string
   ) {
     this.id = v4()
+  }
+
+  setId(id: string): void {
+    this.id = id
   }
 
   getId(): string {
