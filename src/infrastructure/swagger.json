@@ -760,6 +760,52 @@
           }
         }
       }
+    },
+    "/api/v1/games/{gameId}/reviews": {
+      "post": {
+        "tags": [
+          "reviews"
+        ],
+        "summary": "Creates a review.",
+        "description": "Creates a review.",
+        "parameters": [
+          {
+            "name": "gameId",
+            "in": "path",
+            "required": true,
+            "description": "The game id that will have a new review.",
+            "type": "string"
+          }
+        ],
+        "security": {
+          "bearerAuth": []
+        },
+        "responses": {
+          "204": {
+            "description": "Successfully created."
+          },
+          "401": {
+            "description": "The token was not sent.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GenericResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Reviewer does not exist.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GenericResponse"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
