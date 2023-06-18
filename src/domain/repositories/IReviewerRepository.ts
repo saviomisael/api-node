@@ -1,4 +1,5 @@
 import { type Reviewer } from '../entities/Reviewer'
+import { type ReviewerDetails } from '../value-objects/ReviewerDetails'
 
 export interface IReviewerRepository {
   createReviewer: (reviewer: Reviewer) => Promise<void>
@@ -10,4 +11,5 @@ export interface IReviewerRepository {
   setTemporaryPassword: (reviewer: Reviewer) => Promise<void>
   deleteReviewerByUsername: (username: string) => Promise<void>
   removeTemporaryPassword: (username: string) => Promise<void>
+  getDetailsByUsername: (username: string) => Promise<ReviewerDetails>
 }

@@ -1,5 +1,6 @@
 import { Reviewer } from '$/domain/entities/Reviewer'
 import { type IReviewerRepository } from '$/domain/repositories/IReviewerRepository'
+import { type ReviewerDetails } from '$/domain/value-objects/ReviewerDetails'
 import { type Connection } from 'mysql2/promise'
 import { DBConnection } from '../DBConnection'
 
@@ -105,5 +106,25 @@ export class ReviewerRepository implements IReviewerRepository {
       `UPDATE reviewers SET temporaryPassword = '', tempPasswordTime = NULL WHERE username = ?`,
       [username]
     )
+  }
+
+  async getDetailsByUsername(username: string): Promise<ReviewerDetails> {
+    this.connection = await DBConnection.getConnection()
+
+    const result = await this.connection.execute(
+      `
+      SELECT
+      r.createdAtUtcTime AS createdAt,
+      r.username,
+      COUNT(DISTINCT rv.id) AS reviewsCount
+      FROM reviewers AS r
+      JOIN reviews AS rv ON rv.fk_reviewer = r.id
+      WHERE r.username = ?`,
+      [username]
+    )
+
+    const rows = result[0] as ReviewerDetails[]
+
+    return rows[0]
   }
 }
