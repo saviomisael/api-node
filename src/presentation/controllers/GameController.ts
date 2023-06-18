@@ -1,5 +1,11 @@
 import { type GameResponseDTO } from '$/application/dto/GameResponseDTO'
-import { AgeNotExistsError, GenreNotExistsError, PlatformNotExistsError } from '$/application/errors'
+import {
+  AgeNotExistsError,
+  GenreNotExistsError,
+  PlatformNotExistsError,
+  ReviewNotFoundError,
+  ReviewOwnerError
+} from '$/application/errors'
 import { GameMapper as GameMapperApp } from '$/application/mapper/GameMapper'
 import { GameService } from '$/application/services/GameService'
 import { Review } from '$/domain/entities/Review'
@@ -19,6 +25,7 @@ import {
   GamesQueryStringDTO,
   GetGameDTO,
   UpdateGameDTO,
+  UpdateReviewDTO,
   type GamesGetAllResponseDTO,
   type ResponseDTO
 } from '../dto'
@@ -396,6 +403,48 @@ export class GameController extends HttpHandler {
         }
 
         return this.notFound(res, response)
+      }
+
+      throw error
+    }
+  }
+
+  async updateReview(req: JWTRequest, res: Response): Promise<Response> {
+    const dto = new UpdateReviewDTO()
+    dto.description = req.body.description
+    dto.reviewId = req.params.reviewId
+    dto.stars = req.body.stars
+    dto.userId = req.payload.sub
+    let response: ResponseDTO<any>
+
+    const errors = await validate(dto)
+
+    if (errors.length > 0) {
+      response = {
+        data: [],
+        success: false,
+        errors: errors.flatMap((x) => Object.values(x.constraints as Record<string, string>))
+      }
+
+      return this.badRequest(res, response)
+    }
+
+    try {
+      await this.gameService.updateReview(dto.reviewId, dto.description, dto.stars, dto.userId)
+
+      return this.noContent(res)
+    } catch (error: any) {
+      response = {
+        data: [],
+        success: false,
+        errors: [error.message]
+      }
+      if (error instanceof ReviewNotFoundError) {
+        return this.notFound(res, response)
+      }
+
+      if (error instanceof ReviewOwnerError) {
+        return this.notAuthorized(res, response)
       }
 
       throw error
