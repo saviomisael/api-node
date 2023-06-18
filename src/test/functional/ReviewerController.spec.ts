@@ -100,10 +100,11 @@ describe('POST /api/v1/reviewers', () => {
       username: 'saviao'
     })
 
-    const { token } = response.body.data[0]
+    const { token, username } = response.body.data[0]
 
     chai.expect(response).to.have.status(201)
     chai.expect(token).not.be.empty
+    chai.expect(username).to.be.equal('saviao')
   })
 })
 
@@ -165,6 +166,7 @@ describe('POST /api/v1/reviewers/tokens', () => {
 
     chai.expect(response).to.have.status(200)
     chai.expect(response.body.data[0].token).not.be.empty
+    chai.expect(response.body.data[0].username).to.be.equal('saviomisael')
   })
 })
 
