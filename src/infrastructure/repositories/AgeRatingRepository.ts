@@ -11,8 +11,8 @@ export class AgeRatingRepository implements IAgeRatingRepository {
 
     await this.connection.execute('INSERT INTO ageRatings (id, age, description) VALUE (?, ?, ?)', [
       ageRating.id,
-      ageRating.getAge(),
-      ageRating.getDescription()
+      ageRating.age,
+      ageRating.description
     ])
   }
 
