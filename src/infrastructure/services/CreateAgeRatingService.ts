@@ -6,7 +6,7 @@ export class CreateAgeRatingService {
   private readonly repository: IAgeRatingRepository = new AgeRatingRepository()
 
   async createAgeRating(ageRating: AgeRating): Promise<void> {
-    const alreadyExists = await this.repository.ageAlreadyExists(ageRating.getAge())
+    const alreadyExists = await this.repository.ageAlreadyExists(ageRating.age)
 
     if (!alreadyExists) await this.repository.create(ageRating)
   }
