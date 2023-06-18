@@ -13,4 +13,5 @@ export interface IGameRepository {
   createReview: (review: Review) => Promise<void>
   verifyGameAlreadyExists: (gameId: string) => Promise<boolean>
   updateReview: (review: Review) => Promise<void>
+  checkReviewExists: (reviewId: string) => Promise<boolean>
 }
