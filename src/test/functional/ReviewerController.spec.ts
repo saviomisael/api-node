@@ -170,6 +170,30 @@ describe('POST /api/v1/reviewers/tokens', () => {
   })
 })
 
+describe('POST /api/v1/reviewers/tokens 2', () => {
+  beforeEach(async () => {
+    const reviewerRepository = new ReviewerRepository()
+    const reviewer = new Reviewer('saviomisael', await PasswordEncrypter.encrypt('123aBc#@'), 'savio@email.com')
+    reviewer.setTemporaryPassword(await PasswordEncrypter.encrypt('321WaBc#@'))
+    reviewer.generateTempPasswordTime()
+
+    await Promise.all([reviewerRepository.createReviewer(reviewer), reviewerRepository.setTemporaryPassword(reviewer)])
+  })
+
+  afterEach(async () => {
+    await clearData()
+  })
+
+  it('should return not authorized when temporary password is wrong', async () => {
+    const response = await chai.request(app).post(apiRoutes.reviewers.signIn).send({
+      password: '123aBc#@',
+      username: 'saviomisael'
+    })
+
+    chai.expect(response).to.have.status(401)
+  })
+})
+
 describe('AuthMiddleware', () => {
   beforeEach(async () => {
     const reviewerRepository = new ReviewerRepository()

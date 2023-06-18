@@ -64,8 +64,8 @@ export class ReviewerRepository implements IReviewerRepository {
 
     return rows.map((x: any) => {
       const reviewer = new Reviewer(x.username as string, x.password as string, x.email as string)
-      reviewer.setTemporaryPassword(x.passwordTemporary as string)
-      reviewer.setTempPasswordTime(x.passwordTempTime === null ? null : new Date(x.passwordTempTime as string))
+      reviewer.setTemporaryPassword(x.temporaryPassword as string)
+      reviewer.setTempPasswordTime(x.tempPasswordTime === null ? null : new Date(x.tempPasswordTime as string))
       reviewer.id = x.id
 
       return reviewer
