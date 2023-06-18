@@ -56,7 +56,7 @@ export class ReviewerRepository implements IReviewerRepository {
     this.connection = await DBConnection.getConnection()
 
     const result = await this.connection.execute(
-      'SELECT id, passwordTemporary, passwordTempTime, username, password, email FROM reviewers WHERE username = ?',
+      'SELECT id, temporaryPassword, tempPasswordTime, username, password, email FROM reviewers WHERE username = ?',
       [username]
     )
 
@@ -64,8 +64,8 @@ export class ReviewerRepository implements IReviewerRepository {
 
     return rows.map((x: any) => {
       const reviewer = new Reviewer(x.username as string, x.password as string, x.email as string)
-      reviewer.setPasswordTemporary(x.passwordTemporary as string)
-      reviewer.setPasswordTempTime(x.passwordTempTime === null ? null : new Date(x.passwordTempTime as string))
+      reviewer.setTemporaryPassword(x.passwordTemporary as string)
+      reviewer.setTempPasswordTime(x.passwordTempTime === null ? null : new Date(x.passwordTempTime as string))
       reviewer.id = x.id
 
       return reviewer
@@ -82,8 +82,8 @@ export class ReviewerRepository implements IReviewerRepository {
     this.connection = await DBConnection.getConnection()
 
     await this.connection.execute(
-      'UPDATE reviewers SET passwordTemporary = ?, passwordTempTime = ? WHERE username = ?',
-      [reviewer.getPasswordTemporary(), reviewer.getPasswordTempTime(), reviewer.getUsername()]
+      'UPDATE reviewers SET temporaryPassword = ?, tempPasswordTime = ? WHERE username = ?',
+      [reviewer.getTemporaryPassword(), reviewer.getTempPasswordTime(), reviewer.getUsername()]
     )
   }
 

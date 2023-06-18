@@ -52,7 +52,16 @@ export class ReviewerService {
 
     const reviewer = await this.reviewerRepository.getReviewerByUsername(username)
 
-    const passwordsAreEqual = await PasswordEncrypter.comparePasswords(reviewer.getPassword(), password)
+    const passwordTempTimeUnix =
+      reviewer.getTempPasswordTime() != null ? reviewer.getTempPasswordTime()?.getTime() : null
+
+    let passwordsAreEqual
+
+    if (passwordTempTimeUnix != null && passwordTempTimeUnix > new Date(new Date().toUTCString()).getTime()) {
+      passwordsAreEqual = await PasswordEncrypter.comparePasswords(reviewer.getTemporaryPassword(), password)
+    } else {
+      passwordsAreEqual = await PasswordEncrypter.comparePasswords(reviewer.getPassword(), password)
+    }
 
     if (!passwordsAreEqual) {
       throw new CredentialsError()
@@ -96,8 +105,8 @@ export class ReviewerService {
     const randomPasswordHash = await PasswordEncrypter.encrypt(randomPassword)
 
     const reviewer = await this.reviewerRepository.getReviewerByUsername(username)
-    reviewer.generatePasswordTempTime()
-    reviewer.setPasswordTemporary(randomPasswordHash)
+    reviewer.generateTempPasswordTime()
+    reviewer.setTemporaryPassword(randomPasswordHash)
 
     await Promise.all([
       this.reviewerRepository.setTemporaryPassword(reviewer),

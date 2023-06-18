@@ -3,32 +3,32 @@ import { addHoursHelper } from '../helpers/addHoursHelper'
 import { AggregateRoot } from './AggregateRoot'
 
 export class Reviewer extends AggregateRoot {
-  private passwordTemporary!: string
-  private passwordTempTime!: Date | null
+  private temporaryPassword!: string
+  private tempPasswordTime!: Date | null
   private createdAtUtcTime: Date
   constructor(private readonly username: string, private readonly password: string, private readonly email: string) {
     super()
     this.createdAtUtcTime = newDateUtcTime()
   }
 
-  setPasswordTemporary(password: string): void {
-    this.passwordTemporary = password
+  setTemporaryPassword(password: string): void {
+    this.temporaryPassword = password
   }
 
-  getPasswordTemporary(): string {
-    return this.passwordTemporary
+  getTemporaryPassword(): string {
+    return this.temporaryPassword
   }
 
-  generatePasswordTempTime(): void {
-    this.passwordTempTime = addHoursHelper(newDateUtcTime(), 1)
+  generateTempPasswordTime(): void {
+    this.tempPasswordTime = addHoursHelper(newDateUtcTime(), 1)
   }
 
-  getPasswordTempTime(): Date | null {
-    return this.passwordTempTime
+  getTempPasswordTime(): Date | null {
+    return this.tempPasswordTime
   }
 
-  setPasswordTempTime(date: Date | null): void {
-    this.passwordTempTime = date
+  setTempPasswordTime(date: Date | null): void {
+    this.tempPasswordTime = date
   }
 
   getUsername(): string {
