@@ -22,8 +22,9 @@ app.use(bodyParser.json())
 app.use(cors())
 
 AppDataSource.initialize()
-  .then(() => {
+  .then(async () => {
     console.log('Data Source has been initialized!')
+    await seedDB()
   })
   .catch((err) => {
     console.error('Error during Data Source initialization:', err)
@@ -45,7 +46,6 @@ app.use((error: Error, _: Request, res: Response, _2: NextFunction): Response =>
 
 app.listen('3333', async () => {
   console.log('App running on http://localhost:3333')
-  await seedDB()
 })
 
 export default app

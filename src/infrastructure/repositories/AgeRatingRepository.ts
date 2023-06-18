@@ -1,48 +1,41 @@
-import { type AgeRating } from '$/domain/entities'
+import { AgeRating } from '$/domain/entities'
 import { type IAgeRatingRepository } from '$/domain/repositories/IAgeRatingRepository'
-import { DBConnection } from '$/infrastructure/DBConnection'
-import { type Connection } from 'mysql2/promise'
+import { AppDataSource } from '../AppDataSource'
 
 export class AgeRatingRepository implements IAgeRatingRepository {
-  private connection!: Connection
+  private readonly repository = AppDataSource.getRepository(AgeRating)
 
   async create(ageRating: AgeRating): Promise<void> {
-    this.connection = await DBConnection.getConnection()
-
-    await this.connection.execute('INSERT INTO ageRatings (id, age, description) VALUE (?, ?, ?)', [
-      ageRating.id,
-      ageRating.age,
-      ageRating.description
-    ])
+    await this.repository.save(ageRating)
   }
 
   async ageAlreadyExists(age: string): Promise<boolean> {
-    this.connection = await DBConnection.getConnection()
+    const ageFromDB = await this.repository.findOne({
+      where: {
+        age
+      }
+    })
 
-    const result = await this.connection.execute('SELECT age FROM ageRatings WHERE age = ?', [age])
-
-    const rows = result[0] as any[]
-
-    return rows.length > 0
+    return ageFromDB != null
   }
 
-  async ageIdExists(ageId: string): Promise<boolean> {
-    this.connection = await DBConnection.getConnection()
+  async ageIdExists(id: string): Promise<boolean> {
+    const age = await this.repository.findOne({
+      where: {
+        id
+      }
+    })
 
-    const result = await this.connection.execute('SELECT id FROM ageRatings WHERE id = ?', [ageId])
-
-    const rows = result[0] as any[]
-
-    return rows.length > 0
+    return age != null
   }
 
   async getAll(): Promise<AgeRating[]> {
-    this.connection = await DBConnection.getConnection()
+    const ages = await this.repository.find()
 
-    const result = await this.connection.execute('SELECT * FROM ageRatings')
+    if (ages === undefined) {
+      return []
+    }
 
-    const data = result[0] as AgeRating[]
-
-    return data
+    return ages
   }
 }
