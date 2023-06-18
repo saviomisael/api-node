@@ -20,7 +20,7 @@ app.use(bodyParser.json())
 
 app.use(cors())
 
-app.use('/docs', Swagger.serve, Swagger.setup(SwaggerDocs))
+if (process.env.NODE_ENV !== 'production') app.use('/docs', Swagger.serve, Swagger.setup(SwaggerDocs))
 
 app.use(appRouter)
 
