@@ -7,6 +7,7 @@ import { ReviewerRepository } from '$/infrastructure/repositories/ReviewerReposi
 import { ChangePasswordEmailService } from '$/infrastructure/services/ChangePasswordEmailService'
 import { ForgotPasswordEmailService } from '$/infrastructure/services/ForgotPasswordEmailService'
 import RandExp from 'randexp'
+import { type ReviewerDTO } from '../dto/ReviewerDTO'
 import { type TokenDTO } from '../dto/TokenDTO'
 import { CredentialsError, EmailInUseError, ReviewerNotFoundError, UsernameInUseError } from '../errors'
 
@@ -14,7 +15,7 @@ export class ReviewerService {
   private readonly reviewerRepository: IReviewerRepository = new ReviewerRepository()
   private emailService!: ISendEmailService
 
-  async createReviewer(reviewer: Reviewer): Promise<TokenDTO> {
+  async createReviewer(reviewer: Reviewer): Promise<ReviewerDTO> {
     const emailIsInUse = await this.reviewerRepository.checkEmailAlreadyExists(reviewer.getEmail())
 
     if (emailIsInUse) {
@@ -37,11 +38,12 @@ export class ReviewerService {
     const token = generator.generateToken(newReviewer.id, newReviewer.getUsername())
 
     return {
-      token
+      token,
+      username: newReviewer.getUsername()
     }
   }
 
-  async signIn(username: string, password: string): Promise<TokenDTO> {
+  async signIn(username: string, password: string): Promise<ReviewerDTO> {
     const usernameAlreadyExists = await this.reviewerRepository.checkUsernameAlreadyExists(username)
 
     if (!usernameAlreadyExists) {
@@ -61,7 +63,8 @@ export class ReviewerService {
     const token = generator.generateToken(reviewer.id, reviewer.getUsername())
 
     return {
-      token
+      token,
+      username
     }
   }
 
