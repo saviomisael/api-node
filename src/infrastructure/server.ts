@@ -11,6 +11,7 @@ import cors from 'cors'
 import dotenv from 'dotenv'
 import express, { type NextFunction, type Request, type Response } from 'express'
 import Swagger from 'swagger-ui-express'
+import { AppDataSource } from './AppDataSource'
 
 dotenv.config()
 
@@ -19,6 +20,15 @@ const app = express()
 app.use(bodyParser.json())
 
 app.use(cors())
+
+AppDataSource.getDataSource()
+  .initialize()
+  .then(() => {
+    console.log('Data Source has been initialized!')
+  })
+  .catch((err) => {
+    console.error('Error during Data Source initialization:', err)
+  })
 
 if (process.env.NODE_ENV !== 'production') app.use('/docs', Swagger.serve, Swagger.setup(SwaggerDocs))
 
