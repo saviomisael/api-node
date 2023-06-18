@@ -958,4 +958,21 @@ describe('PUT /api/v1/games/reviews/:reviewId', () => {
 
     chai.expect(response).to.have.status(401)
   })
+
+  it('should update a review successfully', async () => {
+    const generator = new JWTGenerator()
+
+    const token = generator.generateToken('reviewer-3b7d-4bad-9bdd-2b0d7b3dcb6a', 'saviomisael')
+
+    const response = await chai
+      .request(app)
+      .put(apiRoutes.games.updateReview.replace(':reviewId', 'review4d-3b7d-4bad-9bdd-2b0d7b3dcb6a'))
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        description: 'O jogo não é bem legal e o cavalo é meio atrapalhado.',
+        stars: 3
+      })
+
+    chai.expect(response).to.have.status(204)
+  })
 })
