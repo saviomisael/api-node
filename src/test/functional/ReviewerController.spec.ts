@@ -344,7 +344,7 @@ describe('POST /api/v1/reviewers/passwords', () => {
   // })
 })
 
-describe('/api/v1/reviewers/tokens/refresh', () => {
+describe('POST /api/v1/reviewers/tokens/refresh', () => {
   beforeEach(async () => {
     const reviewerRepository = new ReviewerRepository()
     const reviewer = new Reviewer(
@@ -379,5 +379,37 @@ describe('/api/v1/reviewers/tokens/refresh', () => {
     chai.expect(response).to.have.status(201)
     chai.expect(payload.sub).to.be.equal('0206a7f2-e912-4f85-8fb3-22547065a66b')
     chai.expect(payload.name).to.be.equal('saviomisael')
+  })
+})
+
+describe('DELETE /api/v1/reviewers', () => {
+  beforeEach(async () => {
+    const reviewerRepository = new ReviewerRepository()
+    const reviewer = new Reviewer(
+      'saviomisael',
+      await PasswordEncrypter.encrypt('123aBc#@'),
+      process.env.GMAIL_TEST as string
+    )
+    reviewer.id = '0206a7f2-e912-4f85-8fb3-22547065a66b'
+
+    await reviewerRepository.createReviewer(reviewer)
+  })
+
+  afterEach(async () => {
+    await clearData()
+  })
+
+  it('should delete a reviewer account', async () => {
+    const generator = new JWTGenerator()
+
+    const token = generator.generateToken('0206a7f2-e912-4f85-8fb3-22547065a66b', 'saviomisael')
+
+    const response = await chai
+      .request(app)
+      .delete(apiRoutes.reviewers.deleteReviewer)
+      .set('Authorization', `Bearer ${token}`)
+      .send()
+
+    chai.expect(response).to.have.status(204)
   })
 })
