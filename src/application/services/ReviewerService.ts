@@ -1,6 +1,7 @@
 import { type Reviewer } from '$/domain/entities/Reviewer'
 import { type IReviewerRepository } from '$/domain/repositories/IReviewerRepository'
 import { type ISendEmailService } from '$/domain/services/ISendEmailService'
+import { type ReviewerDetails } from '$/domain/value-objects/ReviewerDetails'
 import { JWTGenerator, type Payload } from '$/infrastructure/JWTGenerator'
 import { PasswordEncrypter } from '$/infrastructure/PasswordEncrypter'
 import { ReviewerRepository } from '$/infrastructure/repositories/ReviewerRepository'
@@ -128,5 +129,15 @@ export class ReviewerService {
 
   async deleteReviewerByUsername(username: string): Promise<void> {
     await this.reviewerRepository.deleteReviewerByUsername(username)
+  }
+
+  async getDetailsByUsername(username: string): Promise<ReviewerDetails> {
+    const usernameExists = await this.reviewerRepository.checkUsernameAlreadyExists(username)
+
+    if (!usernameExists) {
+      throw new ReviewerNotFoundError(username)
+    }
+
+    return await this.reviewerRepository.getDetailsByUsername(username)
   }
 }
