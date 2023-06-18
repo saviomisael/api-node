@@ -59,6 +59,8 @@ export class ReviewerService {
 
     if (passwordTempTimeUnix != null && passwordTempTimeUnix > new Date(new Date().toUTCString()).getTime()) {
       passwordsAreEqual = await PasswordEncrypter.comparePasswords(reviewer.getTemporaryPassword(), password)
+
+      if (passwordsAreEqual) await this.reviewerRepository.removeTemporaryPassword(reviewer.getUsername())
     } else {
       passwordsAreEqual = await PasswordEncrypter.comparePasswords(reviewer.getPassword(), password)
     }
