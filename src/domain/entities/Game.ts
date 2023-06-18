@@ -1,8 +1,10 @@
 import { type AgeRating, type Genre, type Platform } from '$/domain/entities'
 import { AggregateRoot } from '$/domain/entities/AggregateRoot'
+import { type Review } from './Review'
 export class Game extends AggregateRoot {
   private readonly platforms!: Set<Platform>
   private readonly genres!: Set<Genre>
+  private readonly reviews: Review[]
   constructor(
     private readonly name: string,
     private readonly price: number,
@@ -13,6 +15,11 @@ export class Game extends AggregateRoot {
     super()
     this.platforms = new Set()
     this.genres = new Set()
+    this.reviews = []
+  }
+
+  addReview(review: Review): void {
+    this.reviews.push(review)
   }
 
   addPlatform(platform: Platform): void {
