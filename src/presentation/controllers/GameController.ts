@@ -1,4 +1,5 @@
 import { type GameResponseDTO } from '$/application/dto/GameResponseDTO'
+import { type SingleGameResponseDTO } from '$/application/dto/SingleGameResponseDTO'
 import {
   AgeNotExistsError,
   GenreNotExistsError,
@@ -136,7 +137,7 @@ export class GameController extends HttpHandler {
   async getGameById(req: Request, res: Response): Promise<Response> {
     const dto = new GetGameDTO()
     dto.id = req.params.id
-    let response: ResponseDTO<GameResponseDTO>
+    let response: ResponseDTO<SingleGameResponseDTO>
 
     const errors = await validate(dto)
 
@@ -162,10 +163,7 @@ export class GameController extends HttpHandler {
       return this.notFound(res, response)
     }
 
-    const resource = new HalWrapper(
-      GameMapperApp.fromEntityToGameResponse(game),
-      apiRoutes.games.getById.replace(':id', game.id)
-    )
+    const resource = new HalWrapper(game, apiRoutes.games.getById.replace(':id', game.id))
       .addLink('PUT_update_game', apiRoutes.games.updateGameById.replace(':id', game.id))
       .addLink('DELETE_delete_game', apiRoutes.games.deleteById.replace(':id', game.id))
       .getResource()
