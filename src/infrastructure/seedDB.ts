@@ -4,15 +4,19 @@ import { CreateAgeRatingService } from '$/infrastructure/services/CreateAgeRatin
 export const seedDB = async (): Promise<void> => {
   const ageRatingService = new CreateAgeRatingService()
 
-  await ageRatingService.createAgeRating(new AgeRating('L', 'Livre para todos os públicos.'))
+  const ages = [
+    { age: 'L', description: 'Livre para todos os públicos.' },
+    { age: '10+', description: 'Não recomendado para menores de 10 anos.' },
+    { age: '12+', description: 'Não recomendado para menores de 10 anos.' },
+    { age: '14+', description: 'Não recomendado para menores de 14 anos.' },
+    { age: '16+', description: 'Não recomendado para menores de 16 anos.' },
+    { age: '18+', description: 'Não recomendado para menores de 18 anos.' }
+  ]
 
-  await ageRatingService.createAgeRating(new AgeRating('10+', 'Não recomendado para menores de 10 anos.'))
-
-  await ageRatingService.createAgeRating(new AgeRating('12+', 'Não recomendado para menores de 12 anos.'))
-
-  await ageRatingService.createAgeRating(new AgeRating('14+', 'Não recomendado para menores de 14 anos.'))
-
-  await ageRatingService.createAgeRating(new AgeRating('16+', 'Não recomendado para menores de 16 anos.'))
-
-  await ageRatingService.createAgeRating(new AgeRating('18+', 'Não recomendado para menores de 18 anos.'))
+  for (const { age, description } of ages) {
+    const ageRating = new AgeRating()
+    ageRating.age = age
+    ageRating.description = description
+    await ageRatingService.createAgeRating(ageRating)
+  }
 }
