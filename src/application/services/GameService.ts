@@ -10,7 +10,13 @@ import { GameNotExistsError } from '$/infrastructure/errors/GameNotExistsError'
 import { AgeRatingRepository, GameRepository, GenreRepository, PlatformRepository } from '$/infrastructure/repositories'
 import { type CacheService } from '$/infrastructure/services/CacheService'
 import { CacheServiceFactory } from '$/infrastructure/services/CacheServiceFactory'
-import { AgeNotExistsError, GenreNotExistsError, PlatformNotExistsError, ReviewNotFoundError } from '../errors'
+import {
+  AgeNotExistsError,
+  GenreNotExistsError,
+  PlatformNotExistsError,
+  ReviewNotFoundError,
+  ReviewOwnerError
+} from '../errors'
 import { GameMapper } from '../mapper/GameMapper'
 
 export class GameService {
@@ -140,11 +146,17 @@ export class GameService {
     await this.gameRepository.createReview(review)
   }
 
-  async updateReview(reviewId: string, description: string, stars: number): Promise<void> {
+  async updateReview(reviewId: string, description: string, stars: number, userId: string): Promise<void> {
     const reviewExists = await this.gameRepository.checkReviewExists(reviewId)
 
     if (!reviewExists) {
       throw new ReviewNotFoundError()
+    }
+
+    const user = await this.gameRepository.getUserForReview(reviewId)
+
+    if (user !== userId) {
+      throw new ReviewOwnerError()
     }
 
     const review = new Review(description, stars, '', '')
