@@ -207,15 +207,7 @@ export class ReviewerController extends HttpHandler {
   }
 
   async getDetailsByUsername(req: Request, res: Response): Promise<Response> {
-    let response: ResponseDTO<ReviewerDetails> = {
-      data: [],
-      errors: ['Nome de usuário inválido.'],
-      success: false
-    }
-
-    if (req.params.username === undefined || req.params.username.length === 0) {
-      return this.badRequest(res, response)
-    }
+    let response: ResponseDTO<ReviewerDetails>
 
     try {
       const details = await this.service.getDetailsByUsername(req.params.username)

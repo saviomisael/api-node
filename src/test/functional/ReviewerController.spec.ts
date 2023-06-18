@@ -1,7 +1,9 @@
+import { AgeRating, Game, Genre, Platform, Review } from '$/domain/entities'
 import { Reviewer } from '$/domain/entities/Reviewer'
 import { DBConnection } from '$/infrastructure/DBConnection'
 import { JWTGenerator } from '$/infrastructure/JWTGenerator'
 import { PasswordEncrypter } from '$/infrastructure/PasswordEncrypter'
+import { GameRepository, GenreRepository, PlatformRepository } from '$/infrastructure/repositories'
 import { ReviewerRepository } from '$/infrastructure/repositories/ReviewerRepository'
 import { apiRoutes } from '$/infrastructure/routes/apiRoutes'
 import app from '$/infrastructure/server'
@@ -13,7 +15,15 @@ chai.use(chaiHttp)
 const clearData = async (): Promise<void> => {
   const conn = await DBConnection.getConnection()
 
-  await conn.execute('DELETE FROM reviewers')
+  await Promise.all([
+    conn.execute('DELETE FROM games_genres'),
+    conn.execute('DELETE FROM games_platforms'),
+    conn.execute('DELETE FROM reviews'),
+    conn.execute('DELETE FROM games'),
+    conn.execute('DELETE FROM genres'),
+    conn.execute('DELETE FROM platforms'),
+    conn.execute('DELETE FROM reviewers')
+  ])
 }
 
 describe('POST /api/v1/reviewers', () => {
@@ -452,5 +462,85 @@ describe('DELETE /api/v1/reviewers', () => {
       .send()
 
     chai.expect(response).to.have.status(204)
+  })
+})
+
+describe('GET /api/v1/reviewers/:username', () => {
+  beforeEach(async () => {
+    const allAges = await chai.request(app).get(apiRoutes.ageRatings.getAll)
+    const genreRepository = new GenreRepository()
+    const platformRepository = new PlatformRepository()
+    const gameRepository = new GameRepository()
+    const reviewerRepository = new ReviewerRepository()
+
+    const age = new AgeRating(allAges.body.data[0].age as string, allAges.body.data[0].description as string)
+    age.id = allAges.body.data[0].id
+
+    const genre1 = new Genre('action 1')
+    genre1.id = '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6a'
+    const genre2 = new Genre('action 2')
+    genre2.id = '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6b'
+
+    const platform1 = new Platform('playstation 1')
+    platform1.id = '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6a'
+    const platform2 = new Platform('playstation 2')
+    platform2.id = '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6b'
+
+    const pipeline = [
+      genreRepository.createGenre(genre1),
+      genreRepository.createGenre(genre2),
+      platformRepository.create(platform1),
+      platformRepository.create(platform2)
+    ]
+
+    const game = new Game(
+      'The Witcher 3',
+      100,
+      'O jogo mais premiado de uma geração agora aprimorado para a atual! Experimente The Witcher 3: Wild Hunt e suas expansões nesta coleção definitiva, com melhor desempenho, visuais aprimorados, novo conteúdo adicional, modo fotografia e muito mais!',
+      new Date(),
+      age
+    )
+    game.addGenre(genre1)
+    game.addGenre(genre2)
+    game.addPlatform(platform1)
+    game.addPlatform(platform2)
+    game.id = '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6a'
+    pipeline.push(gameRepository.create(game))
+
+    const game2 = new Game(
+      'The Witcher 2',
+      100,
+      'O jogo mais premiado de uma geração agora aprimorado para a atual! Experimente The Witcher 3: Wild Hunt e suas expansões nesta coleção definitiva, com melhor desempenho, visuais aprimorados, novo conteúdo adicional, modo fotografia e muito mais!',
+      new Date(),
+      age
+    )
+    game2.addGenre(genre1)
+    game2.addGenre(genre2)
+    game2.addPlatform(platform1)
+    game2.addPlatform(platform2)
+    game2.id = '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6b'
+    pipeline.push(gameRepository.create(game2))
+
+    const reviewer1 = new Reviewer('saviomisael', await PasswordEncrypter.encrypt('321aBc@#'), 'savioth9@gmail.com')
+
+    pipeline.push(reviewerRepository.createReviewer(reviewer1))
+
+    const review1 = new Review('Jogo bem legal', 5, game.id, reviewer1.id)
+    const review2 = new Review('Jogo mais que legal', 5, game2.id, reviewer1.id)
+
+    pipeline.push(gameRepository.createReview(review1))
+    pipeline.push(gameRepository.createReview(review2))
+
+    await Promise.all([...pipeline])
+  })
+
+  afterEach(async () => {
+    await clearData()
+  })
+
+  it('should return not found when username does not exist', async () => {
+    const response = await chai.request(app).get(apiRoutes.reviewers.getDetails.replace(':username', 'batata'))
+
+    chai.expect(response).to.have.status(404)
   })
 })
