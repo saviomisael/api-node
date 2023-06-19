@@ -17,16 +17,16 @@ export class ReviewerService {
   private emailService!: ISendEmailService
 
   async createReviewer(reviewer: Reviewer): Promise<ReviewerDTO> {
-    const emailIsInUse = await this.reviewerRepository.checkEmailAlreadyExists(reviewer.getEmail())
+    const emailIsInUse = await this.reviewerRepository.checkEmailAlreadyExists(reviewer.email)
 
     if (emailIsInUse) {
-      throw new EmailInUseError(reviewer.getEmail())
+      throw new EmailInUseError(reviewer.email)
     }
 
-    const usernameIsInUse = await this.reviewerRepository.checkUsernameAlreadyExists(reviewer.getUsername())
+    const usernameIsInUse = await this.reviewerRepository.checkUsernameAlreadyExists(reviewer.username)
 
     if (usernameIsInUse) {
-      throw new UsernameInUseError(reviewer.getUsername())
+      throw new UsernameInUseError(reviewer.username)
     }
 
     const [, newReviewer] = await Promise.all([
@@ -36,11 +36,11 @@ export class ReviewerService {
 
     const generator = new JWTGenerator()
 
-    const token = generator.generateToken(newReviewer.id, newReviewer.getUsername())
+    const token = generator.generateToken(newReviewer.id, newReviewer.username)
 
     return {
       token,
-      username: newReviewer.getUsername()
+      username: newReviewer.username
     }
   }
 
@@ -53,17 +53,16 @@ export class ReviewerService {
 
     const reviewer = await this.reviewerRepository.getReviewerByUsername(username)
 
-    const passwordTempTimeUnix =
-      reviewer.getTempPasswordTime() != null ? reviewer.getTempPasswordTime()?.getTime() : null
+    const passwordTempTimeUnix = reviewer.tempPasswordTime != null ? reviewer.tempPasswordTime?.getTime() : null
 
     let passwordsAreEqual
 
     if (passwordTempTimeUnix != null && passwordTempTimeUnix > new Date(new Date().toUTCString()).getTime()) {
-      passwordsAreEqual = await PasswordEncrypter.comparePasswords(reviewer.getTemporaryPassword(), password)
+      passwordsAreEqual = await PasswordEncrypter.comparePasswords(reviewer.temporaryPassword, password)
 
-      if (passwordsAreEqual) await this.reviewerRepository.removeTemporaryPassword(reviewer.getUsername())
+      if (passwordsAreEqual) await this.reviewerRepository.removeTemporaryPassword(reviewer.username)
     } else {
-      passwordsAreEqual = await PasswordEncrypter.comparePasswords(reviewer.getPassword(), password)
+      passwordsAreEqual = await PasswordEncrypter.comparePasswords(reviewer.password, password)
     }
 
     if (!passwordsAreEqual) {
@@ -72,7 +71,7 @@ export class ReviewerService {
 
     const generator = new JWTGenerator()
 
-    const token = generator.generateToken(reviewer.id, reviewer.getUsername())
+    const token = generator.generateToken(reviewer.id, reviewer.username)
 
     return {
       token,
@@ -92,7 +91,7 @@ export class ReviewerService {
 
     this.emailService = new ChangePasswordEmailService()
 
-    await this.emailService.sendEmail(reviewer.getUsername(), reviewer.getEmail())
+    await this.emailService.sendEmail(reviewer.username, reviewer.email)
   }
 
   async forgotPassword(username: string): Promise<void> {
@@ -109,11 +108,11 @@ export class ReviewerService {
 
     const reviewer = await this.reviewerRepository.getReviewerByUsername(username)
     reviewer.generateTempPasswordTime()
-    reviewer.setTemporaryPassword(randomPasswordHash)
+    reviewer.temporaryPassword = randomPasswordHash
 
     await Promise.all([
       this.reviewerRepository.setTemporaryPassword(reviewer),
-      this.emailService.sendEmail(reviewer.getUsername(), randomPassword, reviewer.getEmail())
+      this.emailService.sendEmail(reviewer.username, randomPassword, reviewer.email)
     ])
   }
 
