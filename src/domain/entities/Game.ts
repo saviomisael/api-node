@@ -14,7 +14,7 @@ export class Game extends AggregateRoot {
   })
   genres!: Genre[]
 
-  @OneToMany(() => Review, (review) => review.game)
+  @OneToMany(() => Review, (review) => review.game, { cascade: true })
   reviews!: Review[]
 
   @Column({
