@@ -48,14 +48,17 @@ export class Game extends AggregateRoot {
   ageRating!: AgeRating
 
   addReview(review: Review): void {
+    if (this.reviews === undefined) this.reviews = []
     this.reviews.push(review)
   }
 
   addPlatform(platform: Platform): void {
+    if (this.platforms === undefined) this.platforms = []
     this.platforms.push(platform)
   }
 
   addGenre(genre: Genre): void {
+    if (this.genres === undefined) this.genres = []
     this.genres.push(genre)
   }
 }
