@@ -1,6 +1,6 @@
 import { AgeRating, Game, Genre, Platform, Review } from '$/domain/entities'
 import { Reviewer } from '$/domain/entities/Reviewer'
-import { DBConnection } from '$/infrastructure/DBConnection'
+import { AppDataSource } from '$/infrastructure/AppDataSource'
 import { JWTGenerator } from '$/infrastructure/JWTGenerator'
 import { PasswordEncrypter } from '$/infrastructure/PasswordEncrypter'
 import { RedisClient } from '$/infrastructure/RedisClient'
@@ -31,16 +31,16 @@ const clearCache = async (): Promise<void> => {
 }
 
 const clearData = async (): Promise<void> => {
-  const conn = await DBConnection.getConnection()
+  const gamesRepository = AppDataSource.getRepository(Game)
+  const genresRepository = AppDataSource.getRepository(Genre)
+  const platformsRepository = AppDataSource.getRepository(Platform)
+  const reviewersRepository = AppDataSource.getRepository(Reviewer)
 
   await Promise.all([
-    conn.execute('DELETE FROM games_genres'),
-    conn.execute('DELETE FROM games_platforms'),
-    conn.execute('DELETE FROM reviews'),
-    conn.execute('DELETE FROM games'),
-    conn.execute('DELETE FROM genres'),
-    conn.execute('DELETE FROM platforms'),
-    conn.execute('DELETE FROM reviewers')
+    gamesRepository.createQueryBuilder().delete(),
+    genresRepository.createQueryBuilder().delete(),
+    platformsRepository.createQueryBuilder().delete(),
+    reviewersRepository.createQueryBuilder().delete()
   ])
 
   await clearCache()
