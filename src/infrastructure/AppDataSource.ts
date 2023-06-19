@@ -17,5 +17,5 @@ export const AppDataSource = new DataSource({
   extra: {
     charset: 'utf8mb4_unicode_ci'
   },
-  migrations: ['./src/migrations/*.ts']
+  migrations: ['./src/infrastructure/migrations/*.ts']
 })
