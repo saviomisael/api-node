@@ -17,11 +17,11 @@
     "coverage:docker": "docker compose -f docker-compose.yml run backend npm run coverage",
     "install:dep:docker": "docker compose run backend npm i",
     "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/.bin/typeorm",
-    "typeorm:migration:c": "typeorm migration:create",
-    "typeorm:migration:run:docker": "docker compose run backend npm run typeorm:migration:run",
-    "typeorm:migration:run": "npm run typeorm migration:run -- -d ./src/infrastructure/AppDataSource.ts",
-    "typeorm:migration:revert": "npm run typeorm migration:revert -- -d ./src/infrastructure/AppDataSource.ts",
-    "typeorm:migration:revert:docker": "docker compose run backend npm run typeorm:migration:revert"
+    "migration:c": "typeorm migration:create",
+    "migration:run:docker": "docker compose run backend npm run typeorm:migration:run",
+    "migration:run": "npm run typeorm migration:run -- -d ./src/infrastructure/AppDataSource.ts",
+    "migration:revert": "npm run typeorm migration:revert -- -d ./src/infrastructure/AppDataSource.ts",
+    "migration:revert:docker": "docker compose run backend npm run typeorm:migration:revert"
   },
   "keywords": [],
   "author": "",
