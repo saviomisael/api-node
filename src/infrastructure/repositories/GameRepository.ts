@@ -4,16 +4,15 @@ import { type IGameRepository } from '$/domain/repositories'
 import { Owner } from '$/domain/value-objects/Owner'
 import { type Connection } from 'mysql2/promise'
 import { AppDataSource } from '../AppDataSource'
-import { DBConnection } from '../DBConnection'
 import { maxGamesPerPage } from '../constants'
-import { type ReviewRowData } from '../row-data/ReviewRowData'
 
 export class GameRepository implements IGameRepository {
-  private connection!: Connection
+  private readonly connection!: Connection
   private readonly gameRepository = AppDataSource.getRepository(Game)
   private readonly platformRepository = AppDataSource.getRepository(Platform)
   private readonly genreRepository = AppDataSource.getRepository(Genre)
   private readonly ageRepository = AppDataSource.getRepository(AgeRating)
+  private readonly reviewRepository = AppDataSource.getRepository(Review)
 
   async getById(id: string): Promise<Game | null> {
     // TODO get reviews
@@ -42,7 +41,7 @@ export class GameRepository implements IGameRepository {
     }
 
     for (const genre of game.genres) {
-      const genreFromDB = await this.platformRepository.findOne({ where: { id: genre.id } })
+      const genreFromDB = await this.genreRepository.findOne({ where: { id: genre.id } })
 
       if (genreFromDB != null) {
         genres.push(genreFromDB)
@@ -132,12 +131,7 @@ export class GameRepository implements IGameRepository {
   }
 
   async createReview(review: Review): Promise<void> {
-    this.connection = await DBConnection.getConnection()
-
-    await this.connection.execute(
-      'INSERT INTO reviews (id, description, stars, fk_game, fk_reviewer) VALUES (?, ?, ?, ?, ?)',
-      [review.getId(), review.getDescription(), review.getStars(), review.getGameId(), review.getReviewerId()]
-    )
+    await this.reviewRepository.save(review)
   }
 
   async verifyGameAlreadyExists(id: string): Promise<boolean> {
@@ -147,78 +141,44 @@ export class GameRepository implements IGameRepository {
   }
 
   async updateReview(review: Review): Promise<void> {
-    this.connection = await DBConnection.getConnection()
-
-    await this.connection.execute('UPDATE reviews SET description = ?, stars = ? WHERE id = ?', [
-      review.getDescription(),
-      review.getStars(),
-      review.getId()
-    ])
+    await this.createReview(review)
   }
 
-  async checkReviewExists(reviewId: string): Promise<boolean> {
-    this.connection = await DBConnection.getConnection()
+  async checkReviewExists(id: string): Promise<boolean> {
+    const review = await this.reviewRepository.findOne({ where: { id } })
 
-    const result = await this.connection.execute('SELECT id FROM reviews WHERE id = ?', [reviewId])
-
-    const rows = result[0] as any[]
-
-    return rows.length > 0
+    return review != null
   }
 
-  async getUserForReview(reviewId: string): Promise<string> {
-    this.connection = await DBConnection.getConnection()
+  async getUserForReview(id: string): Promise<string> {
+    const review = await this.reviewRepository.findOne({ where: { id }, relations: { reviewer: true } })
 
-    const result = await this.connection.execute('SELECT fk_reviewer FROM reviews WHERE id = ?', [reviewId])
+    if (review == null) return ''
 
-    const rows = result[0] as any[]
-
-    return rows[0].fk_reviewer
+    return review.reviewer.id
   }
 
   async checkReviewerHasReviewByGame(reviewerId: string, gameId: string): Promise<boolean> {
-    this.connection = await DBConnection.getConnection()
+    const review = await this.reviewRepository.findOne({
+      where: { game: { id: gameId }, reviewer: { id: reviewerId } }
+    })
 
-    const result = await this.connection.execute('SELECT id FROM reviews WHERE fk_game = ? AND fk_reviewer = ?', [
-      gameId,
-      reviewerId
-    ])
-
-    const rows = result[0] as any[]
-
-    return rows.length > 0
+    return review != null
   }
 
   async getReviewsByGame(gameId: string): Promise<Review[]> {
-    this.connection = await DBConnection.getConnection()
+    const reviews = await this.reviewRepository.find({ where: { game: { id: gameId } }, relations: { reviewer: true } })
 
-    const result = await this.connection.execute(
-      `
-      SELECT
-      r.id,
-      r.description,
-      r.stars, r.fk_game,
-      r.fk_reviewer,
-      rv.id AS owner_id,
-      rv.username
-      FROM reviews AS r
-      JOIN reviewers AS rv ON r.fk_reviewer = rv.id
-      WHERE r.fk_game = ?`,
-      [gameId]
-    )
+    if (reviews === undefined) return []
 
-    const rows = result[0] as ReviewRowData[]
-
-    return rows.map((x) => {
+    return reviews.map((x) => {
       const owner = new Owner()
-      owner.id = x.owner_id
-      owner.username = x.username
+      owner.id = x.reviewer.id
+      owner.username = x.reviewer.username
 
-      const review = new Review(x.description, x.stars, x.fk_game, x.fk_reviewer)
-      review.setOwner(owner)
-      review.setId(x.id)
+      x.setOwner(owner)
 
-      return review
+      return x
     })
   }
 }
