@@ -9,7 +9,13 @@ export class GameRowDataMapper {
     age.age = row.age
     age.description = row.age_rating_description
     age.id = row.age_rating_id
-    const game = new Game(row.game_name, row.game_price, row.game_description, new Date(row.releaseDate), age)
+
+    const game = new Game()
+    game.name = row.game_name
+    game.price = row.game_price
+    game.description = row.game_description
+    game.releaseDate = new Date(row.releaseDate)
+    game.ageRating = age
     game.id = row.game_id
 
     for (let index = 0; index < row.genre_ids.split(',').length; index++) {
