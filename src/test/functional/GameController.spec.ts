@@ -259,8 +259,17 @@ describe('GET /api/v1/games/:id 2', () => {
     pipeline.push(reviewerRepository.createReviewer(reviewer1))
     pipeline.push(reviewerRepository.createReviewer(reviewer2))
 
-    const review1 = new Review('Jogo bem legal', 5, game.id, reviewer1.id)
-    const review2 = new Review('Jogo mais que legal', 5, game.id, reviewer2.id)
+    const review1 = new Review()
+    review1.description = 'Jogo bem legal'
+    review1.stars = 5
+    review1.game.id = game.id
+    review1.reviewer.id = reviewer1.id
+
+    const review2 = new Review()
+    review2.description = 'Jogo mais que legal'
+    review2.stars = 5
+    review2.game.id = game.id
+    review2.reviewer.id = reviewer1.id
 
     pipeline.push(gameRepository.createReview(review1))
     pipeline.push(gameRepository.createReview(review2))
@@ -978,13 +987,12 @@ describe('PUT /api/v1/games/reviews/:reviewId', () => {
     game.id = `gameeb4d-3b7d-4bad-9bdd-2b0d7b3dcb6a`
     pipeline.push(gameRepository.create(game))
 
-    const review = new Review(
-      'O jogo é bem legal, mas o cavalo é meio atrapalhado.',
-      4,
-      'gameeb4d-3b7d-4bad-9bdd-2b0d7b3dcb6a',
-      'reviewer-3b7d-4bad-9bdd-2b0d7b3dcb6a'
-    )
-    review.setId('review4d-3b7d-4bad-9bdd-2b0d7b3dcb6a')
+    const review = new Review()
+    review.description = 'Jogo bem legal'
+    review.stars = 5
+    review.game.id = game.id
+    review.reviewer.id = reviewer.id
+    review.id = 'review4d-3b7d-4bad-9bdd-2b0d7b3dcb6a'
     pipeline.push(gameRepository.createReview(review))
 
     await Promise.all([...pipeline])
