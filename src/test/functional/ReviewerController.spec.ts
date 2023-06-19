@@ -507,13 +507,13 @@ describe('GET /api/v1/reviewers/:username', () => {
       platformRepository.create(platform2)
     ]
 
-    const game = new Game(
-      'The Witcher 3',
-      100,
-      'O jogo mais premiado de uma geração agora aprimorado para a atual! Experimente The Witcher 3: Wild Hunt e suas expansões nesta coleção definitiva, com melhor desempenho, visuais aprimorados, novo conteúdo adicional, modo fotografia e muito mais!',
-      new Date(),
-      age
-    )
+    const game = new Game()
+    game.name = 'The Witcher 3'
+    game.price = 100
+    game.description =
+      'O jogo mais premiado de uma geração agora aprimorado para a atual! Experimente The Witcher 3: Wild Hunt e suas expansões nesta coleção definitiva, com melhor desempenho, visuais aprimorados, novo conteúdo adicional, modo fotografia e muito mais!'
+    game.releaseDate = new Date()
+    game.ageRating = age
     game.addGenre(genre1)
     game.addGenre(genre2)
     game.addPlatform(platform1)
@@ -521,13 +521,13 @@ describe('GET /api/v1/reviewers/:username', () => {
     game.id = '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6a'
     pipeline.push(gameRepository.create(game))
 
-    const game2 = new Game(
-      'The Witcher 2',
-      100,
-      'O jogo mais premiado de uma geração agora aprimorado para a atual! Experimente The Witcher 3: Wild Hunt e suas expansões nesta coleção definitiva, com melhor desempenho, visuais aprimorados, novo conteúdo adicional, modo fotografia e muito mais!',
-      new Date(),
-      age
-    )
+    const game2 = new Game()
+    game2.name = 'The Witcher 2'
+    game2.price = 100
+    game2.description =
+      'O jogo mais premiado de uma geração agora aprimorado para a atual! Experimente The Witcher 3: Wild Hunt e suas expansões nesta coleção definitiva, com melhor desempenho, visuais aprimorados, novo conteúdo adicional, modo fotografia e muito mais!'
+    game2.releaseDate = new Date()
+    game2.ageRating = age
     game2.addGenre(genre1)
     game2.addGenre(genre2)
     game2.addPlatform(platform1)
