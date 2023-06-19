@@ -6,10 +6,10 @@ export class ReviewMapper {
 
   static fromDomainToReviewResponse(review: Review): ReviewResponseDTO {
     const reviewResponse = new ReviewResponseDTO()
-    reviewResponse.description = review.getDescription()
-    reviewResponse.id = review.getId()
+    reviewResponse.description = review.description
+    reviewResponse.id = review.id
     reviewResponse.owner = review.getOwner()
-    reviewResponse.star = review.getStars()
+    reviewResponse.star = review.stars
     return reviewResponse
   }
 }
