@@ -1,12 +1,9 @@
 import { Reviewer } from '$/domain/entities/Reviewer'
 import { type IReviewerRepository } from '$/domain/repositories/IReviewerRepository'
 import { ReviewerDetails } from '$/domain/value-objects/ReviewerDetails'
-import { type Connection } from 'mysql2/promise'
 import { AppDataSource } from '../AppDataSource'
-import { DBConnection } from '../DBConnection'
 
 export class ReviewerRepository implements IReviewerRepository {
-  private connection!: Connection
   private readonly repository = AppDataSource.getRepository(Reviewer)
   async createReviewer(reviewer: Reviewer): Promise<void> {
     await this.repository.save(reviewer)
@@ -75,31 +72,23 @@ export class ReviewerRepository implements IReviewerRepository {
   }
 
   async getDetailsByUsername(username: string): Promise<ReviewerDetails> {
-    this.connection = await DBConnection.getConnection()
+    const details = new ReviewerDetails()
+    const reviewer = await this.repository.findOne({
+      select: {
+        createdAtUtcTime: true,
+        username: true,
+        reviews: true
+      },
+      where: { username },
+      relations: { reviews: true }
+    })
 
-    const result = await this.connection.execute(
-      `
-      SELECT
-      r.createdAtUtcTime AS createdAt,
-      r.username,
-      GROUP_CONCAT(rv.id) AS reviews_ids
-      FROM reviewers AS r
-      JOIN reviews AS rv ON rv.fk_reviewer = r.id
-      WHERE r.username = ?
-      GROUP BY r.id
-      `,
-      [username]
-    )
+    if (reviewer == null) return details
 
-    const rows = result[0] as any[]
+    details.createdAt = reviewer.createdAtUtcTime
+    details.reviewsCount = reviewer.reviews.length
+    details.username = reviewer.username
 
-    return rows.map((x: any) => {
-      const details = new ReviewerDetails()
-      details.createdAt = new Date(x.createdAt as string)
-      details.username = x.username
-      details.reviewsCount = x.reviews_ids.split(',').length
-
-      return details
-    })[0]
+    return details
   }
 }
