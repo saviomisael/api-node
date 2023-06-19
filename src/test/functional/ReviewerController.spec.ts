@@ -485,9 +485,11 @@ describe('GET /api/v1/reviewers/:username', () => {
     genre2.name = 'multiplayer 2'
     genre2.id = '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6b'
 
-    const platform1 = new Platform('playstation 1')
+    const platform1 = new Platform()
+    platform1.name = 'playstation 1'
     platform1.id = '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6a'
-    const platform2 = new Platform('playstation 2')
+    const platform2 = new Platform()
+    platform2.name = 'playstation 2'
     platform2.id = '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6b'
 
     const pipeline = [
