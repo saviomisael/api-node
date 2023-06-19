@@ -1,64 +1,53 @@
-import { type AgeRating, type Genre, type Platform } from '$/domain/entities'
+import { AgeRating, type Genre, type Platform } from '$/domain/entities'
 import { AggregateRoot } from '$/domain/entities/AggregateRoot'
+import { Column, Entity, Index, ManyToOne } from 'typeorm'
 import { type Review } from './Review'
+
+@Entity('games')
 export class Game extends AggregateRoot {
-  private readonly platforms!: Set<Platform>
-  private readonly genres!: Set<Genre>
-  private readonly reviews: Review[]
-  constructor(
-    private readonly name: string,
-    private readonly price: number,
-    private readonly description: string,
-    private readonly releaseDate: Date,
-    private readonly ageRating: AgeRating
-  ) {
-    super()
-    this.platforms = new Set()
-    this.genres = new Set()
-    this.reviews = []
-  }
+  private readonly platforms = new Array<Platform>()
+  private readonly genres = new Array<Genre>()
+  private readonly reviews = new Array<Review>()
+
+  @Column({
+    nullable: false,
+    length: 255
+  })
+  @Index('name_games_idx', { synchronize: false })
+  name!: string
+
+  @Column({
+    type: 'numeric',
+    nullable: false,
+    precision: 10,
+    scale: 2
+  })
+  price!: number
+
+  @Column({
+    type: 'text',
+    nullable: false
+  })
+  description!: string
+
+  @Column({
+    type: 'datetime',
+    nullable: false
+  })
+  releaseDate!: Date
+
+  @ManyToOne(() => AgeRating, (age) => age.games)
+  ageRating!: AgeRating
 
   addReview(review: Review): void {
     this.reviews.push(review)
   }
 
-  getReviews(): Review[] {
-    return [...this.reviews]
-  }
-
   addPlatform(platform: Platform): void {
-    this.platforms.add(platform)
+    this.platforms.push(platform)
   }
 
   addGenre(genre: Genre): void {
-    this.genres.add(genre)
-  }
-
-  getName(): string {
-    return this.name
-  }
-
-  getPrice(): number {
-    return this.price
-  }
-
-  getDescription(): string {
-    return this.description
-  }
-
-  getReleaseDate(): Date {
-    return this.releaseDate
-  }
-
-  getAgeRating(): AgeRating {
-    return this.ageRating
-  }
-
-  getPlatforms(): Set<Platform> {
-    return this.platforms
-  }
-
-  getGenres(): Set<Genre> {
-    return this.genres
+    this.genres.push(genre)
   }
 }

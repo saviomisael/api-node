@@ -1,5 +1,6 @@
 import { AggregateRoot } from '$/domain/entities/AggregateRoot'
-import { Column, Entity } from 'typeorm'
+import { Column, Entity, OneToMany } from 'typeorm'
+import { Game } from './Game'
 
 @Entity('ageRatings')
 export class AgeRating extends AggregateRoot {
@@ -15,4 +16,7 @@ export class AgeRating extends AggregateRoot {
     length: 256
   })
   description!: string
+
+  @OneToMany(() => Game, (game) => game.ageRating)
+  games!: Game[]
 }
