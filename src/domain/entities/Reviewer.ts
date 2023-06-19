@@ -1,7 +1,8 @@
 import { newDateUtcTime } from '$/infrastructure/constants'
-import { Column, Entity, Index } from 'typeorm'
+import { Column, Entity, Index, OneToMany } from 'typeorm'
 import { addHoursHelper } from '../helpers/addHoursHelper'
 import { AggregateRoot } from './AggregateRoot'
+import { Review } from './Review'
 
 @Entity('reviewers')
 export class Reviewer extends AggregateRoot {
@@ -39,6 +40,9 @@ export class Reviewer extends AggregateRoot {
   })
   @Index('email_reviewers_idx', { synchronize: false })
   email!: string
+
+  @OneToMany(() => Review, (review) => review.reviewer)
+  reviews!: Review[]
 
   generateTempPasswordTime(): void {
     this.tempPasswordTime = addHoursHelper(newDateUtcTime(), 1)
