@@ -1,4 +1,4 @@
-import { AgeRating } from '$/domain/entities'
+import { AgeRating, Genre, Platform, Reviewer } from '$/domain/entities'
 import dotenv from 'dotenv'
 import { DataSource } from 'typeorm'
 
@@ -13,7 +13,7 @@ export const AppDataSource = new DataSource({
   database: 'gamesdb',
   synchronize: true,
   logging: false,
-  entities: [AgeRating],
+  entities: [AgeRating, Genre, Platform, Reviewer],
   extra: {
     charset: 'utf8mb4_unicode_ci'
   },
