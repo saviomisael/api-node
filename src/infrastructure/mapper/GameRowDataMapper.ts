@@ -24,7 +24,8 @@ export class GameRowDataMapper {
     for (let index = 0; index < row.platform_ids.split(',').length; index++) {
       const platformId = row.platform_ids.split(',')[index]
       const platformName = row.platform_names.split(',')[index]
-      const platform = new Platform(platformName)
+      const platform = new Platform()
+      platform.name = platformName
       platform.id = platformId
       game.addPlatform(platform)
     }
