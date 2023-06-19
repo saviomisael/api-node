@@ -9,7 +9,12 @@ export class GameMapper {
     const ageRating = new AgeRating()
     ageRating.id = dto.ageRatingId
 
-    const game = new Game(dto.name, dto.price, dto.description, new Date(dto.releaseDate), ageRating)
+    const game = new Game()
+    game.name = dto.name
+    game.price = dto.price
+    game.description = dto.description
+    game.releaseDate = new Date(dto.releaseDate)
+    game.ageRating = ageRating
 
     for (const genreId of dto.genres) {
       const genre = new Genre()
@@ -30,7 +35,12 @@ export class GameMapper {
     const ageRating = new AgeRating()
     ageRating.id = dto.ageRatingId
 
-    const game = new Game(dto.name, dto.price, dto.description, new Date(dto.releaseDate), ageRating)
+    const game = new Game()
+    game.name = dto.name
+    game.price = dto.price
+    game.description = dto.description
+    game.releaseDate = new Date(dto.releaseDate)
+    game.ageRating = ageRating
     game.id = dto.id
 
     for (const genreId of dto.genres) {
