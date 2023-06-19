@@ -11,7 +11,10 @@ export class PlatformService {
 
     if (isAlreadyCreated) return null
 
-    await this.repository.create(new Platform(platformName))
+    const platform = new Platform()
+    platform.name = platformName
+
+    await this.repository.create(platform)
 
     const newPlatform = await this.repository.getByName(platformName)
 
