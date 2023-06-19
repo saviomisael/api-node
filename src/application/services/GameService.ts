@@ -142,15 +142,15 @@ export class GameService {
   }
 
   async createReview(review: Review): Promise<void> {
-    const gameExists = await this.gameRepository.verifyGameAlreadyExists(review.getGameId())
+    const gameExists = await this.gameRepository.verifyGameAlreadyExists(review.game.id)
 
     if (!gameExists) {
       throw new GameNotExistsError()
     }
 
     const reviewerAlreadyHasReview = await this.gameRepository.checkReviewerHasReviewByGame(
-      review.getReviewerId(),
-      review.getGameId()
+      review.reviewer.id,
+      review.game.id
     )
 
     if (reviewerAlreadyHasReview) {
@@ -173,8 +173,10 @@ export class GameService {
       throw new ReviewOwnerError()
     }
 
-    const review = new Review(description, stars, '', '')
-    review.setId(reviewId)
+    const review = new Review()
+    review.description = description
+    review.stars = stars
+    review.id = reviewId
 
     await this.gameRepository.updateReview(review)
   }
