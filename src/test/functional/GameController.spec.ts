@@ -107,9 +107,11 @@ describe('POST /api/v1/games 2', () => {
     const genreRepository = new GenreRepository()
     const platformRepository = new PlatformRepository()
 
-    const genre1 = new Genre('action 1')
+    const genre1 = new Genre()
+    genre1.name = 'action 1'
     genre1.id = '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6a'
-    const genre2 = new Genre('action 2')
+    const genre2 = new Genre()
+    genre2.name = 'action 2'
     genre2.id = '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6b'
 
     const platform1 = new Platform('playstation 1')
@@ -202,12 +204,16 @@ describe('GET /api/v1/games/:id 2', () => {
     const gameRepository = new GameRepository()
     const reviewerRepository = new ReviewerRepository()
 
-    const age = new AgeRating(allAges.body.data[0].age as string, allAges.body.data[0].description as string)
+    const age = new AgeRating()
+    age.age = allAges.body.data[0].age as string
+    age.description = allAges.body.data[0].description as string
     age.id = allAges.body.data[0].id
 
-    const genre1 = new Genre('action 1')
+    const genre1 = new Genre()
+    genre1.name = 'action 1'
     genre1.id = '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6a'
-    const genre2 = new Genre('action 2')
+    const genre2 = new Genre()
+    genre2.name = 'action 2'
     genre2.id = '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6b'
 
     const platform1 = new Platform('playstation 1')
@@ -308,12 +314,16 @@ describe('PUT /api/v1/games/:id 2', () => {
     const platformRepository = new PlatformRepository()
     const gameRepository = new GameRepository()
 
-    const age = new AgeRating(allAges.body.data[0].age as string, allAges.body.data[0].description as string)
+    const age = new AgeRating()
+    age.age = allAges.body.data[0].age as string
+    age.description = allAges.body.data[0].description as string
     age.id = allAges.body.data[0].id
 
-    const genre1 = new Genre('action 4')
+    const genre1 = new Genre()
+    genre1.name = 'action 4'
     genre1.id = '9b1deb4d-3b7d-4baa-9bdd-2b0d7b3dcb6a'
-    const genre2 = new Genre('action 5')
+    const genre2 = new Genre()
+    genre2.name = 'action 5'
     genre2.id = '9b1deb4d-3b7d-4baa-9bdd-2b0d7b3dcb6b'
 
     const platform1 = new Platform('playstation 5')
@@ -443,12 +453,16 @@ describe('DELETE /api/v1/games/:id 2', () => {
     const platformRepository = new PlatformRepository()
     const gameRepository = new GameRepository()
 
-    const age = new AgeRating(allAges.body.data[0].age as string, allAges.body.data[0].description as string)
+    const age = new AgeRating()
+    age.age = allAges.body.data[0].age as string
+    age.description = allAges.body.data[0].description as string
     age.id = allAges.body.data[0].id
 
-    const genre1 = new Genre('action 4')
+    const genre1 = new Genre()
+    genre1.name = 'action 4'
     genre1.id = '9b1deb4d-3b7d-4baa-9bdd-2b0d7b3dcb6a'
-    const genre2 = new Genre('action 5')
+    const genre2 = new Genre()
+    genre2.name = 'action 5'
     genre2.id = '9b1deb4d-3b7d-4baa-9bdd-2b0d7b3dcb6b'
 
     const platform1 = new Platform('playstation 5')
@@ -530,13 +544,17 @@ describe('GET /api/v1/games 2', () => {
     const platformRepository = new PlatformRepository()
     const gameRepository = new GameRepository()
 
-    const age = new AgeRating(allAges.body.data[0].age as string, allAges.body.data[0].description as string)
+    const age = new AgeRating()
+    age.age = allAges.body.data[0].age as string
+    age.description = allAges.body.data[0].description as string
     age.id = allAges.body.data[0].id
 
-    const genre1 = new Genre('multiplayer')
-    genre1.id = '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6a'
-    const genre2 = new Genre('Mundo Aberto')
-    genre2.id = '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6b'
+    const genre1 = new Genre()
+    genre1.name = 'multiplayer'
+    genre1.id = '9b1deb4d-3b7d-4baa-9bdd-2b0d7b3dcb6a'
+    const genre2 = new Genre()
+    genre2.name = 'Mundo aberto'
+    genre2.id = '9b1deb4d-3b7d-4baa-9bdd-2b0d7b3dcb6b'
 
     const platform1 = new Platform('playstation')
     platform1.id = '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6a'
@@ -776,10 +794,13 @@ describe('POST /api/v1/games/:gameId/reviews', () => {
     const platformRepository = new PlatformRepository()
     const gameRepository = new GameRepository()
 
-    const age = new AgeRating(allAges.body.data[0].age as string, allAges.body.data[0].description as string)
+    const age = new AgeRating()
+    age.age = allAges.body.data[0].age as string
+    age.description = allAges.body.data[0].description as string
     age.id = allAges.body.data[0].id
 
-    const genre1 = new Genre('multiplayer')
+    const genre1 = new Genre()
+    genre1.name = 'multiplayer'
     genre1.id = '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6a'
 
     const platform1 = new Platform('playstation')
@@ -899,10 +920,13 @@ describe('PUT /api/v1/games/reviews/:reviewId', () => {
     const platformRepository = new PlatformRepository()
     const gameRepository = new GameRepository()
 
-    const age = new AgeRating(allAges.body.data[0].age as string, allAges.body.data[0].description as string)
+    const age = new AgeRating()
+    age.age = allAges.body.data[0].age as string
+    age.description = allAges.body.data[0].description as string
     age.id = allAges.body.data[0].id
 
-    const genre = new Genre('multiplayer')
+    const genre = new Genre()
+    genre.name = 'multiplayer'
     genre.id = 'genreb4d-3b7d-4bad-9bdd-2b0d7b3dcb6a'
 
     const platform = new Platform('playstation')
