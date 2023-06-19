@@ -24,7 +24,8 @@ export class Migrations1687134705115 implements MigrationInterface {
       'platforms',
       new TableIndex({
         columnNames: ['name'],
-        isFulltext: true
+        isFulltext: true,
+        name: 'platform_name_idx'
       })
     )
   }
