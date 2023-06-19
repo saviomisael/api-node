@@ -543,8 +543,17 @@ describe('GET /api/v1/reviewers/:username', () => {
 
     pipeline.push(reviewerRepository.createReviewer(reviewer1))
 
-    const review1 = new Review('Jogo bem legal', 5, game.id, reviewer1.id)
-    const review2 = new Review('Jogo mais que legal', 5, game2.id, reviewer1.id)
+    const review1 = new Review()
+    review1.description = 'Jogo bem legal'
+    review1.stars = 5
+    review1.game.id = game.id
+    review1.reviewer.id = reviewer1.id
+
+    const review2 = new Review()
+    review2.description = 'Jogo mais que legal'
+    review2.stars = 5
+    review2.game.id = game2.id
+    review2.reviewer.id = reviewer1.id
 
     pipeline.push(gameRepository.createReview(review1))
     pipeline.push(gameRepository.createReview(review2))
