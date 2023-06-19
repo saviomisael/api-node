@@ -12,7 +12,8 @@ export class GenreService {
       return null
     }
 
-    const genre = new Genre(genreName)
+    const genre = new Genre()
+    genre.name = genreName
 
     await this.repository.createGenre(genre)
 
