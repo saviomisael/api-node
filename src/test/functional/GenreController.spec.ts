@@ -175,11 +175,14 @@ describe('DELETE /api/v1/genres/:id 2', () => {
     const platformRepository = new PlatformRepository()
     const gameRepository = new GameRepository()
 
-    const age = new AgeRating(allAges.body.data[0].age as string, allAges.body.data[0].description as string)
+    const age = new AgeRating()
+    age.age = allAges.body.data[0].age as string
+    age.description = allAges.body.data[0].description as string
     age.id = allAges.body.data[0].id
 
-    const genre = new Genre('genre_x')
-    genre.id = '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d'
+    const genre = new Genre()
+    genre.name = 'multiplayer'
+    genre.id = 'genreb4d-3b7d-4bad-9bdd-2b0d7b3dcb6a'
 
     const platform = new Platform('platform_x')
     platform.id = '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d'
