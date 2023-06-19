@@ -1,19 +1,19 @@
-import { Platform } from '$/domain/entities'
+import { Game, Platform } from '$/domain/entities'
 import { type IPlatformRepository } from '$/domain/repositories'
 import { type Connection } from 'mysql2/promise'
 import { AppDataSource } from '../AppDataSource'
-import { DBConnection } from '../DBConnection'
 
 export class PlatformRepository implements IPlatformRepository {
-  private connection!: Connection
-  private readonly repository = AppDataSource.getRepository(Platform)
+  private readonly connection!: Connection
+  private readonly platformRepository = AppDataSource.getRepository(Platform)
+  private readonly gameRepository = AppDataSource.getRepository(Game)
 
   async create(platform: Platform): Promise<void> {
-    await this.repository.save(platform)
+    await this.platformRepository.save(platform)
   }
 
   async getByName(name: string): Promise<Platform | null> {
-    return await this.repository.findOne({
+    return await this.platformRepository.findOne({
       where: {
         name
       }
@@ -21,11 +21,11 @@ export class PlatformRepository implements IPlatformRepository {
   }
 
   async deletePlatform(id: string): Promise<void> {
-    await this.repository.delete({ id })
+    await this.platformRepository.delete({ id })
   }
 
   async getById(id: string): Promise<Platform | null> {
-    return await this.repository.findOne({
+    return await this.platformRepository.findOne({
       where: {
         id
       }
@@ -33,7 +33,7 @@ export class PlatformRepository implements IPlatformRepository {
   }
 
   async getAll(): Promise<Platform[]> {
-    const platforms = await this.repository.find()
+    const platforms = await this.platformRepository.find()
 
     if (platforms === undefined) return []
 
@@ -41,7 +41,7 @@ export class PlatformRepository implements IPlatformRepository {
   }
 
   async platformIdExists(id: string): Promise<boolean> {
-    const platform = await this.repository.findOne({
+    const platform = await this.platformRepository.findOne({
       where: {
         id
       }
@@ -50,15 +50,9 @@ export class PlatformRepository implements IPlatformRepository {
     return platform != null
   }
 
-  async hasRelatedGames(platformId: string): Promise<boolean> {
-    this.connection = await DBConnection.getConnection()
+  async hasRelatedGames(id: string): Promise<boolean> {
+    const games = await this.gameRepository.find({ where: { platforms: { id } } })
 
-    const result = await this.connection.execute('SELECT fk_platform FROM games_platforms WHERE fk_platform = ?', [
-      platformId
-    ])
-
-    const rows = result[0] as any[]
-
-    return rows.length > 0
+    return games.length > 0
   }
 }
