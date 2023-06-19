@@ -9,13 +9,13 @@ export class GameMapper {
   static fromEntityToGameResponse(game: Game): GameResponseDTO {
     const gameDTO = new GameResponseDTO()
     gameDTO.id = game.id
-    gameDTO.ageRating = game.getAgeRating()
-    gameDTO.description = game.getDescription()
-    gameDTO.genres = [...game.getGenres()]
-    gameDTO.name = game.getName()
-    gameDTO.platforms = [...game.getPlatforms()]
-    gameDTO.price = game.getPrice()
-    gameDTO.releaseDate = game.getReleaseDate().toISOString()
+    gameDTO.ageRating = game.ageRating
+    gameDTO.description = game.description
+    gameDTO.genres = game.genres
+    gameDTO.name = game.name
+    gameDTO.platforms = game.platforms
+    gameDTO.price = game.price
+    gameDTO.releaseDate = game.releaseDate.toISOString()
 
     return gameDTO
   }
@@ -25,7 +25,7 @@ export class GameMapper {
 
     return {
       ...response,
-      reviews: game.getReviews().map((x) => ReviewMapper.fromDomainToReviewResponse(x))
+      reviews: game.reviews.map((x) => ReviewMapper.fromDomainToReviewResponse(x))
     }
   }
 }
