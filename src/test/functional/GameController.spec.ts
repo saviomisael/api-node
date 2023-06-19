@@ -232,13 +232,14 @@ describe('GET /api/v1/games/:id 2', () => {
       platformRepository.create(platform2)
     ]
 
-    const game = new Game(
-      'The Witcher 3',
-      100,
-      'O jogo mais premiado de uma geração agora aprimorado para a atual! Experimente The Witcher 3: Wild Hunt e suas expansões nesta coleção definitiva, com melhor desempenho, visuais aprimorados, novo conteúdo adicional, modo fotografia e muito mais!',
-      new Date(),
-      age
-    )
+    const game = new Game()
+    game.name = 'The Witcher 3'
+    game.price = 100
+    game.description =
+      'O jogo mais premiado de uma geração agora aprimorado para a atual! Experimente The Witcher 3: Wild Hunt e suas expansões nesta coleção definitiva, com melhor desempenho, visuais aprimorados, novo conteúdo adicional, modo fotografia e muito mais!'
+    game.releaseDate = new Date()
+    game.ageRating = age
+
     game.addGenre(genre1)
     game.addGenre(genre2)
     game.addPlatform(platform1)
@@ -246,8 +247,14 @@ describe('GET /api/v1/games/:id 2', () => {
     game.id = '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6a'
     pipeline.push(gameRepository.create(game))
 
-    const reviewer1 = new Reviewer('saviomisael', await PasswordEncrypter.encrypt('321aBc@#'), 'savioth9@gmail.com')
-    const reviewer2 = new Reviewer('saviomisael2', await PasswordEncrypter.encrypt('321aBc@#'), 'savioth9@email.com')
+    const reviewer1 = new Reviewer()
+    reviewer1.username = 'saviomisael'
+    reviewer1.password = await PasswordEncrypter.encrypt('321aBc@#')
+    reviewer1.email = 'savioth9@email.com'
+    const reviewer2 = new Reviewer()
+    reviewer2.username = 'saviomisael2'
+    reviewer2.password = await PasswordEncrypter.encrypt('321aBc@#')
+    reviewer2.email = 'saviao@email.com'
 
     pipeline.push(reviewerRepository.createReviewer(reviewer1))
     pipeline.push(reviewerRepository.createReviewer(reviewer2))
@@ -344,13 +351,13 @@ describe('PUT /api/v1/games/:id 2', () => {
       platformRepository.create(platform2)
     ]
 
-    const game = new Game(
-      'The Witcher 3',
-      100,
-      'O jogo mais premiado de uma geração agora aprimorado para a atual! Experimente The Witcher 3: Wild Hunt e suas expansões nesta coleção definitiva, com melhor desempenho, visuais aprimorados, novo conteúdo adicional, modo fotografia e muito mais!',
-      new Date(),
-      age
-    )
+    const game = new Game()
+    game.name = 'The Witcher 3'
+    game.price = 100
+    game.description =
+      'O jogo mais premiado de uma geração agora aprimorado para a atual! Experimente The Witcher 3: Wild Hunt e suas expansões nesta coleção definitiva, com melhor desempenho, visuais aprimorados, novo conteúdo adicional, modo fotografia e muito mais!'
+    game.releaseDate = new Date()
+    game.ageRating = age
     game.addGenre(genre1)
     game.addGenre(genre2)
     game.addPlatform(platform1)
@@ -485,13 +492,13 @@ describe('DELETE /api/v1/games/:id 2', () => {
       platformRepository.create(platform2)
     ]
 
-    const game = new Game(
-      'The Witcher 3',
-      100,
-      'O jogo mais premiado de uma geração agora aprimorado para a atual! Experimente The Witcher 3: Wild Hunt e suas expansões nesta coleção definitiva, com melhor desempenho, visuais aprimorados, novo conteúdo adicional, modo fotografia e muito mais!',
-      new Date(),
-      age
-    )
+    const game = new Game()
+    game.name = 'The Witcher 3'
+    game.price = 100
+    game.description =
+      'O jogo mais premiado de uma geração agora aprimorado para a atual! Experimente The Witcher 3: Wild Hunt e suas expansões nesta coleção definitiva, com melhor desempenho, visuais aprimorados, novo conteúdo adicional, modo fotografia e muito mais!'
+    game.releaseDate = new Date()
+    game.ageRating = age
     game.addGenre(genre1)
     game.addGenre(genre2)
     game.addPlatform(platform1)
@@ -639,13 +646,13 @@ describe('GET /api/v1/games 2', () => {
     for (let index = 0; index < lastCharacters.length; index++) {
       const letter = lastCharacters[index]
 
-      const game = new Game(
-        gamesNames[index],
-        100,
-        'O jogo mais premiado de uma geração agora aprimorado para a atual! Experimente The Witcher 3: Wild Hunt e suas expansões nesta coleção definitiva, com melhor desempenho, visuais aprimorados, novo conteúdo adicional, modo fotografia e muito mais!',
-        new Date(2020, 5, index + 1),
-        age
-      )
+      const game = new Game()
+      game.name = gamesNames[index]
+      game.price = 100
+      game.description =
+        'O jogo mais premiado de uma geração agora aprimorado para a atual! Experimente The Witcher 3: Wild Hunt e suas expansões nesta coleção definitiva, com melhor desempenho, visuais aprimorados, novo conteúdo adicional, modo fotografia e muito mais!'
+      game.releaseDate = new Date(2020, 5, index + 1)
+      game.ageRating = age
 
       const genre = index % 2 === 0 ? genre1 : genre2
       const platform = index % 2 === 0 ? platform1 : platform2
@@ -820,18 +827,21 @@ describe('POST /api/v1/games/:gameId/reviews', () => {
     const pipeline = [genreRepository.createGenre(genre1), platformRepository.create(platform1)]
 
     const reviewerRepository = new ReviewerRepository()
-    const reviewer = new Reviewer('saviomisael', await PasswordEncrypter.encrypt('123aBc#@'), 'savio@email.com')
+    const reviewer = new Reviewer()
+    reviewer.username = 'saviomisael'
+    reviewer.password = await PasswordEncrypter.encrypt('321aBc@#')
+    reviewer.email = 'savioth9@email.com'
     reviewer.id = '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6a'
 
     pipeline.push(reviewerRepository.createReviewer(reviewer))
 
-    const game = new Game(
-      'The Witcher 3',
-      100,
-      'O jogo mais premiado de uma geração agora aprimorado para a atual! Experimente The Witcher 3: Wild Hunt e suas expansões nesta coleção definitiva, com melhor desempenho, visuais aprimorados, novo conteúdo adicional, modo fotografia e muito mais!',
-      new Date(2020, 5, 1),
-      age
-    )
+    const game = new Game()
+    game.name = 'The Witcher 3'
+    game.price = 100
+    game.description =
+      'O jogo mais premiado de uma geração agora aprimorado para a atual! Experimente The Witcher 3: Wild Hunt e suas expansões nesta coleção definitiva, com melhor desempenho, visuais aprimorados, novo conteúdo adicional, modo fotografia e muito mais!'
+    game.releaseDate = new Date(2020, 5, 1)
+    game.ageRating = age
 
     game.addGenre(genre1)
     game.addPlatform(platform1)
@@ -947,18 +957,21 @@ describe('PUT /api/v1/games/reviews/:reviewId', () => {
     const pipeline = [genreRepository.createGenre(genre), platformRepository.create(platform)]
 
     const reviewerRepository = new ReviewerRepository()
-    const reviewer = new Reviewer('saviomisael', await PasswordEncrypter.encrypt('123aBc#@'), 'savio@email.com')
+    const reviewer = new Reviewer()
+    reviewer.username = 'saviomisael'
+    reviewer.password = await PasswordEncrypter.encrypt('321aBc@#')
+    reviewer.email = 'savioth9@email.com'
     reviewer.id = 'reviewer-3b7d-4bad-9bdd-2b0d7b3dcb6a'
 
     pipeline.push(reviewerRepository.createReviewer(reviewer))
 
-    const game = new Game(
-      'The Witcher 3',
-      100,
-      'O jogo mais premiado de uma geração agora aprimorado para a atual! Experimente The Witcher 3: Wild Hunt e suas expansões nesta coleção definitiva, com melhor desempenho, visuais aprimorados, novo conteúdo adicional, modo fotografia e muito mais!',
-      new Date(2020, 5, 1),
-      age
-    )
+    const game = new Game()
+    game.name = 'The Witcher 3'
+    game.price = 100
+    game.description =
+      'O jogo mais premiado de uma geração agora aprimorado para a atual! Experimente The Witcher 3: Wild Hunt e suas expansões nesta coleção definitiva, com melhor desempenho, visuais aprimorados, novo conteúdo adicional, modo fotografia e muito mais!'
+    game.releaseDate = new Date(2020, 5, 1)
+    game.ageRating = age
 
     game.addGenre(genre)
     game.addPlatform(platform)
