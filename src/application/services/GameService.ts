@@ -29,13 +29,13 @@ export class GameService {
   private cacheService!: CacheService<GameResponseDTO[]>
 
   async createGame(game: Game): Promise<Game | null> {
-    const ageIdExists = await this.ageRepository.ageIdExists(game.getAgeRating().id)
+    const ageIdExists = await this.ageRepository.ageIdExists(game.ageRating.id)
 
     if (!ageIdExists) {
       throw new AgeNotExistsError()
     }
 
-    for (const platform of game.getPlatforms()) {
+    for (const platform of game.platforms) {
       const platformExists = await this.platformRepository.platformIdExists(platform.id)
 
       if (!platformExists) {
@@ -43,7 +43,7 @@ export class GameService {
       }
     }
 
-    for (const genre of game.getGenres()) {
+    for (const genre of game.genres) {
       const genreExists = await this.genreRepository.getGenreById(genre.id)
 
       if (genreExists == null) {
@@ -65,13 +65,13 @@ export class GameService {
   }
 
   async updateGameById(game: Game): Promise<Game | null> {
-    const ageIdExists = await this.ageRepository.ageIdExists(game.getAgeRating().id)
+    const ageIdExists = await this.ageRepository.ageIdExists(game.ageRating.id)
 
     if (!ageIdExists) {
       throw new AgeNotExistsError()
     }
 
-    for (const platform of game.getPlatforms()) {
+    for (const platform of game.platforms) {
       const platformExists = await this.platformRepository.platformIdExists(platform.id)
 
       if (!platformExists) {
@@ -79,7 +79,7 @@ export class GameService {
       }
     }
 
-    for (const genre of game.getGenres()) {
+    for (const genre of game.genres) {
       const genreExists = await this.genreRepository.getGenreById(genre.id)
 
       if (genreExists == null) {
