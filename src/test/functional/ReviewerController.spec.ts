@@ -473,12 +473,16 @@ describe('GET /api/v1/reviewers/:username', () => {
     const gameRepository = new GameRepository()
     const reviewerRepository = new ReviewerRepository()
 
-    const age = new AgeRating(allAges.body.data[0].age as string, allAges.body.data[0].description as string)
+    const age = new AgeRating()
+    age.age = allAges.body.data[0].age as string
+    age.description = allAges.body.data[0].description as string
     age.id = allAges.body.data[0].id
 
-    const genre1 = new Genre('action 1')
+    const genre1 = new Genre()
+    genre1.name = 'multiplayer'
     genre1.id = '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6a'
-    const genre2 = new Genre('action 2')
+    const genre2 = new Genre()
+    genre2.name = 'multiplayer 2'
     genre2.id = '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6b'
 
     const platform1 = new Platform('playstation 1')
