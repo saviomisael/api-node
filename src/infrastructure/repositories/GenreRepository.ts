@@ -1,61 +1,45 @@
-import { type Genre } from '$/domain/entities'
+import { Genre } from '$/domain/entities'
 import { type IGenreRepository } from '$/domain/repositories'
 import { type Connection } from 'mysql2/promise'
+import { AppDataSource } from '../AppDataSource'
 import { DBConnection } from '../DBConnection'
 
 export class GenreRepository implements IGenreRepository {
   private connection!: Connection
+  private readonly repository = AppDataSource.getRepository(Genre)
 
   async createGenre(genre: Genre): Promise<void> {
-    this.connection = await DBConnection.getConnection()
-
-    await this.connection.execute('INSERT INTO genres (id, name) VALUES (?, ?)', [genre.id, genre.getName()])
+    await this.repository.save(genre)
   }
 
   async getGenreById(id: string): Promise<Genre | null> {
-    this.connection = await DBConnection.getConnection()
-
-    const result = await this.connection.execute('SELECT * FROM genres WHERE id = ?', [id])
-
-    const rows = result[0] as Genre[]
-
-    if (rows.length === 0) return null
-
-    const [data] = rows
-
-    return data
-  }
-
-  async getGenreByName(name: string): Promise<Genre | null> {
-    this.connection = await DBConnection.getConnection()
-
-    const result = await this.connection.execute('SELECT * FROM genres WHERE name = ?', [name])
-
-    const rows = result[0] as Genre[]
-
-    if (rows.length === 0) {
-      return null
-    }
-
-    const [genre] = rows
+    const genre = await this.repository.findOne({
+      where: {
+        id
+      }
+    })
 
     return genre
   }
 
+  async getGenreByName(name: string): Promise<Genre | null> {
+    return await this.repository.findOne({
+      where: {
+        name
+      }
+    })
+  }
+
   async getAll(): Promise<Genre[]> {
-    this.connection = await DBConnection.getConnection()
+    const genres = await this.repository.find()
 
-    const result = await this.connection.execute('SELECT * FROM genres')
+    if (genres === undefined) return []
 
-    const data = result[0] as Genre[]
-
-    return data
+    return genres
   }
 
   async deleteGenreById(id: string): Promise<void> {
-    this.connection = await DBConnection.getConnection()
-
-    await this.connection.execute('DELETE FROM genres WHERE id = ?', [id])
+    await this.repository.delete({ id })
   }
 
   async hasRelatedGames(genreId: string): Promise<boolean> {
