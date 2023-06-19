@@ -8,11 +8,11 @@ import { Review } from './Review'
 export class Reviewer extends AggregateRoot {
   @Column({
     length: 60,
-    default: "''"
+    default: ''
   })
   temporaryPassword!: string
 
-  @Column({ type: 'datetime', nullable: true, default: 'null' })
+  @Column({ type: 'datetime', nullable: true, default: null })
   tempPasswordTime!: Date | null
 
   @Column({
