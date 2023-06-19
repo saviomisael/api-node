@@ -1,71 +1,53 @@
-import { type Platform } from '$/domain/entities'
+import { Platform } from '$/domain/entities'
 import { type IPlatformRepository } from '$/domain/repositories'
 import { type Connection } from 'mysql2/promise'
+import { AppDataSource } from '../AppDataSource'
 import { DBConnection } from '../DBConnection'
 
 export class PlatformRepository implements IPlatformRepository {
   private connection!: Connection
+  private readonly repository = AppDataSource.getRepository(Platform)
 
   async create(platform: Platform): Promise<void> {
-    this.connection = await DBConnection.getConnection()
-
-    await this.connection.execute('INSERT INTO platforms (id, name) VALUES (?, ?)', [platform.id, platform.getName()])
+    await this.repository.save(platform)
   }
 
   async getByName(name: string): Promise<Platform | null> {
-    this.connection = await DBConnection.getConnection()
-
-    const result = await this.connection.execute('SELECT * FROM platforms WHERE name = ?', [name])
-
-    const rows = result[0] as Platform[]
-
-    if (rows.length === 0) return null
-
-    const [data] = rows
-
-    return data
+    return await this.repository.findOne({
+      where: {
+        name
+      }
+    })
   }
 
-  async deletePlatform(platformId: string): Promise<void> {
-    this.connection = await DBConnection.getConnection()
-
-    await this.connection.execute('DELETE FROM platforms WHERE id = ?', [platformId])
+  async deletePlatform(id: string): Promise<void> {
+    await this.repository.delete({ id })
   }
 
   async getById(id: string): Promise<Platform | null> {
-    this.connection = await DBConnection.getConnection()
-
-    const result = await this.connection.execute('SELECT * FROM platforms WHERE id = ?', [id])
-
-    const rows = result[0] as Platform[]
-
-    const exists = rows.length > 0
-
-    if (!exists) return null
-
-    const [data] = rows
-
-    return data
+    return await this.repository.findOne({
+      where: {
+        id
+      }
+    })
   }
 
   async getAll(): Promise<Platform[]> {
-    this.connection = await DBConnection.getConnection()
+    const platforms = await this.repository.find()
 
-    const result = await this.connection.execute('SELECT * FROM platforms')
-
-    const platforms = result[0] as Platform[]
+    if (platforms === undefined) return []
 
     return platforms
   }
 
-  async platformIdExists(platformId: string): Promise<boolean> {
-    this.connection = await DBConnection.getConnection()
+  async platformIdExists(id: string): Promise<boolean> {
+    const platform = await this.repository.findOne({
+      where: {
+        id
+      }
+    })
 
-    const result = await this.connection.execute('SELECT id FROM platforms WHERE id = ?', [platformId])
-
-    const rows = result[0] as any[]
-
-    return rows.length > 0
+    return platform != null
   }
 
   async hasRelatedGames(platformId: string): Promise<boolean> {
