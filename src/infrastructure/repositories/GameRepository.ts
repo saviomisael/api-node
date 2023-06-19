@@ -15,13 +15,13 @@ export class GameRepository implements IGameRepository {
   private readonly reviewRepository = AppDataSource.getRepository(Review)
 
   async getById(id: string): Promise<Game | null> {
-    // TODO get reviews
     const game = await this.gameRepository.findOne({
       where: { id },
       relations: {
         ageRating: true,
         platforms: true,
-        genres: true
+        genres: true,
+        reviews: true
       }
     })
 
