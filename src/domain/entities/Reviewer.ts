@@ -41,7 +41,7 @@ export class Reviewer extends AggregateRoot {
   @Index('email_reviewers_idx', { synchronize: false })
   email!: string
 
-  @OneToMany(() => Review, (review) => review.reviewer)
+  @OneToMany(() => Review, (review) => review.reviewer, { cascade: true })
   reviews!: Review[]
 
   generateTempPasswordTime(): void {

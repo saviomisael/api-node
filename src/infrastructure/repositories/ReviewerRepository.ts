@@ -62,8 +62,6 @@ export class ReviewerRepository implements IReviewerRepository {
   }
 
   async deleteReviewerByUsername(username: string): Promise<void> {
-    // TODO delete reviews by reviewer
-
     await this.repository.delete({ username })
   }
 
