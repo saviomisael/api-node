@@ -6,13 +6,13 @@ export class GameMapper {
   private constructor() {}
 
   static toEntity(dto: CreateGameDTO): Game {
-    const ageRating = new AgeRating('', '')
+    const ageRating = new AgeRating()
     ageRating.id = dto.ageRatingId
 
     const game = new Game(dto.name, dto.price, dto.description, new Date(dto.releaseDate), ageRating)
 
     for (const genreId of dto.genres) {
-      const genre = new Genre('')
+      const genre = new Genre()
       genre.id = genreId
       game.addGenre(genre)
     }
@@ -27,14 +27,14 @@ export class GameMapper {
   }
 
   static fromUpdateGameDtoToEntity(dto: UpdateGameDTO): Game {
-    const ageRating = new AgeRating('', '')
+    const ageRating = new AgeRating()
     ageRating.id = dto.ageRatingId
 
     const game = new Game(dto.name, dto.price, dto.description, new Date(dto.releaseDate), ageRating)
     game.id = dto.id
 
     for (const genreId of dto.genres) {
-      const genre = new Genre('')
+      const genre = new Genre()
       genre.id = genreId
       game.addGenre(genre)
     }
