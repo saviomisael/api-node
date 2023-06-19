@@ -114,9 +114,11 @@ describe('POST /api/v1/games 2', () => {
     genre2.name = 'action 2'
     genre2.id = '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6b'
 
-    const platform1 = new Platform('playstation 1')
+    const platform1 = new Platform()
+    platform1.name = 'playstation 1'
     platform1.id = '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6a'
-    const platform2 = new Platform('playstation 2')
+    const platform2 = new Platform()
+    platform2.name = 'playstation 2'
     platform2.id = '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6b'
 
     const pipeline = [
@@ -216,9 +218,11 @@ describe('GET /api/v1/games/:id 2', () => {
     genre2.name = 'action 2'
     genre2.id = '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6b'
 
-    const platform1 = new Platform('playstation 1')
+    const platform1 = new Platform()
+    platform1.name = 'playstation 1'
     platform1.id = '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6a'
-    const platform2 = new Platform('playstation 2')
+    const platform2 = new Platform()
+    platform2.name = 'playstation 2'
     platform2.id = '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6b'
 
     const pipeline = [
@@ -326,9 +330,11 @@ describe('PUT /api/v1/games/:id 2', () => {
     genre2.name = 'action 5'
     genre2.id = '9b1deb4d-3b7d-4baa-9bdd-2b0d7b3dcb6b'
 
-    const platform1 = new Platform('playstation 5')
+    const platform1 = new Platform()
+    platform1.name = 'playstation 5'
     platform1.id = '9b1deb4d-3b7d-4baa-9bdd-2b0d7b3dcb6a'
-    const platform2 = new Platform('playstation 6')
+    const platform2 = new Platform()
+    platform2.name = 'playstation 6'
     platform2.id = '9b1deb4d-3b7d-4baa-9bdd-2b0d7b3dcb6b'
 
     const pipeline = [
@@ -465,9 +471,11 @@ describe('DELETE /api/v1/games/:id 2', () => {
     genre2.name = 'action 5'
     genre2.id = '9b1deb4d-3b7d-4baa-9bdd-2b0d7b3dcb6b'
 
-    const platform1 = new Platform('playstation 5')
+    const platform1 = new Platform()
+    platform1.name = 'playstation 5'
     platform1.id = '9b1deb4d-3b7d-4baa-9bdd-2b0d7b3dcb6a'
-    const platform2 = new Platform('playstation 6')
+    const platform2 = new Platform()
+    platform2.name = 'playstation 6'
     platform2.id = '9b1deb4d-3b7d-4baa-9bdd-2b0d7b3dcb6b'
 
     const pipeline = [
@@ -556,9 +564,11 @@ describe('GET /api/v1/games 2', () => {
     genre2.name = 'Mundo aberto'
     genre2.id = '9b1deb4d-3b7d-4baa-9bdd-2b0d7b3dcb6b'
 
-    const platform1 = new Platform('playstation')
+    const platform1 = new Platform()
+    platform1.name = 'playstation'
     platform1.id = '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6a'
-    const platform2 = new Platform('xbox')
+    const platform2 = new Platform()
+    platform2.name = 'xbox'
     platform2.id = '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6b'
 
     const pipeline = [
@@ -803,7 +813,8 @@ describe('POST /api/v1/games/:gameId/reviews', () => {
     genre1.name = 'multiplayer'
     genre1.id = '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6a'
 
-    const platform1 = new Platform('playstation')
+    const platform1 = new Platform()
+    platform1.name = 'playstation'
     platform1.id = '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6a'
 
     const pipeline = [genreRepository.createGenre(genre1), platformRepository.create(platform1)]
@@ -929,7 +940,8 @@ describe('PUT /api/v1/games/reviews/:reviewId', () => {
     genre.name = 'multiplayer'
     genre.id = 'genreb4d-3b7d-4bad-9bdd-2b0d7b3dcb6a'
 
-    const platform = new Platform('playstation')
+    const platform = new Platform()
+    platform.name = 'playstation'
     platform.id = 'platform-3b7d-4bad-9bdd-2b0d7b3dcb6a'
 
     const pipeline = [genreRepository.createGenre(genre), platformRepository.create(platform)]
