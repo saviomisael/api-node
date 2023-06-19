@@ -5,7 +5,9 @@ export class GameRowDataMapper {
   private constructor() {}
 
   static toEntity(row: GameRowData): Game {
-    const age = new AgeRating(row.age, row.age_rating_description)
+    const age = new AgeRating()
+    age.age = row.age
+    age.description = row.age_rating_description
     age.id = row.age_rating_id
     const game = new Game(row.game_name, row.game_price, row.game_description, new Date(row.releaseDate), age)
     game.id = row.game_id
@@ -13,7 +15,8 @@ export class GameRowDataMapper {
     for (let index = 0; index < row.genre_ids.split(',').length; index++) {
       const genreId = row.genre_ids.split(',')[index]
       const genreName = row.genre_names.split(',')[index]
-      const genre = new Genre(genreName)
+      const genre = new Genre()
+      genre.name = genreName
       genre.id = genreId
       game.addGenre(genre)
     }
