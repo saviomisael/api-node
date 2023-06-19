@@ -28,12 +28,12 @@ describe('GameRowData', () => {
     chai.expect(gameMapped.getPrice()).to.be.equal(rowData.game_price)
     chai.expect(gameMapped.getReleaseDate().toISOString()).to.be.equal(new Date(rowData.releaseDate).toISOString())
     chai.expect(gameMapped.getAgeRating().id).to.be.equal(rowData.age_rating_id)
-    chai.expect(gameMapped.getAgeRating().getAge()).to.be.equal(rowData.age)
-    chai.expect(gameMapped.getAgeRating().getDescription()).to.be.equal(rowData.age_rating_description)
+    chai.expect(gameMapped.getAgeRating().age).to.be.equal(rowData.age)
+    chai.expect(gameMapped.getAgeRating().description).to.be.equal(rowData.age_rating_description)
     chai
       .expect([...gameMapped.getGenres()].map((x) => x.id))
       .to.be.deep.equal(['98bd1a08-3d13-44ec-a448-f26dd23bde5b', 'fb24eb46-5aff-4850-b674-40711ae6d643'])
-    chai.expect([...gameMapped.getGenres()].map((x) => x.getName())).to.be.deep.equal(['genre_x', 'genre_y'])
+    chai.expect([...gameMapped.getGenres()].map((x) => x.name)).to.be.deep.equal(['genre_x', 'genre_y'])
     chai
       .expect([...gameMapped.getPlatforms()].map((x) => x.id))
       .to.be.deep.equal(['d54e90d9-86f8-4c71-b029-f9f95b0d753c', 'ffe9a5eb-9804-4a97-94a8-63d072d03431'])
