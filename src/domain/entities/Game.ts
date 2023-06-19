@@ -1,13 +1,21 @@
-import { AgeRating, type Genre, type Platform } from '$/domain/entities'
+import { AgeRating, Genre, Platform } from '$/domain/entities'
 import { AggregateRoot } from '$/domain/entities/AggregateRoot'
-import { Column, Entity, Index, ManyToOne } from 'typeorm'
+import { Column, Entity, Index, ManyToMany, ManyToOne } from 'typeorm'
 import { type Review } from './Review'
 
 @Entity('games')
 export class Game extends AggregateRoot {
-  private readonly platforms = new Array<Platform>()
-  private readonly genres = new Array<Genre>()
-  private readonly reviews = new Array<Review>()
+  @ManyToMany(() => Platform, {
+    cascade: true
+  })
+  platforms = new Array<Platform>()
+
+  @ManyToMany(() => Genre, {
+    cascade: true
+  })
+  genres = new Array<Genre>()
+
+  reviews = new Array<Review>()
 
   @Column({
     nullable: false,
