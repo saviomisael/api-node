@@ -6,6 +6,11 @@ export class ReviewerMapper {
   private constructor() {}
 
   static async fromCreateReviewerDTOToEntity(dto: CreateReviewerDTO): Promise<Reviewer> {
-    return new Reviewer(dto.username, await PasswordEncrypter.encrypt(dto.password), dto.email)
+    const reviewer = new Reviewer()
+    reviewer.username = dto.username
+    reviewer.password = await PasswordEncrypter.encrypt(dto.password)
+    reviewer.email = dto.email
+
+    return reviewer
   }
 }
