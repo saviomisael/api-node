@@ -1,4 +1,4 @@
-import { AgeRating } from '$/domain/entities'
+import { type AgeRating } from '$/domain/entities'
 import { RedisClient } from '$/infrastructure/RedisClient'
 import { apiRoutes } from '$/infrastructure/routes/apiRoutes'
 import app from '$/infrastructure/server'
@@ -22,28 +22,23 @@ describe('GET /api/v1/age-ratings', () => {
   it('should return all age ratings seeded in database', async () => {
     const response = await chai.request(app).get(apiRoutes.ageRatings.getAll)
 
-    const parsedJSON = response.body.data.map((x: any) => {
-      const age = new AgeRating(x.age as string, x.description as string)
-      age.id = x.id
-
-      return age
-    })
+    const parsedJSON = response.body.data
 
     chai.expect(response).to.have.status(200)
     chai.expect(response.body.success).to.be.true
     chai.expect(response.body.errors).to.have.length(0)
 
-    chai.expect(parsedJSON.some((x: AgeRating) => x.getAge() === 'L')).to.be.true
+    chai.expect(parsedJSON.some((x: AgeRating) => x.age === 'L')).to.be.true
 
-    chai.expect(parsedJSON.some((x: AgeRating) => x.getAge() === '10+')).to.be.true
+    chai.expect(parsedJSON.some((x: AgeRating) => x.age === '10+')).to.be.true
 
-    chai.expect(parsedJSON.some((x: AgeRating) => x.getAge() === '12+')).to.be.true
+    chai.expect(parsedJSON.some((x: AgeRating) => x.age === '12+')).to.be.true
 
-    chai.expect(parsedJSON.some((x: AgeRating) => x.getAge() === '14+')).to.be.true
+    chai.expect(parsedJSON.some((x: AgeRating) => x.age === '14+')).to.be.true
 
-    chai.expect(parsedJSON.some((x: AgeRating) => x.getAge() === '16+')).to.be.true
+    chai.expect(parsedJSON.some((x: AgeRating) => x.age === '16+')).to.be.true
 
-    chai.expect(parsedJSON.some((x: AgeRating) => x.getAge() === '18+')).to.be.true
+    chai.expect(parsedJSON.some((x: AgeRating) => x.age === '18+')).to.be.true
   })
 
   it('should return all age ratings from cache in less time', async () => {
