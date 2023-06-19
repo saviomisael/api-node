@@ -388,7 +388,11 @@ export class GameController extends HttpHandler {
     }
 
     try {
-      const review = new Review(dto.description, dto.stars, dto.gameId, dto.reviewerId)
+      const review = new Review()
+      review.description = dto.description
+      review.stars = dto.stars
+      review.game.id = dto.gameId
+      review.reviewer.id = dto.reviewerId
 
       await this.gameService.createReview(review)
 
