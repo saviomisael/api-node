@@ -37,6 +37,6 @@ describe('GameRowData', () => {
     chai
       .expect([...gameMapped.getPlatforms()].map((x) => x.id))
       .to.be.deep.equal(['d54e90d9-86f8-4c71-b029-f9f95b0d753c', 'ffe9a5eb-9804-4a97-94a8-63d072d03431'])
-    chai.expect([...gameMapped.getPlatforms()].map((x) => x.getName())).to.be.deep.equal(['platform_x', 'platform_y'])
+    chai.expect([...gameMapped.getPlatforms()].map((x) => x.name)).to.be.deep.equal(['platform_x', 'platform_y'])
   })
 })
