@@ -32,19 +32,6 @@ CREATE TABLE games_platforms (
 )
 CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
-CREATE TABLE reviewers (
-  id VARCHAR(36) PRIMARY KEY NOT NULL,
-  temporaryPassword VARCHAR(60) DEFAULT '',
-  tempPasswordTime DATETIME DEFAULT NULL,
-  createdAtUtcTime DATETIME NOT NULL,
-  username VARCHAR(255) UNIQUE NOT NULL,
-  password VARCHAR(60) NOT NULL,
-  email VARCHAR(255) UNIQUE NOT NULL,
-  INDEX username_idx (username),
-  INDEX email_idx (email)
-)
-CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-
 CREATE TABLE reviews (
   id VARCHAR(36) PRIMARY KEY NOT NULL,
   description TEXT NOT NULL,

@@ -9,7 +9,8 @@ export class Migrations1687134705115 implements MigrationInterface {
           {
             type: 'varchar',
             length: '36',
-            name: 'id'
+            name: 'id',
+            isPrimary: true
           },
           {
             type: 'varchar',
