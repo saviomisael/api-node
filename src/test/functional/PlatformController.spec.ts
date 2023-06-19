@@ -166,7 +166,9 @@ describe('GET /api/v1/platforms/', () => {
     const platformRepository = new PlatformRepository()
 
     for (let index = 1; index <= 10; index++) {
-      await platformRepository.create(new Platform(`platform ${index}`))
+      const platform = new Platform()
+      platform.name = `platform ${index}`
+      await platformRepository.create(platform)
     }
   })
 
