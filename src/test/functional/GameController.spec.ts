@@ -15,6 +15,12 @@ import { performance } from 'perf_hooks'
 
 chai.use(chaiHttp)
 
+AppDataSource.initialize()
+  .then()
+  .catch((error) => {
+    throw error
+  })
+
 const clearCache = async (): Promise<void> => {
   const redisClient = await RedisClient.getClient()
   await Promise.all([

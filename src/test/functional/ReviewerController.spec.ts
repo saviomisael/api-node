@@ -12,6 +12,12 @@ import chaiHttp from 'chai-http'
 
 chai.use(chaiHttp)
 
+AppDataSource.initialize()
+  .then()
+  .catch((error) => {
+    throw error
+  })
+
 const clearData = async (): Promise<void> => {
   const gamesRepository = AppDataSource.getRepository(Game)
   const genresRepository = AppDataSource.getRepository(Genre)
