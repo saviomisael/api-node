@@ -2,110 +2,78 @@ import { Reviewer } from '$/domain/entities/Reviewer'
 import { type IReviewerRepository } from '$/domain/repositories/IReviewerRepository'
 import { ReviewerDetails } from '$/domain/value-objects/ReviewerDetails'
 import { type Connection } from 'mysql2/promise'
+import { AppDataSource } from '../AppDataSource'
 import { DBConnection } from '../DBConnection'
 
 export class ReviewerRepository implements IReviewerRepository {
   private connection!: Connection
+  private readonly repository = AppDataSource.getRepository(Reviewer)
   async createReviewer(reviewer: Reviewer): Promise<void> {
-    this.connection = await DBConnection.getConnection()
-
-    await this.connection.execute(
-      'INSERT INTO reviewers (id, createdAtUtcTime, username, password, email) VALUES (?, ?, ?, ?, ?)',
-      [reviewer.id, reviewer.getCreatedAtUtcTime(), reviewer.getUsername(), reviewer.getPassword(), reviewer.getEmail()]
-    )
+    await this.repository.save(reviewer)
   }
 
-  async getReviewerById(reviewerId: string): Promise<Reviewer> {
-    this.connection = await DBConnection.getConnection()
+  async getReviewerById(id: string): Promise<Reviewer> {
+    const reviewer = await this.repository.findOne({ where: { id } })
 
-    const result = await this.connection.execute(
-      'SELECT id, username, password, email, createdAtUtcTime FROM reviewers WHERE id = ?',
-      [reviewerId]
-    )
+    if (reviewer == null) return new Reviewer()
 
-    const rows = result[0] as any[]
-
-    return rows.map((x) => {
-      const reviewer = new Reviewer(x.username as string, x.password as string, x.email as string)
-      reviewer.id = x.id
-      reviewer.setCreatedAtUtcTime(new Date(x.createdAtUtcTime as string))
-      return reviewer
-    })[0]
+    return reviewer
   }
 
   async checkUsernameAlreadyExists(username: string): Promise<boolean> {
-    this.connection = await DBConnection.getConnection()
+    const reviewer = await this.repository.findOne({ where: { username } })
 
-    const result = await this.connection.execute('SELECT username FROM reviewers WHERE username = ?', [username])
-
-    const rows = result[0] as any[]
-
-    return rows.length > 0
+    return reviewer != null
   }
 
   async checkEmailAlreadyExists(email: string): Promise<boolean> {
-    this.connection = await DBConnection.getConnection()
+    const reviewer = await this.repository.findOne({ where: { email } })
 
-    const result = await this.connection.execute('SELECT email FROM reviewers WHERE email = ?', [email])
-
-    const rows = result[0] as any[]
-
-    return rows.length > 0
+    return reviewer != null
   }
 
   async getReviewerByUsername(username: string): Promise<Reviewer> {
-    this.connection = await DBConnection.getConnection()
+    const reviewer = await this.repository.findOne({ where: { username } })
 
-    const result = await this.connection.execute(
-      'SELECT id, temporaryPassword, tempPasswordTime, username, password, email FROM reviewers WHERE username = ?',
-      [username]
-    )
+    if (reviewer == null) return new Reviewer()
 
-    const rows = result[0] as any[]
-
-    return rows.map((x: any) => {
-      const reviewer = new Reviewer(x.username as string, x.password as string, x.email as string)
-      reviewer.setTemporaryPassword(x.temporaryPassword as string)
-      reviewer.setTempPasswordTime(x.tempPasswordTime === null ? null : new Date(x.tempPasswordTime as string))
-      reviewer.id = x.id
-
-      return reviewer
-    })[0]
+    return reviewer
   }
 
   async changePassword(username: string, newPassword: string): Promise<void> {
-    this.connection = await DBConnection.getConnection()
+    const reviewer = await this.repository.findOneBy({ username })
 
-    await this.connection.execute('UPDATE reviewers SET password = ? WHERE username = ?', [newPassword, username])
+    if (reviewer != null) {
+      reviewer.password = newPassword
+
+      await this.repository.save(reviewer)
+    }
   }
 
   async setTemporaryPassword(reviewer: Reviewer): Promise<void> {
-    this.connection = await DBConnection.getConnection()
+    const reviewerFromDB = await this.repository.findOne({ where: { username: reviewer.username } })
 
-    await this.connection.execute(
-      'UPDATE reviewers SET temporaryPassword = ?, tempPasswordTime = ? WHERE username = ?',
-      [reviewer.getTemporaryPassword(), reviewer.getTempPasswordTime(), reviewer.getUsername()]
-    )
+    if (reviewerFromDB != null) {
+      reviewerFromDB.temporaryPassword = reviewer.temporaryPassword
+      reviewerFromDB.tempPasswordTime = reviewer.tempPasswordTime
+
+      await this.repository.save(reviewerFromDB)
+    }
   }
 
   async deleteReviewerByUsername(username: string): Promise<void> {
-    this.connection = await DBConnection.getConnection()
+    // TODO delete reviews by reviewer
 
-    const reviewer = await this.getReviewerByUsername(username)
-
-    await Promise.all([
-      this.connection.execute('DELETE FROM reviews WHERE fk_reviewer = ?', [reviewer.id]),
-      this.connection.execute('DELETE FROM reviewers WHERE username = ?', [username])
-    ])
+    await this.repository.delete({ username })
   }
 
   async removeTemporaryPassword(username: string): Promise<void> {
-    this.connection = await DBConnection.getConnection()
+    const reviewer = await this.repository.findOne({ where: { username } })
 
-    await this.connection.execute(
-      `UPDATE reviewers SET temporaryPassword = '', tempPasswordTime = NULL WHERE username = ?`,
-      [username]
-    )
+    if (reviewer != null) {
+      reviewer.temporaryPassword = ''
+      reviewer.tempPasswordTime = null
+    }
   }
 
   async getDetailsByUsername(username: string): Promise<ReviewerDetails> {
