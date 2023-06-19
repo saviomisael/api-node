@@ -188,13 +188,14 @@ describe('DELETE /api/v1/genres/:id 2', () => {
     platform.name = 'platform_x'
     platform.id = '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d'
 
-    const game = new Game(
-      'The Witcher 3',
-      100,
-      'O jogo mais premiado de uma geração agora aprimorado para a atual! Experimente The Witcher 3: Wild Hunt e suas expansões nesta coleção definitiva, com melhor desempenho, visuais aprimorados, novo conteúdo adicional, modo fotografia e muito mais!',
-      new Date(),
-      age
-    )
+    const game = new Game()
+    game.name = 'The Witcher 3'
+    game.price = 100
+    game.description =
+      'O jogo mais premiado de uma geração agora aprimorado para a atual! Experimente The Witcher 3: Wild Hunt e suas expansões nesta coleção definitiva, com melhor desempenho, visuais aprimorados, novo conteúdo adicional, modo fotografia e muito mais!'
+    game.releaseDate = new Date()
+    game.ageRating = age
+
     game.addGenre(genre)
     game.addPlatform(platform)
     game.id = '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d'
