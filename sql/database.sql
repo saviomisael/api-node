@@ -2,13 +2,6 @@ USE gamesdb;
 
 ALTER DATABASE gamesdb CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
-CREATE TABLE genres (
-  id VARCHAR(36) PRIMARY KEY NOT NULL,
-  name VARCHAR(256) NOT NULL UNIQUE,
-  FULLTEXT idx_ge_name (name)
-)
-CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-
 CREATE TABLE platforms (
   id VARCHAR(36) PRIMARY KEY NOT NULL,
   name VARCHAR(256) NOT NULL UNIQUE,
