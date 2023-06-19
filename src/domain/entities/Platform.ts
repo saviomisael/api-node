@@ -1,11 +1,12 @@
 import { AggregateRoot } from '$/domain/entities/AggregateRoot'
+import { Column, Entity } from 'typeorm'
 
+@Entity('platforms')
 export class Platform extends AggregateRoot {
-  constructor(private readonly name: string) {
-    super()
-  }
-
-  getName(): string {
-    return this.name
-  }
+  @Column({
+    nullable: false,
+    unique: true,
+    length: 256
+  })
+  name!: string
 }
