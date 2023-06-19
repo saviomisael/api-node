@@ -30,9 +30,12 @@ describe('POST /api/v1/reviewers', () => {
   beforeEach(async () => {
     const reviewerRepository = new ReviewerRepository()
 
-    await reviewerRepository.createReviewer(
-      new Reviewer('saviomisael', await PasswordEncrypter.encrypt('123aBc#@'), 'savio@email.com')
-    )
+    const reviewer = new Reviewer()
+    reviewer.username = 'saviomisael'
+    reviewer.password = await PasswordEncrypter.encrypt('123aBc#@')
+    reviewer.email = 'savio@email.com'
+
+    await reviewerRepository.createReviewer(reviewer)
   })
 
   afterEach(async () => {
@@ -122,9 +125,12 @@ describe('POST /api/v1/reviewers/tokens', () => {
   beforeEach(async () => {
     const reviewerRepository = new ReviewerRepository()
 
-    await reviewerRepository.createReviewer(
-      new Reviewer('saviomisael', await PasswordEncrypter.encrypt('123aBc#@'), 'savio@email.com')
-    )
+    const reviewer = new Reviewer()
+    reviewer.username = 'saviomisael'
+    reviewer.password = await PasswordEncrypter.encrypt('123aBc#@')
+    reviewer.email = 'savio@email.com'
+
+    await reviewerRepository.createReviewer(reviewer)
   })
 
   afterEach(async () => {
@@ -183,8 +189,12 @@ describe('POST /api/v1/reviewers/tokens', () => {
 describe('POST /api/v1/reviewers/tokens 2', () => {
   beforeEach(async () => {
     const reviewerRepository = new ReviewerRepository()
-    const reviewer = new Reviewer('saviomisael', await PasswordEncrypter.encrypt('123aBc#@'), 'savio@email.com')
-    reviewer.setTemporaryPassword(await PasswordEncrypter.encrypt('321WaBc#@'))
+    const reviewer = new Reviewer()
+    reviewer.username = 'saviomisael'
+    reviewer.password = await PasswordEncrypter.encrypt('123aBc#@')
+    reviewer.email = 'savio@email.com'
+    reviewer.temporaryPassword = await PasswordEncrypter.encrypt('321WaBc#@')
+
     reviewer.generateTempPasswordTime()
 
     await Promise.all([reviewerRepository.createReviewer(reviewer), reviewerRepository.setTemporaryPassword(reviewer)])
@@ -214,8 +224,8 @@ describe('POST /api/v1/reviewers/tokens 2', () => {
     const reviewer = await reviewerRepository.getReviewerByUsername('saviomisael')
 
     chai.expect(response).to.have.status(200)
-    chai.expect(reviewer.getTempPasswordTime()).to.be.null
-    chai.expect(reviewer.getTemporaryPassword()).to.be.empty
+    chai.expect(reviewer.tempPasswordTime).to.be.null
+    chai.expect(reviewer.temporaryPassword).to.be.empty
   })
 })
 
@@ -223,9 +233,11 @@ describe('AuthMiddleware', () => {
   beforeEach(async () => {
     const reviewerRepository = new ReviewerRepository()
 
-    await reviewerRepository.createReviewer(
-      new Reviewer('saviomisael', await PasswordEncrypter.encrypt('123aBc#@'), process.env.GMAIL_TEST as string)
-    )
+    const reviewer = new Reviewer()
+    reviewer.username = 'saviomisael'
+    reviewer.password = await PasswordEncrypter.encrypt('123aBc#@')
+    reviewer.email = process.env.GMAIL_TEST as string
+    await reviewerRepository.createReviewer(reviewer)
   })
 
   afterEach(async () => {
@@ -282,11 +294,10 @@ describe('AuthMiddleware', () => {
 describe('PUT /api/v1/reviewers', async () => {
   beforeEach(async () => {
     const reviewerRepository = new ReviewerRepository()
-    const reviewer = new Reviewer(
-      'saviomisael',
-      await PasswordEncrypter.encrypt('123aBc#@'),
-      process.env.GMAIL_TEST as string
-    )
+    const reviewer = new Reviewer()
+    reviewer.username = 'saviomisael'
+    reviewer.password = await PasswordEncrypter.encrypt('123aBc#@')
+    reviewer.email = process.env.GMAIL_TEST as string
     reviewer.id = '0206a7f2-e912-4f85-8fb3-22547065a66b'
 
     await reviewerRepository.createReviewer(reviewer)
@@ -357,11 +368,10 @@ describe('PUT /api/v1/reviewers', async () => {
 describe('POST /api/v1/reviewers/passwords', () => {
   beforeEach(async () => {
     const reviewerRepository = new ReviewerRepository()
-    const reviewer = new Reviewer(
-      'saviomisael',
-      await PasswordEncrypter.encrypt('123aBc#@'),
-      process.env.GMAIL_TEST as string
-    )
+    const reviewer = new Reviewer()
+    reviewer.username = 'saviomisael'
+    reviewer.password = await PasswordEncrypter.encrypt('123aBc#@')
+    reviewer.email = process.env.GMAIL_TEST as string
     reviewer.id = '0206a7f2-e912-4f85-8fb3-22547065a66b'
 
     await reviewerRepository.createReviewer(reviewer)
@@ -398,11 +408,10 @@ describe('POST /api/v1/reviewers/passwords', () => {
 describe('POST /api/v1/reviewers/tokens/refresh', () => {
   beforeEach(async () => {
     const reviewerRepository = new ReviewerRepository()
-    const reviewer = new Reviewer(
-      'saviomisael',
-      await PasswordEncrypter.encrypt('123aBc#@'),
-      process.env.GMAIL_TEST as string
-    )
+    const reviewer = new Reviewer()
+    reviewer.username = 'saviomisael'
+    reviewer.password = await PasswordEncrypter.encrypt('123aBc#@')
+    reviewer.email = process.env.GMAIL_TEST as string
     reviewer.id = '0206a7f2-e912-4f85-8fb3-22547065a66b'
 
     await reviewerRepository.createReviewer(reviewer)
@@ -436,11 +445,10 @@ describe('POST /api/v1/reviewers/tokens/refresh', () => {
 describe('DELETE /api/v1/reviewers', () => {
   beforeEach(async () => {
     const reviewerRepository = new ReviewerRepository()
-    const reviewer = new Reviewer(
-      'saviomisael',
-      await PasswordEncrypter.encrypt('123aBc#@'),
-      process.env.GMAIL_TEST as string
-    )
+    const reviewer = new Reviewer()
+    reviewer.username = 'saviomisael'
+    reviewer.password = await PasswordEncrypter.encrypt('123aBc#@')
+    reviewer.email = process.env.GMAIL_TEST as string
     reviewer.id = '0206a7f2-e912-4f85-8fb3-22547065a66b'
 
     await reviewerRepository.createReviewer(reviewer)
@@ -527,8 +535,11 @@ describe('GET /api/v1/reviewers/:username', () => {
     game2.id = '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6b'
     pipeline.push(gameRepository.create(game2))
 
-    const reviewer1 = new Reviewer('saviomisael', await PasswordEncrypter.encrypt('321aBc@#'), 'savioth9@gmail.com')
-    reviewer1.setCreatedAtUtcTime(new Date(2020, 5, 3))
+    const reviewer1 = new Reviewer()
+    reviewer1.username = 'saviomisael'
+    reviewer1.password = await PasswordEncrypter.encrypt('123aBc#@')
+    reviewer1.email = process.env.GMAIL_TEST as string
+    reviewer1.createdAtUtcTime = new Date(2020, 5, 3)
 
     pipeline.push(reviewerRepository.createReviewer(reviewer1))
 
