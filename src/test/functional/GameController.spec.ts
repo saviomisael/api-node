@@ -37,10 +37,10 @@ const clearData = async (): Promise<void> => {
   const reviewersRepository = AppDataSource.getRepository(Reviewer)
 
   await Promise.all([
-    gamesRepository.createQueryBuilder().delete(),
     genresRepository.createQueryBuilder().delete(),
     platformsRepository.createQueryBuilder().delete(),
-    reviewersRepository.createQueryBuilder().delete()
+    reviewersRepository.createQueryBuilder().delete(),
+    gamesRepository.createQueryBuilder().delete()
   ])
 
   await clearCache()

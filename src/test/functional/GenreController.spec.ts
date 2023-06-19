@@ -17,9 +17,9 @@ const clearData = async (): Promise<void> => {
   const platformsRepository = AppDataSource.getRepository(Platform)
 
   await Promise.all([
-    gamesRepository.createQueryBuilder().delete(),
     genresRepository.createQueryBuilder().delete(),
-    platformsRepository.createQueryBuilder().delete()
+    platformsRepository.createQueryBuilder().delete(),
+    gamesRepository.createQueryBuilder().delete()
   ])
 
   const redisClient = await RedisClient.getClient()

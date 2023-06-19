@@ -1,5 +1,5 @@
-import { Platform } from '$/domain/entities'
-import { DBConnection } from '$/infrastructure/DBConnection'
+import { Game, Genre, Platform } from '$/domain/entities'
+import { AppDataSource } from '$/infrastructure/AppDataSource'
 import { RedisClient } from '$/infrastructure/RedisClient'
 import { PlatformRepository } from '$/infrastructure/repositories'
 import { apiRoutes } from '$/infrastructure/routes/apiRoutes'
@@ -11,14 +11,14 @@ import { performance } from 'perf_hooks'
 chai.use(chaiHttp)
 
 const clearData = async (): Promise<void> => {
-  const connection = await DBConnection.getConnection()
+  const gamesRepository = AppDataSource.getRepository(Game)
+  const genresRepository = AppDataSource.getRepository(Genre)
+  const platformsRepository = AppDataSource.getRepository(Platform)
 
   await Promise.all([
-    connection.execute('DELETE FROM games_platforms'),
-    connection.execute('DELETE FROM games_genres'),
-    connection.execute('DELETE FROM platforms'),
-    connection.execute('DELETE FROM genres'),
-    connection.execute('DELETE FROM games')
+    genresRepository.createQueryBuilder().delete(),
+    platformsRepository.createQueryBuilder().delete(),
+    gamesRepository.createQueryBuilder().delete()
   ])
 
   const redisClient = await RedisClient.getClient()
