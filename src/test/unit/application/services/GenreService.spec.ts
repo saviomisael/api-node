@@ -13,7 +13,7 @@ describe('GenreService', () => {
       }
 
       async getGenreById(_: string): Promise<Genre | null> {
-        return new Genre('genre_x')
+        return new Genre()
       }
 
       async getGenreByName(_: string): Promise<Genre | null> {
