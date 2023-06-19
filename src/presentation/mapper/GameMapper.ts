@@ -18,7 +18,7 @@ export class GameMapper {
     }
 
     for (const platformId of dto.platforms) {
-      const platform = new Platform('')
+      const platform = new Platform()
       platform.id = platformId
       game.addPlatform(platform)
     }
@@ -40,7 +40,7 @@ export class GameMapper {
     }
 
     for (const platformId of dto.platforms) {
-      const platform = new Platform('')
+      const platform = new Platform()
       platform.id = platformId
       game.addPlatform(platform)
     }
