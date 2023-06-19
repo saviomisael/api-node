@@ -1,4 +1,4 @@
-import { AgeRating, Game, Genre, Platform } from '$/domain/entities'
+import { AgeRating, Game, Genre, Platform, Reviewer } from '$/domain/entities'
 import { Review } from '$/domain/entities/Review'
 import { type IGameRepository } from '$/domain/repositories'
 import { Owner } from '$/domain/value-objects/Owner'
@@ -13,6 +13,7 @@ export class GameRepository implements IGameRepository {
   private readonly genreRepository = AppDataSource.getRepository(Genre)
   private readonly ageRepository = AppDataSource.getRepository(AgeRating)
   private readonly reviewRepository = AppDataSource.getRepository(Review)
+  private readonly reviewerRepository = AppDataSource.getRepository(Reviewer)
 
   async getById(id: string): Promise<Game | null> {
     const game = await this.gameRepository.findOne({
@@ -131,7 +132,14 @@ export class GameRepository implements IGameRepository {
   }
 
   async createReview(review: Review): Promise<void> {
-    await this.reviewRepository.save(review)
+    const game = await this.gameRepository.findOne({ where: { id: review.game.id } })
+    const reviewer = await this.reviewerRepository.findOne({ where: { id: review.reviewer.id } })
+
+    if (game != null && reviewer != null) {
+      review.game = game
+      review.reviewer = reviewer
+      await this.reviewRepository.save(review)
+    }
   }
 
   async verifyGameAlreadyExists(id: string): Promise<boolean> {
