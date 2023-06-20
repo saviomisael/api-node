@@ -41,7 +41,7 @@ export class Game extends AggregateRoot {
   description!: string
 
   @Column({
-    type: 'datetime',
+    type: 'timestamp',
     nullable: false
   })
   releaseDate!: Date

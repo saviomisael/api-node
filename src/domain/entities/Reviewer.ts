@@ -12,11 +12,11 @@ export class Reviewer extends AggregateRoot {
   })
   temporaryPassword!: string
 
-  @Column({ type: 'datetime', nullable: true, default: null })
+  @Column({ type: 'timestamp', nullable: true, default: null })
   tempPasswordTime!: Date | null
 
   @Column({
-    type: 'datetime',
+    type: 'timestamp',
     nullable: false
   })
   createdAtUtcTime: Date = newDateUtcTime()
