@@ -2,7 +2,7 @@ import { AggregateRoot } from '$/domain/entities/AggregateRoot'
 import { Column, Entity, OneToMany } from 'typeorm'
 import { Game } from './Game'
 
-@Entity('ageRatings')
+@Entity('age_ratings')
 export class AgeRating extends AggregateRoot {
   @Column({
     nullable: false,
