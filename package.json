@@ -9,7 +9,7 @@
     "prepare": "husky install",
     "lint-staged": "lint-staged",
     "test": "mocha -r ts-node/register/transpile-only -r tsconfig-paths/register ./src/test/**/*.spec.ts --timeout 10000 --exit",
-    "test:functional": "mocha -r ts-node/register/transpile-only -r tsconfig-paths/register ./src/test/functional/PlatformController.spec.ts --timeout 10000 --exit",
+    "test:functional": "mocha -r ts-node/register/transpile-only -r tsconfig-paths/register ./src/test/functional/ReviewerController.spec.ts --timeout 10000 --exit",
     "test:unit": "mocha -r ts-node/register/transpile-only -r tsconfig-paths/register ./src/test/unit/{**,**/**}/*.spec.ts --recursive --exit",
     "test:functional:docker": "docker compose -f docker-compose.yml run backend npm run test:functional",
     "test:unit:docker": "docker compose -f docker-compose.yml run backend npm run test:unit",

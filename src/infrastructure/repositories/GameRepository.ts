@@ -7,9 +7,6 @@ import { maxGamesPerPage } from '../constants'
 
 export class GameRepository implements IGameRepository {
   private readonly gameRepository = AppDataSource.getRepository(Game)
-  private readonly platformRepository = AppDataSource.getRepository(Platform)
-  private readonly genreRepository = AppDataSource.getRepository(Genre)
-  private readonly ageRepository = AppDataSource.getRepository(AgeRating)
   private readonly reviewRepository = AppDataSource.getRepository(Review)
   private readonly reviewerRepository = AppDataSource.getRepository(Reviewer)
 

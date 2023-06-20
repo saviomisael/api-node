@@ -29,10 +29,8 @@ export class ReviewerService {
       throw new UsernameInUseError(reviewer.username)
     }
 
-    const [, newReviewer] = await Promise.all([
-      this.reviewerRepository.createReviewer(reviewer),
-      this.reviewerRepository.getReviewerById(reviewer.id)
-    ])
+    await this.reviewerRepository.createReviewer(reviewer)
+    const newReviewer = await this.reviewerRepository.getReviewerById(reviewer.id)
 
     const generator = new JWTGenerator()
 

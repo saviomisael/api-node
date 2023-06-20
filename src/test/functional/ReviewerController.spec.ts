@@ -23,12 +23,14 @@ const clearData = async (): Promise<void> => {
   const genresRepository = AppDataSource.getRepository(Genre)
   const platformsRepository = AppDataSource.getRepository(Platform)
   const reviewersRepository = AppDataSource.getRepository(Reviewer)
+  const reviewsRepository = AppDataSource.getRepository(Review)
 
   await Promise.all([
-    genresRepository.createQueryBuilder().delete(),
-    platformsRepository.createQueryBuilder().delete(),
-    reviewersRepository.createQueryBuilder().delete(),
-    gamesRepository.createQueryBuilder().delete()
+    reviewsRepository.createQueryBuilder().delete().execute(),
+    genresRepository.createQueryBuilder().delete().execute(),
+    platformsRepository.createQueryBuilder().delete().execute(),
+    reviewersRepository.createQueryBuilder().delete().execute(),
+    gamesRepository.createQueryBuilder().delete().execute()
   ])
 }
 
@@ -506,12 +508,10 @@ describe('GET /api/v1/reviewers/:username', () => {
     platform2.name = 'playstation 2'
     platform2.id = '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6b'
 
-    const pipeline = [
-      genreRepository.createGenre(genre1),
-      genreRepository.createGenre(genre2),
-      platformRepository.create(platform1),
-      platformRepository.create(platform2)
-    ]
+    await genreRepository.createGenre(genre1)
+    await genreRepository.createGenre(genre2)
+    await platformRepository.create(platform1)
+    await platformRepository.create(platform2)
 
     const game = new Game()
     game.name = 'The Witcher 3'
@@ -525,7 +525,7 @@ describe('GET /api/v1/reviewers/:username', () => {
     game.addPlatform(platform1)
     game.addPlatform(platform2)
     game.id = '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6a'
-    pipeline.push(gameRepository.create(game))
+    await gameRepository.create(game)
 
     const game2 = new Game()
     game2.name = 'The Witcher 2'
@@ -539,32 +539,31 @@ describe('GET /api/v1/reviewers/:username', () => {
     game2.addPlatform(platform1)
     game2.addPlatform(platform2)
     game2.id = '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6b'
-    pipeline.push(gameRepository.create(game2))
+    await gameRepository.create(game2)
 
     const reviewer1 = new Reviewer()
     reviewer1.username = 'saviomisael'
     reviewer1.password = await PasswordEncrypter.encrypt('123aBc#@')
     reviewer1.email = process.env.GMAIL_TEST as string
     reviewer1.createdAtUtcTime = new Date(2020, 5, 3)
+    reviewer1.id = '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6a'
 
-    pipeline.push(reviewerRepository.createReviewer(reviewer1))
+    await reviewerRepository.createReviewer(reviewer1)
 
     const review1 = new Review()
     review1.description = 'Jogo bem legal'
     review1.stars = 5
-    review1.game.id = game.id
-    review1.reviewer.id = reviewer1.id
+    review1.game = game
+    review1.reviewer = reviewer1
 
     const review2 = new Review()
     review2.description = 'Jogo mais que legal'
     review2.stars = 5
-    review2.game.id = game2.id
-    review2.reviewer.id = reviewer1.id
+    review2.game = game2
+    review2.reviewer = reviewer1
 
-    pipeline.push(gameRepository.createReview(review1))
-    pipeline.push(gameRepository.createReview(review2))
-
-    await Promise.all([...pipeline])
+    await gameRepository.createReview(review1)
+    await gameRepository.createReview(review2)
   })
 
   afterEach(async () => {
