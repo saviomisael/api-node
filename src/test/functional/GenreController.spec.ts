@@ -1,19 +1,24 @@
-import { AgeRating, Game, Genre, Platform } from '$/domain/entities'
+import { Game, Genre, Platform } from '$/domain/entities'
 import { AppDataSource } from '$/infrastructure/AppDataSource'
 import { RedisClient } from '$/infrastructure/RedisClient'
-import { GenreRepository, PlatformRepository } from '$/infrastructure/repositories'
-import { GameRepository } from '$/infrastructure/repositories/GameRepository'
+import { GenreRepository } from '$/infrastructure/repositories'
 import { apiRoutes } from '$/infrastructure/routes/apiRoutes'
 import app from '$/infrastructure/server'
 import chai from 'chai'
 import chaiHttp from 'chai-http'
+import dotenv from 'dotenv'
 import { performance } from 'perf_hooks'
+
+dotenv.config()
 
 chai.use(chaiHttp)
 
 AppDataSource.initialize()
-  .then()
+  .then(() => {
+    console.log('Data initialized')
+  })
   .catch((error) => {
+    console.error(error)
     throw error
   })
 
@@ -23,9 +28,9 @@ const clearData = async (): Promise<void> => {
   const platformsRepository = AppDataSource.getRepository(Platform)
 
   await Promise.all([
-    genresRepository.createQueryBuilder().delete(),
-    platformsRepository.createQueryBuilder().delete(),
-    gamesRepository.createQueryBuilder().delete()
+    genresRepository.createQueryBuilder().delete().execute(),
+    platformsRepository.createQueryBuilder().delete().execute(),
+    gamesRepository.createQueryBuilder().delete().execute()
   ])
 
   const redisClient = await RedisClient.getClient()
@@ -34,6 +39,12 @@ const clearData = async (): Promise<void> => {
 }
 
 describe('POST /api/v1/genres', () => {
+  beforeEach(async () => {
+    await chai.request(app).post(apiRoutes.genres.create).send({
+      name: 'action'
+    })
+  })
+
   afterEach(async () => {
     await clearData()
   })
@@ -48,33 +59,27 @@ describe('POST /api/v1/genres', () => {
   })
 
   it('should return a bad request when genre already exists.', async () => {
-    const firstResponse = await chai.request(app).post(apiRoutes.genres.create).send({
+    const response = await chai.request(app).post(apiRoutes.genres.create).send({
       name: 'action'
     })
 
-    chai.expect(firstResponse).to.have.status(201)
-
-    const secondResponse = await chai.request(app).post(apiRoutes.genres.create).send({
-      name: 'action'
-    })
-
-    chai.expect(secondResponse).to.have.status(400)
-    chai.expect(secondResponse.body.success).to.be.false
-    chai.expect(secondResponse.body.errors).to.have.length(1)
-    chai.expect(secondResponse.body.errors[0]).to.be.equal('Esse gênero já existe.')
-    chai.expect(secondResponse.body.data).to.have.length(0)
+    chai.expect(response).to.have.status(400)
+    chai.expect(response.body.success).to.be.false
+    chai.expect(response.body.errors).to.have.length(1)
+    chai.expect(response.body.errors[0]).to.be.equal('Esse gênero já existe.')
+    chai.expect(response.body.data).to.have.length(0)
   })
 
   it('should create a genre', async () => {
     const response = await chai.request(app).post(apiRoutes.genres.create).send({
-      name: 'action'
+      name: 'action 2'
     })
 
     chai.expect(response).to.have.status(201)
     chai.expect(response.body.success).to.be.true
     chai.expect(response.body.errors).to.have.length(0)
     chai.expect(response.body.data).to.have.length(1)
-    chai.expect(response.body.data[0].name).to.be.equal('action')
+    chai.expect(response.body.data[0].name).to.be.equal('action 2')
   })
 })
 
@@ -134,6 +139,15 @@ describe('GET /api/v1/genres', () => {
 })
 
 describe('DELETE /api/v1/genres/:id', () => {
+  beforeEach(async () => {
+    const genreRepository = new GenreRepository()
+    const genre = new Genre()
+    genre.id = '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6a'
+    genre.name = 'action 2'
+
+    await genreRepository.createGenre(genre)
+  })
+
   afterEach(async () => {
     await clearData()
   })
@@ -160,11 +174,9 @@ describe('DELETE /api/v1/genres/:id', () => {
   })
 
   it('should delete genre', async () => {
-    const response = await chai.request(app).post(apiRoutes.genres.create).send({ name: 'action' })
-
-    const genreId = response.body.data[0].id as string
-
-    const deleteResponse = await chai.request(app).delete(apiRoutes.genres.deleteById.replace(':id', genreId))
+    const deleteResponse = await chai
+      .request(app)
+      .delete(apiRoutes.genres.deleteById.replace(':id', '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6a'))
 
     chai.expect(deleteResponse).to.have.status(204)
 
@@ -175,42 +187,31 @@ describe('DELETE /api/v1/genres/:id', () => {
 })
 
 describe('DELETE /api/v1/genres/:id 2', () => {
+  let genreId: string
   beforeEach(async () => {
-    const allAges = await chai.request(app).get(apiRoutes.ageRatings.getAll)
-    const genreRepository = new GenreRepository()
-    const platformRepository = new PlatformRepository()
-    const gameRepository = new GameRepository()
+    const requester = chai.request(app).keepOpen()
 
-    const age = new AgeRating()
-    age.age = allAges.body.data[0].age as string
-    age.description = allAges.body.data[0].description as string
-    age.id = allAges.body.data[0].id
+    const response = await requester.post(apiRoutes.genres.create).send({ name: 'action' })
 
-    const genre = new Genre()
-    genre.name = 'multiplayer'
-    genre.id = 'genreb4d-3b7d-4bad-9bdd-2b0d7b3dcb6a'
+    genreId = response.body.data[0].id
 
-    const platform = new Platform()
-    platform.name = 'platform_x'
-    platform.id = '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d'
+    const platformResponse = await requester.post(apiRoutes.platforms.create).send({ name: 'xbox' })
 
-    const game = new Game()
-    game.name = 'The Witcher 3'
-    game.price = 100
-    game.description =
-      'O jogo mais premiado de uma geração agora aprimorado para a atual! Experimente The Witcher 3: Wild Hunt e suas expansões nesta coleção definitiva, com melhor desempenho, visuais aprimorados, novo conteúdo adicional, modo fotografia e muito mais!'
-    game.releaseDate = new Date()
-    game.ageRating = age
+    const platformId = platformResponse.body.data[0].id
 
-    game.addGenre(genre)
-    game.addPlatform(platform)
-    game.id = '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d'
+    const ages = await requester.get(apiRoutes.ageRatings.getAll)
 
-    await Promise.all([
-      genreRepository.createGenre(genre),
-      platformRepository.create(platform),
-      gameRepository.create(game)
-    ])
+    const firstAge = ages.body.data[0].id
+
+    await requester.post(apiRoutes.games.create).send({
+      name: 'The Witcher 3',
+      price: 100,
+      description: 'Jogo bem legal',
+      releaseDate: '2020-02-05',
+      ageRatingId: firstAge,
+      platforms: [platformId],
+      genres: [genreId]
+    })
   })
 
   afterEach(async () => {
@@ -218,9 +219,7 @@ describe('DELETE /api/v1/genres/:id 2', () => {
   })
 
   it('should return conflict when genre has related games', async () => {
-    const response = await chai
-      .request(app)
-      .delete(apiRoutes.genres.deleteById.replace(':id', '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d'))
+    const response = await chai.request(app).delete(apiRoutes.genres.deleteById.replace(':id', genreId))
 
     chai.expect(response).to.have.status(409)
   })

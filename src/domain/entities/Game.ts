@@ -1,17 +1,19 @@
 import { AgeRating, Genre, Platform, Review } from '$/domain/entities'
 import { AggregateRoot } from '$/domain/entities/AggregateRoot'
-import { Column, Entity, Index, ManyToMany, ManyToOne, OneToMany } from 'typeorm'
+import { Column, Entity, Index, JoinTable, ManyToMany, ManyToOne, OneToMany } from 'typeorm'
 
 @Entity('games')
 export class Game extends AggregateRoot {
   @ManyToMany(() => Platform, {
     cascade: true
   })
+  @JoinTable({ name: 'games_platforms_platforms' })
   platforms!: Platform[]
 
   @ManyToMany(() => Genre, {
     cascade: true
   })
+  @JoinTable({ name: 'games_genres_genres' })
   genres!: Genre[]
 
   @OneToMany(() => Review, (review) => review.game, { cascade: true })

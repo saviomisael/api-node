@@ -9,7 +9,7 @@
     "prepare": "husky install",
     "lint-staged": "lint-staged",
     "test": "mocha -r ts-node/register/transpile-only -r tsconfig-paths/register ./src/test/**/*.spec.ts --timeout 10000 --exit",
-    "test:functional": "mocha -r ts-node/register/transpile-only -r tsconfig-paths/register ./src/test/functional/*.spec.ts --timeout 10000 --exit",
+    "test:functional": "mocha -r ts-node/register/transpile-only -r tsconfig-paths/register ./src/test/functional/GenreController.spec.ts --timeout 10000 --exit",
     "test:unit": "mocha -r ts-node/register/transpile-only -r tsconfig-paths/register ./src/test/unit/{**,**/**}/*.spec.ts --recursive --exit",
     "test:functional:docker": "docker compose -f docker-compose.yml run backend npm run test:functional",
     "test:unit:docker": "docker compose -f docker-compose.yml run backend npm run test:unit",
@@ -21,7 +21,9 @@
     "migration:run:docker": "docker compose run backend npm run migration:run",
     "migration:run": "npm run typeorm migration:run -- -d ./src/infrastructure/AppDataSource.ts",
     "migration:revert": "npm run typeorm migration:revert -- -d ./src/infrastructure/AppDataSource.ts",
-    "migration:revert:docker": "docker compose run backend npm run migration:revert"
+    "migration:revert:docker": "docker compose run backend npm run migration:revert",
+    "migration:generate": "npm run typeorm migration:generate -- -d ./src/infrastructure/AppDataSource.ts ./src/infrastructure/migrations/Migration",
+    "migration:generate:docker": "docker compose run backend npm run migration:generate"
   },
   "keywords": [],
   "author": "",

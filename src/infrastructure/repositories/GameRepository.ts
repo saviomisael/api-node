@@ -30,33 +30,25 @@ export class GameRepository implements IGameRepository {
   }
 
   async create(game: Game): Promise<void> {
-    const platforms = []
-    const genres = []
+    const age = new AgeRating()
+    age.id = game.ageRating.id
 
-    for (const platform of game.platforms) {
-      const platformFromDB = await this.platformRepository.findOne({ where: { id: platform.id } })
+    const genres = game.genres.map((x) => {
+      const genre = new Genre()
+      genre.id = x.id
+      return genre
+    })
 
-      if (platformFromDB != null) {
-        platforms.push(platformFromDB)
-      }
-    }
+    const platforms = game.platforms.map((x) => {
+      const platform = new Platform()
+      platform.id = x.id
+      return platform
+    })
+    game.ageRating = age
+    game.genres = genres
+    game.platforms = platforms
 
-    for (const genre of game.genres) {
-      const genreFromDB = await this.genreRepository.findOne({ where: { id: genre.id } })
-
-      if (genreFromDB != null) {
-        genres.push(genreFromDB)
-      }
-    }
-    const age = await this.ageRepository.findOne({ where: { id: game.ageRating.id } })
-
-    if (age != null) {
-      game.platforms = platforms
-      game.genres = genres
-      game.ageRating = age
-
-      await this.gameRepository.save(game)
-    }
+    await this.gameRepository.save(game)
   }
 
   async updateGame(game: Game): Promise<void> {

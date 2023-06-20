@@ -51,9 +51,9 @@ export class GameService {
       }
     }
 
-    const [, newGame] = await Promise.all([this.gameRepository.create(game), this.gameRepository.getById(game.id)])
+    await this.gameRepository.create(game)
 
-    return newGame
+    return await this.gameRepository.getById(game.id)
   }
 
   async getGameById(gameId: string): Promise<SingleGameResponseDTO | null> {

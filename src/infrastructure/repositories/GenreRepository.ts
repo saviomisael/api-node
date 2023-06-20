@@ -23,11 +23,13 @@ export class GenreRepository implements IGenreRepository {
   }
 
   async getGenreByName(name: string): Promise<Genre | null> {
-    return await this.genreRepository.findOne({
+    const genre = await this.genreRepository.findOne({
       where: {
         name
       }
     })
+
+    return genre
   }
 
   async getAll(): Promise<Genre[]> {
@@ -43,7 +45,7 @@ export class GenreRepository implements IGenreRepository {
   }
 
   async hasRelatedGames(id: string): Promise<boolean> {
-    const games = await this.gameRepository.find({ where: { genres: { id } } })
+    const games = await this.gameRepository.find({ relations: { genres: true }, where: { genres: { id } } })
 
     return games.length > 0
   }
