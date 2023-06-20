@@ -1,10 +1,8 @@
 import { Game, Genre } from '$/domain/entities'
 import { type IGenreRepository } from '$/domain/repositories'
-import { type Connection } from 'mysql2/promise'
 import { AppDataSource } from '../AppDataSource'
 
 export class GenreRepository implements IGenreRepository {
-  private readonly connection!: Connection
   private readonly genreRepository = AppDataSource.getRepository(Genre)
   private readonly gameRepository = AppDataSource.getRepository(Game)
 
