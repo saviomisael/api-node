@@ -1,10 +1,8 @@
 import { Game, Platform } from '$/domain/entities'
 import { type IPlatformRepository } from '$/domain/repositories'
-import { type Connection } from 'mysql2/promise'
 import { AppDataSource } from '../AppDataSource'
 
 export class PlatformRepository implements IPlatformRepository {
-  private readonly connection!: Connection
   private readonly platformRepository = AppDataSource.getRepository(Platform)
   private readonly gameRepository = AppDataSource.getRepository(Game)
 
@@ -51,7 +49,7 @@ export class PlatformRepository implements IPlatformRepository {
   }
 
   async hasRelatedGames(id: string): Promise<boolean> {
-    const games = await this.gameRepository.find({ where: { platforms: { id } } })
+    const games = await this.gameRepository.find({ where: { platforms: { id } }, relations: { platforms: true } })
 
     return games.length > 0
   }
