@@ -87,12 +87,9 @@ export class GameService {
       }
     }
 
-    const [, updatedGame] = await Promise.all([
-      this.gameRepository.updateGame(game),
-      this.gameRepository.getById(game.id)
-    ])
+    await this.gameRepository.updateGame(game)
 
-    return updatedGame
+    return await this.gameRepository.getById(game.id)
   }
 
   async deleteGameById(gameId: string): Promise<void> {

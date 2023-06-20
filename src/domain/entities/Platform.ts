@@ -1,5 +1,5 @@
 import { AggregateRoot } from '$/domain/entities/AggregateRoot'
-import { Column, Entity, Index, OneToMany } from 'typeorm'
+import { Column, Entity, Index, JoinTable, OneToMany } from 'typeorm'
 import { Game } from './Game'
 
 @Entity('platforms')
@@ -13,5 +13,6 @@ export class Platform extends AggregateRoot {
   name!: string
 
   @OneToMany(() => Game, (game) => game.platforms)
+  @JoinTable({ name: 'games_platforms_platforms' })
   games!: Game
 }

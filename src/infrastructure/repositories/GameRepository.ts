@@ -47,7 +47,37 @@ export class GameRepository implements IGameRepository {
   }
 
   async updateGame(game: Game): Promise<void> {
-    await this.create(game)
+    const entity = await this.gameRepository.findOne({
+      where: { id: game.id },
+      relations: { ageRating: true, genres: true, platforms: true }
+    })
+
+    if (entity != null) {
+      await this.gameRepository
+        .createQueryBuilder()
+        .relation(Game, 'genres')
+        .of(entity)
+        .addAndRemove(game.genres, entity.genres)
+
+      await this.gameRepository
+        .createQueryBuilder()
+        .relation(Game, 'platforms')
+        .of(entity)
+        .addAndRemove(game.platforms, entity.platforms)
+
+      await this.gameRepository
+        .createQueryBuilder()
+        .update()
+        .set({
+          ageRating: game.ageRating,
+          description: game.description,
+          name: game.name,
+          price: game.price,
+          releaseDate: game.releaseDate
+        })
+        .where('id = :id', { id: game.id })
+        .execute()
+    }
   }
 
   async deleteGameById(gameId: string): Promise<void> {
