@@ -2,12 +2,10 @@ import { AgeRating, Game, Genre, Platform, Reviewer } from '$/domain/entities'
 import { Review } from '$/domain/entities/Review'
 import { type IGameRepository } from '$/domain/repositories'
 import { Owner } from '$/domain/value-objects/Owner'
-import { type Connection } from 'mysql2/promise'
 import { AppDataSource } from '../AppDataSource'
 import { maxGamesPerPage } from '../constants'
 
 export class GameRepository implements IGameRepository {
-  private readonly connection!: Connection
   private readonly gameRepository = AppDataSource.getRepository(Game)
   private readonly platformRepository = AppDataSource.getRepository(Platform)
   private readonly genreRepository = AppDataSource.getRepository(Genre)
