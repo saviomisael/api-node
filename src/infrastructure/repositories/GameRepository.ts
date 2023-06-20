@@ -107,18 +107,17 @@ export class GameRepository implements IGameRepository {
     term = `+${term}`
 
     const orders = {
-      releaseDate: 'games_searched.releaseDate'
+      releaseDate: 'g.releaseDate'
     }
 
     return await this.gameRepository
-      .createQueryBuilder('games_searched')
-      .innerJoinAndSelect('games.platforms', 'platforms')
-      .innerJoinAndSelect('games.genres', 'genres')
-      .innerJoinAndSelect('games.ageRating', 'age')
-      .select()
-      .where('MATCH(games_searched.name) AGAINST (:query IN BOOLEAN MODE)', { query: term })
-      .orWhere('OR MATCH(platforms.name) AGAINST (:query IN BOOLEAN MODE)', { query: term })
-      .orWhere('OR MATCH(genres.name) AGAINST (:query IN BOOLEAN MODE)', { query: term })
+      .createQueryBuilder('g')
+      .innerJoinAndSelect('g.platforms', 'p')
+      .innerJoinAndSelect('g.genres', 'gr')
+      .innerJoinAndSelect('g.ageRating', 'a')
+      .where('MATCH(`g`.`name`) AGAINST (:query IN BOOLEAN MODE)', { query: term })
+      .orWhere('MATCH(`p`.`name`) AGAINST (:query IN BOOLEAN MODE)', { query: term })
+      .orWhere('MATCH(`gr`.`name`) AGAINST (:query IN BOOLEAN MODE)', { query: term })
       .orderBy(`${orders[sortType]}`, sortOrder)
       .skip(page < 2 ? 0 : (page - 1) * maxGamesPerPage)
       .take(maxGamesPerPage)
@@ -128,18 +127,17 @@ export class GameRepository implements IGameRepository {
   async getMaxPagesBySearch(term: string): Promise<number> {
     term = `+${term}`
 
-    const count = await this.gameRepository
-      .createQueryBuilder('games_searched')
-      .innerJoinAndSelect('games.platforms', 'platforms')
-      .innerJoinAndSelect('games.genres', 'genres')
-      .innerJoinAndSelect('games.ageRating', 'age')
-      .select()
-      .where('MATCH(games_searched.name) AGAINST (:query IN BOOLEAN MODE)', { query: term })
-      .orWhere('OR MATCH(platforms.name) AGAINST (:query IN BOOLEAN MODE)', { query: term })
-      .orWhere('OR MATCH(genres.name) AGAINST (:query IN BOOLEAN MODE)', { query: term })
-      .getCount()
+    const games = await this.gameRepository
+      .createQueryBuilder('g')
+      .innerJoinAndSelect('g.platforms', 'p')
+      .innerJoinAndSelect('g.genres', 'gr')
+      .innerJoinAndSelect('g.ageRating', 'a')
+      .where('MATCH(`g`.`name`) AGAINST (:query IN BOOLEAN MODE)', { query: term })
+      .orWhere('MATCH(`p`.`name`) AGAINST (:query IN BOOLEAN MODE)', { query: term })
+      .orWhere('MATCH(`gr`.`name`) AGAINST (:query IN BOOLEAN MODE)', { query: term })
+      .getMany()
 
-    return Math.ceil(count / maxGamesPerPage)
+    return Math.ceil(games.length / maxGamesPerPage)
   }
 
   async getMaxPages(): Promise<number> {
@@ -166,7 +164,7 @@ export class GameRepository implements IGameRepository {
   }
 
   async updateReview(review: Review): Promise<void> {
-    await this.createReview(review)
+    await this.reviewRepository.save(review)
   }
 
   async checkReviewExists(id: string): Promise<boolean> {

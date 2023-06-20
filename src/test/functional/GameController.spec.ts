@@ -490,12 +490,10 @@ describe('DELETE /api/v1/games/:id 2', () => {
     platform2.name = 'playstation 6'
     platform2.id = '9b1deb4d-3b7d-4baa-9bdd-2b0d7b3dcb6b'
 
-    const pipeline = [
-      genreRepository.createGenre(genre1),
-      genreRepository.createGenre(genre2),
-      platformRepository.create(platform1),
-      platformRepository.create(platform2)
-    ]
+    await genreRepository.createGenre(genre1)
+    await genreRepository.createGenre(genre2)
+    await platformRepository.create(platform1)
+    await platformRepository.create(platform2)
 
     const game = new Game()
     game.name = 'The Witcher 3'
@@ -509,9 +507,7 @@ describe('DELETE /api/v1/games/:id 2', () => {
     game.addPlatform(platform1)
     game.addPlatform(platform2)
     game.id = '9b1deb4d-3b7d-4baa-9bdd-2b0d7b3dcb6a'
-    pipeline.push(gameRepository.create(game))
-
-    await Promise.all([...pipeline])
+    await gameRepository.create(game)
   })
 
   afterEach(async () => {
@@ -583,12 +579,10 @@ describe('GET /api/v1/games 2', () => {
     platform2.name = 'xbox'
     platform2.id = '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6b'
 
-    const pipeline = [
-      genreRepository.createGenre(genre1),
-      genreRepository.createGenre(genre2),
-      platformRepository.create(platform1),
-      platformRepository.create(platform2)
-    ]
+    await genreRepository.createGenre(genre1)
+    await genreRepository.createGenre(genre2)
+    await platformRepository.create(platform1)
+    await platformRepository.create(platform2)
 
     const lastCharacters = [
       'a',
@@ -665,10 +659,8 @@ describe('GET /api/v1/games 2', () => {
       game.addGenre(genre)
       game.addPlatform(platform)
       game.id = `9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6${letter}`
-      pipeline.push(gameRepository.create(game))
+      await gameRepository.create(game)
     }
-
-    await Promise.all([...pipeline])
 
     await clearCache()
   })
@@ -829,7 +821,8 @@ describe('POST /api/v1/games/:gameId/reviews', () => {
     platform1.name = 'playstation'
     platform1.id = '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6a'
 
-    const pipeline = [genreRepository.createGenre(genre1), platformRepository.create(platform1)]
+    await genreRepository.createGenre(genre1)
+    await platformRepository.create(platform1)
 
     const reviewerRepository = new ReviewerRepository()
     const reviewer = new Reviewer()
@@ -838,7 +831,7 @@ describe('POST /api/v1/games/:gameId/reviews', () => {
     reviewer.email = 'savioth9@email.com'
     reviewer.id = '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6a'
 
-    pipeline.push(reviewerRepository.createReviewer(reviewer))
+    await reviewerRepository.createReviewer(reviewer)
 
     const game = new Game()
     game.name = 'The Witcher 3'
@@ -851,9 +844,7 @@ describe('POST /api/v1/games/:gameId/reviews', () => {
     game.addGenre(genre1)
     game.addPlatform(platform1)
     game.id = `9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6a`
-    pipeline.push(gameRepository.create(game))
-
-    await Promise.all([...pipeline])
+    await gameRepository.create(game)
   })
 
   afterEach(async () => {
@@ -959,7 +950,8 @@ describe('PUT /api/v1/games/reviews/:reviewId', () => {
     platform.name = 'playstation'
     platform.id = 'platform-3b7d-4bad-9bdd-2b0d7b3dcb6a'
 
-    const pipeline = [genreRepository.createGenre(genre), platformRepository.create(platform)]
+    await genreRepository.createGenre(genre)
+    await platformRepository.create(platform)
 
     const reviewerRepository = new ReviewerRepository()
     const reviewer = new Reviewer()
@@ -968,7 +960,7 @@ describe('PUT /api/v1/games/reviews/:reviewId', () => {
     reviewer.email = 'savioth9@email.com'
     reviewer.id = 'reviewer-3b7d-4bad-9bdd-2b0d7b3dcb6a'
 
-    pipeline.push(reviewerRepository.createReviewer(reviewer))
+    await reviewerRepository.createReviewer(reviewer)
 
     const game = new Game()
     game.name = 'The Witcher 3'
@@ -981,17 +973,15 @@ describe('PUT /api/v1/games/reviews/:reviewId', () => {
     game.addGenre(genre)
     game.addPlatform(platform)
     game.id = `gameeb4d-3b7d-4bad-9bdd-2b0d7b3dcb6a`
-    pipeline.push(gameRepository.create(game))
+    await gameRepository.create(game)
 
     const review = new Review()
     review.description = 'Jogo bem legal'
     review.stars = 5
-    review.game.id = game.id
-    review.reviewer.id = reviewer.id
+    review.game = game
+    review.reviewer = reviewer
     review.id = 'review4d-3b7d-4bad-9bdd-2b0d7b3dcb6a'
-    pipeline.push(gameRepository.createReview(review))
-
-    await Promise.all([...pipeline])
+    await gameRepository.createReview(review)
   })
 
   afterEach(async () => {

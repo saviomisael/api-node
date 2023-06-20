@@ -9,7 +9,7 @@ export class Platform extends AggregateRoot {
     unique: true,
     length: 256
   })
-  @Index('platform_name_idx', { synchronize: false })
+  @Index('platform_name_idx', { fulltext: true })
   name!: string
 
   @OneToMany(() => Game, (game) => game.platforms)

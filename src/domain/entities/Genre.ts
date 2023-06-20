@@ -9,7 +9,7 @@ export class Genre extends AggregateRoot {
     length: 256,
     unique: true
   })
-  @Index('genre_name_idx', { synchronize: false })
+  @Index('genre_name_idx', { fulltext: true })
   name!: string
 
   @OneToMany(() => Game, (game) => game.genres)

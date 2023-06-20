@@ -10,6 +10,7 @@ import {
 } from '$/application/errors'
 import { GameMapper as GameMapperApp } from '$/application/mapper/GameMapper'
 import { GameService } from '$/application/services/GameService'
+import { Game, Reviewer } from '$/domain/entities'
 import { Review } from '$/domain/entities/Review'
 import { type IGameRepository } from '$/domain/repositories'
 import { GameNotExistsError } from '$/infrastructure/errors/GameNotExistsError'
@@ -391,7 +392,9 @@ export class GameController extends HttpHandler {
       const review = new Review()
       review.description = dto.description
       review.stars = dto.stars
+      review.game = new Game()
       review.game.id = dto.gameId
+      review.reviewer = new Reviewer()
       review.reviewer.id = dto.reviewerId
 
       await this.gameService.createReview(review)
