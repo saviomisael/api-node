@@ -280,7 +280,7 @@
             "required": false,
             "description": "how the games should be sorted.",
             "type": "string",
-            "example": "asc(releaseDate) or desc(releaseDate)"
+            "example": "asc(releaseDate) / desc(releaseDate) / asc(reviewsCount) / desc(reviewsCount)"
           },
           {
             "name": "term",
