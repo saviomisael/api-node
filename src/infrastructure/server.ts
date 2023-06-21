@@ -38,7 +38,6 @@ app.use(appRouter)
 
 app.use((error: Error, _: Request, res: Response, _2: NextFunction): Response => {
   console.error(error)
-  console.debug(error)
 
   return internalServerError(res, {
     data: [],
