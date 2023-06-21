@@ -101,6 +101,8 @@ export class GameRepository implements IGameRepository {
       releaseDate: sortOrder
     }
 
+    const skip = page < 2 ? 0 : (page - 1) * maxGamesPerPage
+
     return await this.gameRepository.find({
       relations: {
         ageRating: true,
@@ -109,7 +111,7 @@ export class GameRepository implements IGameRepository {
       },
       order: releaseOrder,
       take: maxGamesPerPage,
-      skip: page < 2 ? 0 : (page - 1) * maxGamesPerPage
+      skip
     })
   }
 

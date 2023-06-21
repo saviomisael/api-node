@@ -694,8 +694,6 @@ describe('GET /api/v1/games 2', () => {
     const firstGame = games.at(0)
     const lastGame = games.at(games.length - 1)
 
-    console.log(response.body)
-
     chai.expect(games).to.have.length(9)
     chai.expect(new Date(firstGame.releaseDate as string).toISOString()).to.be.equal(new Date(2020, 5, 1).toISOString())
     chai.expect(new Date(lastGame.releaseDate as string).toISOString()).to.be.equal(new Date(2020, 5, 9).toISOString())
