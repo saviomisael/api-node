@@ -10,9 +10,9 @@ import bodyParser from 'body-parser'
 import cors from 'cors'
 import dotenv from 'dotenv'
 import express, { type NextFunction, type Request, type Response } from 'express'
+import morgan from 'morgan'
 import Swagger from 'swagger-ui-express'
 import { AppDataSource } from './AppDataSource'
-
 dotenv.config()
 
 const app = express()
@@ -29,6 +29,8 @@ AppDataSource.initialize()
   .catch((err) => {
     console.error('Error during Data Source initialization:', err)
   })
+
+app.use(morgan('tiny'))
 
 if (process.env.NODE_ENV !== 'production') app.use('/docs', Swagger.serve, Swagger.setup(SwaggerDocs))
 
