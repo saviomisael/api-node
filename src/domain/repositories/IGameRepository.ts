@@ -22,4 +22,5 @@ export interface IGameRepository {
   getUserForReview: (reviewId: string) => Promise<string>
   checkReviewerHasReviewByGame: (reviewerId: string, gameId: string) => Promise<boolean>
   getReviewsByGame: (gameId: string) => Promise<Review[]>
+  getGamesByUsername: (username: string) => Promise<Game[]>
 }
