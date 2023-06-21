@@ -459,4 +459,16 @@ export class GameController extends HttpHandler {
       throw error
     }
   }
+
+  async getGamesByUsername(req: JWTRequest, res: Response): Promise<Response> {
+    const games = await this.gameService.getGamesByUsername(req.payload.name)
+
+    const response: ResponseDTO<Game> = {
+      data: [...games],
+      errors: [],
+      success: true
+    }
+
+    return this.ok(res, response)
+  }
 }
