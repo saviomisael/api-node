@@ -10,4 +10,13 @@ describe('GamesQueryStringDTO', () => {
     chai.expect(dto.getSortType()).to.be.equal('releaseDate')
     chai.expect(dto.getTerm()).to.be.equal('')
   })
+
+  it('should return page equals to page provided', () => {
+    const dto = new GamesQueryStringDTO('2', undefined, undefined)
+
+    chai.expect(dto.getPage()).to.be.eq(2)
+    chai.expect(dto.getSortOrder()).to.be.equal('DESC')
+    chai.expect(dto.getSortType()).to.be.equal('releaseDate')
+    chai.expect(dto.getTerm()).to.be.equal('')
+  })
 })
