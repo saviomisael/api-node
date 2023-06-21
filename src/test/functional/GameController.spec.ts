@@ -1246,6 +1246,22 @@ describe('GET /api/v1/games sort by reviewsCount descending', () => {
     chai.expect(secondGame.name).to.be.equal('The Witcher 2')
     chai.expect(thirdGame.name).to.be.equal('The Witcher')
   })
+
+  it('should return games searched ordered by reviews count in descending order', async () => {
+    const response = await chai.request(app).get(apiRoutes.games.getAll + '?sort=desc(reviewsCount)&term=Witcher')
+
+    const games = response.body.data[0].games
+
+    const firstGame = games[0]
+    const secondGame = games[1]
+    const thirdGame = games[2]
+
+    chai.expect(response).to.have.status(200)
+    chai.expect(games).to.have.length(3)
+    chai.expect(firstGame.name).to.be.equal('The Witcher 3')
+    chai.expect(secondGame.name).to.be.equal('The Witcher 2')
+    chai.expect(thirdGame.name).to.be.equal('The Witcher')
+  })
 })
 
 describe('GET /api/v1/games sort by reviewsCount ascending', () => {

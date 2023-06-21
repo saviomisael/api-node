@@ -115,8 +115,33 @@ export class GameRepository implements IGameRepository {
     })
   }
 
-  async searchByTerm(term: string, page: number, sortType: 'releaseDate', sortOrder: 'ASC' | 'DESC'): Promise<Game[]> {
+  async searchByTerm(
+    term: string,
+    page: number,
+    sortType: 'releaseDate' | 'reviewsCount',
+    sortOrder: 'ASC' | 'DESC'
+  ): Promise<Game[]> {
     term = `+${term}`
+
+    if (sortType === 'reviewsCount') {
+      const games = await this.gameRepository
+        .createQueryBuilder('g')
+        .innerJoinAndSelect('g.platforms', 'p')
+        .innerJoinAndSelect('g.genres', 'gr')
+        .innerJoinAndSelect('g.ageRating', 'a')
+        .leftJoin('g.reviews', 'rw')
+        .where('to_tsvector(g.name) @@ to_tsquery(:query)', { query: term })
+        .orWhere('to_tsvector(p.name) @@ to_tsquery(:query)', { query: term })
+        .orWhere('to_tsvector(gr.name) @@ to_tsquery(:query)', { query: term })
+        .orderBy('COUNT(rw.id)', sortOrder)
+        .skip(page < 2 ? 0 : (page - 1) * maxGamesPerPage)
+        .take(maxGamesPerPage)
+        .getMany()
+
+      console.log(games)
+
+      return []
+    }
 
     const orders = {
       releaseDate: 'g.releaseDate'
