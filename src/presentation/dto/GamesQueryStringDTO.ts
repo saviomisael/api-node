@@ -3,17 +3,18 @@ import { minPages } from '../constants'
 export class GamesQueryStringDTO {
   private page: number
   private readonly sort: string
-  private readonly sortType: 'releaseDate'
+  private readonly sortType: 'releaseDate' | 'reviewsCount'
   private readonly sortOrder: 'ASC' | 'DESC'
   private readonly term: string
 
   constructor(page: string | undefined, sort: string | undefined, term: string | undefined) {
     this.page = page !== undefined && Number(page) > 0 ? Number(page) : minPages
     this.sort =
-      sort !== undefined && ['asc(releaseDate)', 'desc(releaseDate)'].includes(String(sort))
+      sort !== undefined &&
+      ['asc(releaseDate)', 'desc(releaseDate)', 'asc(reviewsCount)', 'desc(reviewsCount)'].includes(String(sort))
         ? String(sort)
         : 'desc(releaseDate)'
-    this.sortType = 'releaseDate'
+    this.sortType = sort?.includes('reviewsCount') !== undefined ? 'reviewsCount' : 'releaseDate'
     this.sortOrder = this.sort.includes('asc') ? 'ASC' : 'DESC'
     this.term = term !== undefined && term.trim().length > 0 ? term.trim() : ''
   }
@@ -26,7 +27,7 @@ export class GamesQueryStringDTO {
     return this.page
   }
 
-  getSortType(): 'releaseDate' {
+  getSortType(): 'releaseDate' | 'reviewsCount' {
     return this.sortType
   }
 

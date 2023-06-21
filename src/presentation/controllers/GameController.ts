@@ -14,7 +14,7 @@ import { Game, Reviewer } from '$/domain/entities'
 import { Review } from '$/domain/entities/Review'
 import { type IGameRepository } from '$/domain/repositories'
 import { GameNotExistsError } from '$/infrastructure/errors/GameNotExistsError'
-import { GameRepository } from '$/infrastructure/repositories/GameRepository'
+import { GameRepository } from '$/infrastructure/repositories'
 import { apiRoutes } from '$/infrastructure/routes/apiRoutes'
 import { validate } from 'class-validator'
 import { type Request, type Response } from 'express'
@@ -340,7 +340,7 @@ export class GameController extends HttpHandler {
 
     let games: GameResponseDTO[] =
       dto.getTerm().length > 0
-        ? await this.gameService.searchByTerm(dto.getTerm(), dto.getPage(), dto.getSortType(), dto.getSortOrder())
+        ? await this.gameService.searchByTerm(dto.getTerm(), dto.getPage(), 'releaseDate', dto.getSortOrder())
         : await this.gameService.getAll(dto.getPage(), dto.getSortType(), dto.getSortOrder())
 
     games = games.map((x) => {
