@@ -892,6 +892,50 @@
           }
         }
       }
+    },
+    "/api/v1/reviewers/games": {
+      "get": {
+        "tags": [
+          "reviewers"
+        ],
+        "security": {
+          "bearerAuth": []
+        },
+        "summary": "Returns all games that the reviewer has make a review.",
+        "description": "Returns all games that the reviewer has make a review.",
+        "responses": {
+          "200": {
+            "description": "All games related with a reviewer.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GameResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "The token was not sent.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GameResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Reviewer does not exist.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GameResponse"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
