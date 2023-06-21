@@ -1,3 +1,5 @@
+import 'reflect-metadata'
+
 import { AgeRating, Game, Genre, Platform, Review } from '$/domain/entities'
 import { Reviewer } from '$/domain/entities/Reviewer'
 import { AppDataSource } from '$/infrastructure/AppDataSource'

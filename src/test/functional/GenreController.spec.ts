@@ -1,3 +1,5 @@
+import 'reflect-metadata'
+
 import { Game, Genre, Platform } from '$/domain/entities'
 import { AppDataSource } from '$/infrastructure/AppDataSource'
 import { RedisClient } from '$/infrastructure/RedisClient'

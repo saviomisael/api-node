@@ -1,3 +1,5 @@
+import 'reflect-metadata'
+
 import { type AgeRating } from '$/domain/entities'
 import { RedisClient } from '$/infrastructure/RedisClient'
 import { apiRoutes } from '$/infrastructure/routes/apiRoutes'
