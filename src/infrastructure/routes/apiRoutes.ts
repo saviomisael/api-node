@@ -20,7 +20,7 @@ export const apiRoutes = {
     getAll: '/api/v1/games',
     createReview: '/api/v1/games/:gameId/reviews',
     updateReview: '/api/v1/games/reviews/:reviewId',
-    getByUsername: '/api/v1/games/reviewers'
+    getByUsername: '/api/v1/reviewers/games'
   },
   reviewers: {
     create: '/api/v1/reviewers',

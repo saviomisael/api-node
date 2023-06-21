@@ -1415,3 +1415,105 @@ describe('GET /api/v1/games sort by reviewsCount ascending', () => {
     chai.expect(thirdGame.name).to.be.equal('The Witcher 3')
   })
 })
+
+describe('GET /api/v1/reviewers/games', () => {
+  beforeEach(async () => {
+    const allAges = await chai.request(app).get(apiRoutes.ageRatings.getAll)
+    const genreRepository = new GenreRepository()
+    const platformRepository = new PlatformRepository()
+    const gameRepository = new GameRepository()
+
+    const age = new AgeRating()
+    age.age = allAges.body.data[0].age as string
+    age.description = allAges.body.data[0].description as string
+    age.id = allAges.body.data[0].id
+
+    const genre = new Genre()
+    genre.name = 'multiplayer'
+    genre.id = 'genreb4d-3b7d-4bad-9bdd-2b0d7b3dcb6a'
+
+    const platform = new Platform()
+    platform.name = 'playstation'
+    platform.id = 'platform-3b7d-4bad-9bdd-2b0d7b3dcb6a'
+
+    await genreRepository.createGenre(genre)
+    await platformRepository.create(platform)
+
+    const reviewerRepository = new ReviewerRepository()
+
+    const reviewer = new Reviewer()
+    reviewer.username = `saviomisael`
+    reviewer.password = await PasswordEncrypter.encrypt('321aBc@#')
+    reviewer.email = `savioth9@email.com`
+    reviewer.id = `reviewer-3b7d-4bad-9bdd-2b0d7b3dcb6a`
+
+    await reviewerRepository.createReviewer(reviewer)
+
+    const lastCharacters = ['a', 'b', 'c']
+
+    const gamesNames = ['The Witcher', 'The Witcher 2', 'The Witcher 3']
+
+    for (let index = 0; index < lastCharacters.length; index++) {
+      const character = lastCharacters[index]
+
+      const game = new Game()
+      game.name = gamesNames[index]
+      game.price = 100
+      game.description =
+        'O jogo mais premiado de uma geração agora aprimorado para a atual! Experimente The Witcher 3: Wild Hunt e suas expansões nesta coleção definitiva, com melhor desempenho, visuais aprimorados, novo conteúdo adicional, modo fotografia e muito mais!'
+      game.releaseDate = new Date(2020, 5, index + 1)
+      game.ageRating = age
+
+      game.addGenre(genre)
+      game.addPlatform(platform)
+      game.id = `gameeb4d-3b7d-4bad-9bdd-2b0d7b3dcb6${character}`
+      await gameRepository.create(game)
+
+      if (index === 0) {
+        const review = new Review()
+        review.description = `Jogo bem legal / ${reviewer.username}`
+        review.stars = 5
+        review.game = game
+        review.reviewer = reviewer
+        review.id = v4()
+        await gameRepository.createReview(review)
+      }
+
+      if (index === 1) {
+        const review = new Review()
+        review.description = `Jogo bem legal / ${reviewer.username}`
+        review.stars = 5
+        review.game = game
+        review.reviewer = reviewer
+        review.id = v4()
+        await gameRepository.createReview(review)
+      }
+
+      if (index === 2) {
+        const review = new Review()
+        review.description = `Jogo bem legal / ${reviewer.username}`
+        review.stars = 5
+        review.game = game
+        review.reviewer = reviewer
+        review.id = v4()
+        await gameRepository.createReview(review)
+      }
+    }
+  })
+
+  afterEach(async () => {
+    await clearData()
+  })
+
+  it('should return all games that a reviewer has review', async () => {
+    const generator = new JWTGenerator()
+
+    const token = generator.generateToken('reviewer-3b7d-4bad-9bdd-2b0d7b3dcb6a', 'saviomisael')
+
+    const response = await chai.request(app).get(apiRoutes.games.getByUsername).set('Authorization', `Bearer ${token}`)
+
+    console.log(response.body)
+    chai.expect(response).to.have.status(200)
+    chai.expect(response.body.data).to.have.length(3)
+  })
+})
