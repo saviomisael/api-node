@@ -37,4 +37,13 @@ describe('GamesQueryStringDTO', () => {
     chai.expect(dto.getSortType()).to.be.equal('reviewsCount')
     chai.expect(dto.getTerm()).to.be.equal('')
   })
+
+  it('should return a term equals to term provided', () => {
+    const dto = new GamesQueryStringDTO('2', 'desc(reviewsCount)', 'Witcher')
+
+    chai.expect(dto.getPage()).to.be.eq(2)
+    chai.expect(dto.getSortOrder()).to.be.equal('DESC')
+    chai.expect(dto.getSortType()).to.be.equal('reviewsCount')
+    chai.expect(dto.getTerm()).to.be.equal('Witcher')
+  })
 })

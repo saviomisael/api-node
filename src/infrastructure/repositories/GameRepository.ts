@@ -85,18 +85,24 @@ export class GameRepository implements IGameRepository {
   }
 
   async getAll(page: number, sortType: 'releaseDate' | 'reviewsCount', sortOrder: 'ASC' | 'DESC'): Promise<Game[]> {
+    console.log('repository', sortType)
+
     if (sortType === 'reviewsCount') {
-      return await this.gameRepository
+      console.log('oi')
+
+      const games = await this.gameRepository
         .createQueryBuilder('g')
         .innerJoinAndSelect('g.platforms', 'p')
         .innerJoinAndSelect('g.genres', 'gr')
         .innerJoinAndSelect('g.ageRating', 'a')
         .innerJoinAndSelect('g.reviews', 'rw')
-        .addSelect('COUNT(rw.id) AS reviewsCount')
-        .orderBy('reviewsCount', sortOrder)
         .skip(page < 2 ? 0 : (page - 1) * maxGamesPerPage)
         .take(maxGamesPerPage)
         .getMany()
+
+      console.log(games)
+
+      return []
     }
 
     const orders = {

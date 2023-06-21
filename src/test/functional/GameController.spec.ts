@@ -1056,3 +1056,86 @@ describe('PUT /api/v1/games/reviews/:reviewId', () => {
     chai.expect(response).to.have.status(204)
   })
 })
+
+describe('GET /api/v1/games sort by reviewsCount', () => {
+  beforeEach(async () => {
+    const allAges = await chai.request(app).get(apiRoutes.ageRatings.getAll)
+    const genreRepository = new GenreRepository()
+    const platformRepository = new PlatformRepository()
+    const gameRepository = new GameRepository()
+
+    const age = new AgeRating()
+    age.age = allAges.body.data[0].age as string
+    age.description = allAges.body.data[0].description as string
+    age.id = allAges.body.data[0].id
+
+    const genre = new Genre()
+    genre.name = 'multiplayer'
+    genre.id = 'genreb4d-3b7d-4bad-9bdd-2b0d7b3dcb6a'
+
+    const platform = new Platform()
+    platform.name = 'playstation'
+    platform.id = 'platform-3b7d-4bad-9bdd-2b0d7b3dcb6a'
+
+    await genreRepository.createGenre(genre)
+    await platformRepository.create(platform)
+
+    const reviewerRepository = new ReviewerRepository()
+    const reviewer = new Reviewer()
+    reviewer.username = 'saviomisael'
+    reviewer.password = await PasswordEncrypter.encrypt('321aBc@#')
+    reviewer.email = 'savioth9@email.com'
+    reviewer.id = 'reviewer-3b7d-4bad-9bdd-2b0d7b3dcb6a'
+
+    await reviewerRepository.createReviewer(reviewer)
+
+    const game = new Game()
+    game.name = 'The Witcher 3'
+    game.price = 100
+    game.description =
+      'O jogo mais premiado de uma geração agora aprimorado para a atual! Experimente The Witcher 3: Wild Hunt e suas expansões nesta coleção definitiva, com melhor desempenho, visuais aprimorados, novo conteúdo adicional, modo fotografia e muito mais!'
+    game.releaseDate = new Date(2020, 5, 1)
+    game.ageRating = age
+
+    game.addGenre(genre)
+    game.addPlatform(platform)
+    game.id = `gameeb4d-3b7d-4bad-9bdd-2b0d7b3dcb6a`
+    await gameRepository.create(game)
+
+    const game2 = new Game()
+    game2.name = 'The Witcher 2'
+    game2.price = 100
+    game2.description =
+      'O jogo mais premiado de uma geração agora aprimorado para a atual! Experimente The Witcher 3: Wild Hunt e suas expansões nesta coleção definitiva, com melhor desempenho, visuais aprimorados, novo conteúdo adicional, modo fotografia e muito mais!'
+    game2.releaseDate = new Date(2020, 5, 1)
+    game2.ageRating = age
+
+    game2.addGenre(genre)
+    game2.addPlatform(platform)
+    game2.id = `game2b4d-3b7d-4bad-9bdd-2b0d7b3dcb6a`
+    await gameRepository.create(game2)
+
+    const review = new Review()
+    review.description = 'Jogo bem legal'
+    review.stars = 5
+    review.game = game
+    review.reviewer = reviewer
+    review.id = 'review4d-3b7d-4bad-9bdd-2b0d7b3dcb6a'
+    await gameRepository.createReview(review)
+  })
+
+  afterEach(async () => {
+    await clearData()
+  })
+
+  it('should return all games sort by reviews count in ascending order', async () => {
+    const response = await chai.request(app).get(apiRoutes.games.getAll + '?sort=asc(reviewsCount)')
+
+    const firstGame = response.body.data[0].games[0]
+    const secondGame = response.body.data[0].games[1]
+
+    chai.expect(response).to.have.status(200)
+    chai.expect(firstGame.name).to.be.equal('The Witcher 3')
+    chai.expect(secondGame.name).to.be.equal('The Witcher 2')
+  })
+})
