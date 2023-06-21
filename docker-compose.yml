@@ -1,22 +1,6 @@
 version: '3.8'
 
 services:
-  db:
-    build: ./sql
-    restart: always
-    env_file:
-      - '.env'
-    ports:
-      - 3306:3306
-    healthcheck:
-      test: 'mysql -u root -p ${MYSQL_ROOT_PASSWORD} -e "SHOW DATABASES;"'
-      interval: 10s
-      timeout: 60s
-      retries: 3
-    volumes:
-      - data:/var/lib/mysql
-    networks:
-      - backend
   postgres:
     image: postgres:15
     restart: always
@@ -47,7 +31,6 @@ services:
     volumes:
       - ./:/api
     depends_on:
-      - db
       - redis
       - postgres
     networks:
