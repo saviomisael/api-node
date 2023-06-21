@@ -266,7 +266,10 @@ export class GameRepository implements IGameRepository {
   }
 
   async getGamesByUsername(username: string): Promise<Game[]> {
-    const games = await this.gameRepository.find({ where: { reviews: { reviewer: { username } } } })
+    const games = await this.gameRepository.find({
+      where: { reviews: { reviewer: { username } } },
+      relations: { ageRating: true, genres: true, platforms: true, reviews: true }
+    })
 
     return games
   }

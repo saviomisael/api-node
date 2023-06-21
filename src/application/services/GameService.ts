@@ -181,4 +181,8 @@ export class GameService {
 
     await this.gameRepository.updateReview(review)
   }
+
+  async getGamesByUsername(username: string): Promise<Game[]> {
+    return await this.gameRepository.getGamesByUsername(username)
+  }
 }
