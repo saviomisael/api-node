@@ -23,7 +23,7 @@ export class Game extends AggregateRoot {
     nullable: false,
     length: 255
   })
-  @Index('name_games_idx', { fulltext: true })
+  @Index('games_name', { synchronize: false })
   name!: string
 
   @Column({
