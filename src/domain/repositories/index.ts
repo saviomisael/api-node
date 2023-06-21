@@ -2,3 +2,4 @@ export type { IAgeRatingRepository } from '$/domain/repositories/IAgeRatingRepos
 export type { IGameRepository } from '$/domain/repositories/IGameRepository'
 export type { IGenreRepository } from '$/domain/repositories/IGenreRepository'
 export type { IPlatformRepository } from '$/domain/repositories/IPlatformRepository'
+export type { IReviewerRepository } from './IReviewerRepository'

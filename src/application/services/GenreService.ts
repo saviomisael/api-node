@@ -1,6 +1,6 @@
 import { Genre } from '$/domain/entities'
 import { type IGenreRepository } from '$/domain/repositories'
-import { HasRelatedGamesError } from '../errors/HasRelatedGamesError'
+import { HasRelatedGamesError } from '../errors'
 
 export class GenreService {
   constructor(private readonly repository: IGenreRepository) {}

@@ -1,7 +1,7 @@
 {
   "name": "api-node",
   "version": "1.0.0",
-  "description": "",
+  "description": "An API for creation of reviews about games.",
   "main": "./dist/infrastructure/server.js",
   "scripts": {
     "dev:server": "ts-node-dev --poll --respawn --transpile-only -r tsconfig-paths/register ./src/infrastructure/server.ts",
@@ -23,10 +23,11 @@
     "migration:revert": "npm run typeorm migration:revert -- -d ./src/infrastructure/AppDataSource.ts",
     "migration:revert:docker": "docker compose run backend npm run migration:revert",
     "migration:generate": "npm run typeorm migration:generate -- -d ./src/infrastructure/AppDataSource.ts ./src/infrastructure/migrations/Migration",
-    "migration:generate:docker": "docker compose run backend npm run migration:generate"
+    "migration:generate:docker": "docker compose run backend npm run migration:generate",
+    "ts-prune": "ts-prune"
   },
   "keywords": [],
-  "author": "",
+  "author": "Savio Moreira",
   "license": "MIT",
   "devDependencies": {
     "@istanbuljs/nyc-config-typescript": "^1.0.2",
@@ -82,6 +83,7 @@
     "redis": "^4.6.6",
     "reflect-metadata": "^0.1.13",
     "swagger-ui-express": "^4.6.2",
+    "ts-prune": "^0.10.3",
     "typeorm": "^0.3.16",
     "uuid": "^9.0.0"
   },

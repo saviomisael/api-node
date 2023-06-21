@@ -1,7 +1,7 @@
 import { Platform } from '$/domain/entities'
 import { type IPlatformRepository } from '$/domain/repositories'
 import { PlatformRepository } from '$/infrastructure/repositories'
-import { HasRelatedGamesError } from '../errors/HasRelatedGamesError'
+import { HasRelatedGamesError } from '../errors'
 
 export class PlatformService {
   private readonly repository: IPlatformRepository = new PlatformRepository()

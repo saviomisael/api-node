@@ -1,6 +1,6 @@
 import { Review } from '$/domain/entities'
 import { Reviewer } from '$/domain/entities/Reviewer'
-import { type IReviewerRepository } from '$/domain/repositories/IReviewerRepository'
+import { type IReviewerRepository } from '$/domain/repositories'
 import { ReviewerDetails } from '$/domain/value-objects/ReviewerDetails'
 import { AppDataSource } from '../AppDataSource'
 

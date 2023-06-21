@@ -1,5 +1,5 @@
 import { JWTGenerator } from '$/infrastructure/JWTGenerator'
-import { ReviewerRepository } from '$/infrastructure/repositories/ReviewerRepository'
+import { ReviewerRepository } from '$/infrastructure/repositories'
 import { type NextFunction, type Response } from 'express'
 import { JsonWebTokenError, NotBeforeError, TokenExpiredError } from 'jsonwebtoken'
 import { HttpHandler } from '../HttpHandler'

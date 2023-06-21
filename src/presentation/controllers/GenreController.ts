@@ -1,4 +1,4 @@
-import { HasRelatedGamesError } from '$/application/errors/HasRelatedGamesError'
+import { HasRelatedGamesError } from '$/application/errors'
 import { type GenreService } from '$/application/services/GenreService'
 import { type Genre } from '$/domain/entities'
 import { apiRoutes } from '$/infrastructure/routes/apiRoutes'
