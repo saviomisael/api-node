@@ -138,9 +138,7 @@ export class GameRepository implements IGameRepository {
         .take(maxGamesPerPage)
         .getMany()
 
-      console.log(games)
-
-      return []
+      return games
     }
 
     const orders = {
