@@ -19,4 +19,13 @@ describe('GamesQueryStringDTO', () => {
     chai.expect(dto.getSortType()).to.be.equal('releaseDate')
     chai.expect(dto.getTerm()).to.be.equal('')
   })
+
+  it('should return reviewsCount in ascending order', () => {
+    const dto = new GamesQueryStringDTO('2', 'asc(reviewsCount)', undefined)
+
+    chai.expect(dto.getPage()).to.be.eq(2)
+    chai.expect(dto.getSortOrder()).to.be.equal('ASC')
+    chai.expect(dto.getSortType()).to.be.equal('reviewsCount')
+    chai.expect(dto.getTerm()).to.be.equal('')
+  })
 })
