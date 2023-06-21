@@ -31,5 +31,14 @@ router.put(
     await controller.updateReview(req as JWTRequest, res)
   }
 )
+router.get(
+  apiRoutes.games.getByUsername,
+  async (req, res, next) => {
+    await authMiddleware.isAuthenticated(req as JWTRequest, res, next)
+  },
+  async (req, res) => {
+    await controller.getGamesByUsername(req as JWTRequest, res)
+  }
+)
 
 export default router

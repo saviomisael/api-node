@@ -19,7 +19,8 @@ export const apiRoutes = {
     deleteById: '/api/v1/games/:id',
     getAll: '/api/v1/games',
     createReview: '/api/v1/games/:gameId/reviews',
-    updateReview: '/api/v1/games/reviews/:reviewId'
+    updateReview: '/api/v1/games/reviews/:reviewId',
+    getByUsername: '/api/v1/games/reviewers'
   },
   reviewers: {
     create: '/api/v1/reviewers',
