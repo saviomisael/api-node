@@ -84,7 +84,21 @@ export class GameRepository implements IGameRepository {
     await this.gameRepository.delete(gameId)
   }
 
-  async getAll(page: number, sortType: 'releaseDate', sortOrder: 'ASC' | 'DESC'): Promise<Game[]> {
+  async getAll(page: number, sortType: 'releaseDate' | 'reviewsCount', sortOrder: 'ASC' | 'DESC'): Promise<Game[]> {
+    if (sortType === 'reviewsCount') {
+      return await this.gameRepository
+        .createQueryBuilder('g')
+        .innerJoinAndSelect('g.platforms', 'p')
+        .innerJoinAndSelect('g.genres', 'gr')
+        .innerJoinAndSelect('g.ageRating', 'a')
+        .innerJoinAndSelect('g.reviews', 'rw')
+        .addSelect('COUNT(rw.id) AS reviewsCount')
+        .orderBy('reviewsCount', sortOrder)
+        .skip(page < 2 ? 0 : (page - 1) * maxGamesPerPage)
+        .take(maxGamesPerPage)
+        .getMany()
+    }
+
     const orders = {
       releaseDate: {
         releaseDate: sortOrder
