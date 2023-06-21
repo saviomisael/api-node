@@ -1058,7 +1058,7 @@ describe('PUT /api/v1/games/reviews/:reviewId', () => {
   })
 })
 
-describe('GET /api/v1/games sort by reviewsCount', () => {
+describe('GET /api/v1/games sort by reviewsCount descending', () => {
   beforeEach(async () => {
     const allAges = await chai.request(app).get(apiRoutes.ageRatings.getAll)
     const genreRepository = new GenreRepository()
@@ -1245,5 +1245,141 @@ describe('GET /api/v1/games sort by reviewsCount', () => {
     chai.expect(firstGame.name).to.be.equal('The Witcher 3')
     chai.expect(secondGame.name).to.be.equal('The Witcher 2')
     chai.expect(thirdGame.name).to.be.equal('The Witcher')
+  })
+})
+
+describe('GET /api/v1/games sort by reviewsCount ascending', () => {
+  beforeEach(async () => {
+    const allAges = await chai.request(app).get(apiRoutes.ageRatings.getAll)
+    const genreRepository = new GenreRepository()
+    const platformRepository = new PlatformRepository()
+    const gameRepository = new GameRepository()
+
+    const age = new AgeRating()
+    age.age = allAges.body.data[0].age as string
+    age.description = allAges.body.data[0].description as string
+    age.id = allAges.body.data[0].id
+
+    const genre = new Genre()
+    genre.name = 'multiplayer'
+    genre.id = 'genreb4d-3b7d-4bad-9bdd-2b0d7b3dcb6a'
+
+    const platform = new Platform()
+    platform.name = 'playstation'
+    platform.id = 'platform-3b7d-4bad-9bdd-2b0d7b3dcb6a'
+
+    await genreRepository.createGenre(genre)
+    await platformRepository.create(platform)
+
+    const reviewerRepository = new ReviewerRepository()
+
+    const reviewers = []
+
+    for (let index = 0; index < 3; index++) {
+      const reviewer = new Reviewer()
+      reviewer.username = `saviomisael${index}`
+      reviewer.password = await PasswordEncrypter.encrypt('321aBc@#')
+      reviewer.email = `savioth9${index}@email.com`
+      reviewer.id = `reviewer-3b7d-4bad-9bdd-2b0d7b3dcb6${index}`
+
+      await reviewerRepository.createReviewer(reviewer)
+
+      reviewers.push(reviewer)
+    }
+
+    const lastCharacters = ['a', 'b', 'c']
+
+    const gamesNames = ['The Witcher', 'The Witcher 2', 'The Witcher 3']
+
+    for (let index = 0; index < lastCharacters.length; index++) {
+      const character = lastCharacters[index]
+
+      const game = new Game()
+      game.name = gamesNames[index]
+      game.price = 100
+      game.description =
+        'O jogo mais premiado de uma geração agora aprimorado para a atual! Experimente The Witcher 3: Wild Hunt e suas expansões nesta coleção definitiva, com melhor desempenho, visuais aprimorados, novo conteúdo adicional, modo fotografia e muito mais!'
+      game.releaseDate = new Date(2020, 5, index + 1)
+      game.ageRating = age
+
+      game.addGenre(genre)
+      game.addPlatform(platform)
+      game.id = `gameeb4d-3b7d-4bad-9bdd-2b0d7b3dcb6${character}`
+      await gameRepository.create(game)
+
+      if (index === 0) {
+        const review = new Review()
+        review.description = `Jogo bem legal / ${reviewers[0].username}`
+        review.stars = 5
+        review.game = game
+        review.reviewer = reviewers[0]
+        review.id = v4()
+        await gameRepository.createReview(review)
+      }
+
+      if (index === 1) {
+        const review = new Review()
+        review.description = `Jogo bem legal / ${reviewers[0].username}`
+        review.stars = 5
+        review.game = game
+        review.reviewer = reviewers[0]
+        review.id = v4()
+        await gameRepository.createReview(review)
+
+        const review2 = new Review()
+        review2.description = `Jogo bem legal / ${reviewers[1].username}`
+        review2.stars = 5
+        review2.game = game
+        review2.reviewer = reviewers[1]
+        review2.id = v4()
+        await gameRepository.createReview(review2)
+      }
+
+      if (index === 2) {
+        const review = new Review()
+        review.description = `Jogo bem legal / ${reviewers[0].username}`
+        review.stars = 5
+        review.game = game
+        review.reviewer = reviewers[0]
+        review.id = v4()
+        await gameRepository.createReview(review)
+
+        const review2 = new Review()
+        review2.description = `Jogo bem legal / ${reviewers[1].username}`
+        review2.stars = 5
+        review2.game = game
+        review2.reviewer = reviewers[1]
+        review2.id = v4()
+        await gameRepository.createReview(review2)
+
+        const review3 = new Review()
+        review3.description = `Jogo bem legal / ${reviewers[2].username}`
+        review3.stars = 5
+        review3.game = game
+        review3.reviewer = reviewers[2]
+        review3.id = v4()
+        await gameRepository.createReview(review3)
+      }
+    }
+  })
+
+  afterEach(async () => {
+    await clearData()
+  })
+
+  it('should return all games ordered by reviews count in ascending order', async () => {
+    const response = await chai.request(app).get(apiRoutes.games.getAll + '?sort=asc(reviewsCount)')
+
+    const games = response.body.data[0].games
+
+    const firstGame = games[0]
+    const secondGame = games[1]
+    const thirdGame = games[2]
+
+    chai.expect(response).to.have.status(200)
+    chai.expect(games).to.have.length(3)
+    chai.expect(firstGame.name).to.be.equal('The Witcher')
+    chai.expect(secondGame.name).to.be.equal('The Witcher 2')
+    chai.expect(thirdGame.name).to.be.equal('The Witcher 3')
   })
 })

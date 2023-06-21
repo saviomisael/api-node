@@ -220,7 +220,9 @@ export class GameRepository implements IGameRepository {
   private async paginateInMemory(page: number, games: Game[]): Promise<Game[]> {
     const arr = []
 
-    for (let index = page < 2 ? 0 : (page - 1) * maxGamesPerPage; index < maxGamesPerPage; index++) {
+    const forCondition = games.length > maxGamesPerPage ? maxGamesPerPage : games.length
+
+    for (let index = page < 2 ? 0 : (page - 1) * maxGamesPerPage; index < forCondition; index++) {
       const element = games[index]
 
       const game = await this.gameRepository.findOne({
