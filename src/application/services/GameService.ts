@@ -102,7 +102,11 @@ export class GameService {
     await this.gameRepository.deleteGameById(gameId)
   }
 
-  async getAll(page: number, sortType: 'releaseDate', sortOrder: 'ASC' | 'DESC'): Promise<GameResponseDTO[]> {
+  async getAll(
+    page: number,
+    sortType: 'releaseDate' | 'reviewsCount',
+    sortOrder: 'ASC' | 'DESC'
+  ): Promise<GameResponseDTO[]> {
     this.cacheService = CacheServiceFactory.getGamesCacheService()
 
     const replacements = { page: String(page), sortType, sortOrder }
