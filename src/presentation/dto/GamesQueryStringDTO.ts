@@ -14,7 +14,7 @@ export class GamesQueryStringDTO {
       ['asc(releaseDate)', 'desc(releaseDate)', 'asc(reviewsCount)', 'desc(reviewsCount)'].includes(String(sort))
         ? String(sort)
         : 'desc(releaseDate)'
-    this.sortType = sort?.includes('reviewsCount') !== undefined ? 'reviewsCount' : 'releaseDate'
+    this.sortType = sort !== undefined && sort.includes('reviewsCount') ? 'reviewsCount' : 'releaseDate'
     this.sortOrder = this.sort.includes('asc') ? 'ASC' : 'DESC'
     this.term = term !== undefined && term.trim().length > 0 ? term.trim() : ''
   }
