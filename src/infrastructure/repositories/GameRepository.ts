@@ -85,30 +85,20 @@ export class GameRepository implements IGameRepository {
   }
 
   async getAll(page: number, sortType: 'releaseDate' | 'reviewsCount', sortOrder: 'ASC' | 'DESC'): Promise<Game[]> {
-    console.log('repository', sortType)
-
     if (sortType === 'reviewsCount') {
-      console.log('oi')
-
-      const games = await this.gameRepository
+      const ids = await this.gameRepository
         .createQueryBuilder('g')
-        .innerJoinAndSelect('g.platforms', 'p')
-        .innerJoinAndSelect('g.genres', 'gr')
-        .innerJoinAndSelect('g.ageRating', 'a')
-        .innerJoinAndSelect('g.reviews', 'rw')
-        .skip(page < 2 ? 0 : (page - 1) * maxGamesPerPage)
-        .take(maxGamesPerPage)
+        .select('g.id')
+        .leftJoin('g.reviews', 'rw')
+        .groupBy('g.id')
+        .orderBy('COUNT(rw.id)', sortOrder)
         .getMany()
 
-      console.log(games)
-
-      return []
+      return await this.paginateInMemory(page, ids)
     }
 
-    const orders = {
-      releaseDate: {
-        releaseDate: sortOrder
-      }
+    const releaseOrder = {
+      releaseDate: sortOrder
     }
 
     return await this.gameRepository.find({
@@ -117,7 +107,7 @@ export class GameRepository implements IGameRepository {
         platforms: true,
         genres: true
       },
-      order: orders[sortType],
+      order: releaseOrder,
       take: maxGamesPerPage,
       skip: page < 2 ? 0 : (page - 1) * maxGamesPerPage
     })
@@ -223,5 +213,28 @@ export class GameRepository implements IGameRepository {
 
       return x
     })
+  }
+
+  private async paginateInMemory(page: number, games: Game[]): Promise<Game[]> {
+    const arr = []
+
+    for (let index = page < 2 ? 0 : (page - 1) * maxGamesPerPage; index < maxGamesPerPage; index++) {
+      const element = games[index]
+
+      const game = await this.gameRepository.findOne({
+        where: { id: element.id },
+        relations: {
+          ageRating: true,
+          platforms: true,
+          genres: true
+        }
+      })
+
+      if (game != null) {
+        arr.push(game)
+      }
+    }
+
+    return arr
   }
 }

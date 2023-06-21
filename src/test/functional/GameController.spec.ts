@@ -12,6 +12,7 @@ import app from '$/infrastructure/server'
 import chai from 'chai'
 import chaiHttp from 'chai-http'
 import { performance } from 'perf_hooks'
+import { v4 } from 'uuid'
 
 chai.use(chaiHttp)
 
@@ -693,6 +694,8 @@ describe('GET /api/v1/games 2', () => {
     const firstGame = games.at(0)
     const lastGame = games.at(games.length - 1)
 
+    console.log(response.body)
+
     chai.expect(games).to.have.length(9)
     chai.expect(new Date(firstGame.releaseDate as string).toISOString()).to.be.equal(new Date(2020, 5, 1).toISOString())
     chai.expect(new Date(lastGame.releaseDate as string).toISOString()).to.be.equal(new Date(2020, 5, 9).toISOString())
@@ -1081,61 +1084,168 @@ describe('GET /api/v1/games sort by reviewsCount', () => {
     await platformRepository.create(platform)
 
     const reviewerRepository = new ReviewerRepository()
-    const reviewer = new Reviewer()
-    reviewer.username = 'saviomisael'
-    reviewer.password = await PasswordEncrypter.encrypt('321aBc@#')
-    reviewer.email = 'savioth9@email.com'
-    reviewer.id = 'reviewer-3b7d-4bad-9bdd-2b0d7b3dcb6a'
 
-    await reviewerRepository.createReviewer(reviewer)
+    const reviewers = []
 
-    const game = new Game()
-    game.name = 'The Witcher 3'
-    game.price = 100
-    game.description =
-      'O jogo mais premiado de uma geração agora aprimorado para a atual! Experimente The Witcher 3: Wild Hunt e suas expansões nesta coleção definitiva, com melhor desempenho, visuais aprimorados, novo conteúdo adicional, modo fotografia e muito mais!'
-    game.releaseDate = new Date(2020, 5, 1)
-    game.ageRating = age
+    for (let index = 0; index < 3; index++) {
+      const reviewer = new Reviewer()
+      reviewer.username = `saviomisael${index}`
+      reviewer.password = await PasswordEncrypter.encrypt('321aBc@#')
+      reviewer.email = `savioth9${index}@email.com`
+      reviewer.id = `reviewer-3b7d-4bad-9bdd-2b0d7b3dcb6${index}`
 
-    game.addGenre(genre)
-    game.addPlatform(platform)
-    game.id = `gameeb4d-3b7d-4bad-9bdd-2b0d7b3dcb6a`
-    await gameRepository.create(game)
+      await reviewerRepository.createReviewer(reviewer)
 
-    const game2 = new Game()
-    game2.name = 'The Witcher 2'
-    game2.price = 100
-    game2.description =
-      'O jogo mais premiado de uma geração agora aprimorado para a atual! Experimente The Witcher 3: Wild Hunt e suas expansões nesta coleção definitiva, com melhor desempenho, visuais aprimorados, novo conteúdo adicional, modo fotografia e muito mais!'
-    game2.releaseDate = new Date(2020, 5, 1)
-    game2.ageRating = age
+      reviewers.push(reviewer)
+    }
 
-    game2.addGenre(genre)
-    game2.addPlatform(platform)
-    game2.id = `game2b4d-3b7d-4bad-9bdd-2b0d7b3dcb6a`
-    await gameRepository.create(game2)
+    const lastCharacters = [
+      'a',
+      'b',
+      'c',
+      'd',
+      'e',
+      'f',
+      'g',
+      'h',
+      'i',
+      'j',
+      'k',
+      'l',
+      'm',
+      'n',
+      'o',
+      'p',
+      'q',
+      'r',
+      's',
+      't',
+      'u',
+      'v',
+      'w',
+      'x',
+      'y',
+      'z'
+    ]
 
-    const review = new Review()
-    review.description = 'Jogo bem legal'
-    review.stars = 5
-    review.game = game
-    review.reviewer = reviewer
-    review.id = 'review4d-3b7d-4bad-9bdd-2b0d7b3dcb6a'
-    await gameRepository.createReview(review)
+    const gamesNames = [
+      'The Witcher',
+      'The Witcher 2',
+      'The Witcher 3',
+      'FIFA',
+      'It Takes Two',
+      'Stardew Valley',
+      'Flock of Dogs',
+      'The Escapists',
+      'ABC Audioreactive Beat Circle',
+      'Mortal Kombat 11',
+      'Cuphead',
+      'Rekt: Crash Test',
+      'Street Fighter V',
+      'Glim',
+      'Rocket League',
+      'Knight Squad 2',
+      'Hamster Playground',
+      'Super Bomberman R',
+      'Overcooked 2',
+      'Portal 2',
+      'Tekken 7',
+      'Never Alone',
+      'Child of Light',
+      'Relic Hunters Zero: Remix',
+      'Lara Croft and the Temple of Osiris',
+      'How to Survive 2'
+    ]
+
+    for (let index = 0; index < lastCharacters.length; index++) {
+      const character = lastCharacters[index]
+
+      const game = new Game()
+      game.name = gamesNames[index]
+      game.price = 100
+      game.description =
+        'O jogo mais premiado de uma geração agora aprimorado para a atual! Experimente The Witcher 3: Wild Hunt e suas expansões nesta coleção definitiva, com melhor desempenho, visuais aprimorados, novo conteúdo adicional, modo fotografia e muito mais!'
+      game.releaseDate = new Date(2020, 5, index + 1)
+      game.ageRating = age
+
+      game.addGenre(genre)
+      game.addPlatform(platform)
+      game.id = `gameeb4d-3b7d-4bad-9bdd-2b0d7b3dcb6${character}`
+      await gameRepository.create(game)
+
+      if (index === 0) {
+        const review = new Review()
+        review.description = `Jogo bem legal / ${reviewers[0].username}`
+        review.stars = 5
+        review.game = game
+        review.reviewer = reviewers[0]
+        review.id = v4()
+        await gameRepository.createReview(review)
+      }
+
+      if (index === 1) {
+        const review = new Review()
+        review.description = `Jogo bem legal / ${reviewers[0].username}`
+        review.stars = 5
+        review.game = game
+        review.reviewer = reviewers[0]
+        review.id = v4()
+        await gameRepository.createReview(review)
+
+        const review2 = new Review()
+        review2.description = `Jogo bem legal / ${reviewers[1].username}`
+        review2.stars = 5
+        review2.game = game
+        review2.reviewer = reviewers[1]
+        review2.id = v4()
+        await gameRepository.createReview(review2)
+      }
+
+      if (index === 2) {
+        const review = new Review()
+        review.description = `Jogo bem legal / ${reviewers[0].username}`
+        review.stars = 5
+        review.game = game
+        review.reviewer = reviewers[0]
+        review.id = v4()
+        await gameRepository.createReview(review)
+
+        const review2 = new Review()
+        review2.description = `Jogo bem legal / ${reviewers[1].username}`
+        review2.stars = 5
+        review2.game = game
+        review2.reviewer = reviewers[1]
+        review2.id = v4()
+        await gameRepository.createReview(review2)
+
+        const review3 = new Review()
+        review3.description = `Jogo bem legal / ${reviewers[2].username}`
+        review3.stars = 5
+        review3.game = game
+        review3.reviewer = reviewers[2]
+        review3.id = v4()
+        await gameRepository.createReview(review3)
+      }
+    }
   })
 
   afterEach(async () => {
     await clearData()
   })
 
-  it('should return all games sort by reviews count in ascending order', async () => {
-    const response = await chai.request(app).get(apiRoutes.games.getAll + '?sort=asc(reviewsCount)')
+  it('should return all games ordered by reviews count in descending order', async () => {
+    const response = await chai.request(app).get(apiRoutes.games.getAll + '?sort=desc(reviewsCount)')
 
-    const firstGame = response.body.data[0].games[0]
-    const secondGame = response.body.data[0].games[1]
+    const games = response.body.data[0].games
+
+    const firstGame = games[0]
+    const secondGame = games[1]
+    const thirdGame = games[2]
 
     chai.expect(response).to.have.status(200)
+    chai.expect(games).to.have.length(9)
     chai.expect(firstGame.name).to.be.equal('The Witcher 3')
     chai.expect(secondGame.name).to.be.equal('The Witcher 2')
+    chai.expect(thirdGame.name).to.be.equal('The Witcher')
   })
 })
