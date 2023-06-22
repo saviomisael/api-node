@@ -24,7 +24,8 @@
     "migration:revert:docker": "docker compose run backend npm run migration:revert",
     "migration:generate": "npm run typeorm migration:generate -- -d ./src/infrastructure/AppDataSource.ts ./src/infrastructure/migrations/Migration",
     "migration:generate:docker": "docker compose run backend npm run migration:generate",
-    "ts-prune": "ts-prune"
+    "ts-prune": "ts-prune",
+    "build": "tsc"
   },
   "keywords": [],
   "author": "Savio Moreira",
