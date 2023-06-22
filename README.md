@@ -36,6 +36,9 @@ Esse projeto é uma API REST que usa a abordagem do DDD
 - `Singleton`
 - `Factory`
 
+## UML do projeto
+![Uml do projeto](docs/uml_diagram.png)
+
 ## Scripts Disponíveis
 
 Este projeto precisa do Docker e do Docker Compose para ser executado. Na pasta do projeto você pode rodar os seguintes comandos:
