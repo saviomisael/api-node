@@ -2,6 +2,8 @@
 
 Esse projeto é uma API REST que usa a abordagem do DDD
 
+Há uma versão deste projeto que usa TypeORM e Postgresql, você pode conferir esta versão [aqui](https://github.com/saviomisael/api-node/tree/typeorm).
+
 # Tecnologias
 
 - [Typescript](https://www.typescriptlang.org/)
